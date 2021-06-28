@@ -29,7 +29,7 @@ cml_provision:
     - cdp ml create-workspace --generate-cli-skeleton > skel.json
   script:
     - ls -lrt
-    - cat skel.json | python cml_json_create.py > env.json
+    - cat skel.json | python cml/cml_json_create.py > env.json
   artifacts:
     paths:
       - skel.json
