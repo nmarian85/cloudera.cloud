@@ -1,0 +1,44 @@
+---
+# provision and delete are manual jobs
+stages:
+  - cml_provision
+  - cml_delete
+
+# to be modified for various CML workspaces and environments
+variables:
+  ENV_NAME: cdp-devo-lab-env01
+  WORKSPACE_NAME: cdp-devo-lab-env01-cml01
+  DOCKER_IMAGE_VERSION: "1.0"
+  DOCKER_IMAGE_NAME: cdpcli-ddp
+  DOCKER_IMAGE_URL: $DOCKER_REGISTRY/$ARTIFACTORY_REPOSITORY_NAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
+
+image: ${DOCKER_IMAGE_URL}
+
+cml_provision:
+  stage: cml_provision
+  tags:
+    - docker
+  before_script:
+    - export ALL_SUBNETS=$(aws ec2 describe-subnets --region eu-central-1  --query 'Subnets[*][SubnetArn]' --output text | cut -d/ -f2)
+    - cdp ml create-workspace --generate-cli-skeleton > skel.json
+  script:
+    - ls -lrt
+    - cat skel.json | python cml_json_create.py > env.json
+  artifacts:
+    paths:
+      - skel.json
+      - env.json
+    expire_in: 30 days
+    when: always
+  # when: manual
+  # only:
+  #   - main
+
+cml_delete:
+  stage: cml_delete
+  tags:
+    - docker
+  script: cdp ml delete-workspace --no-force --remove-storage --environment-name $ENV_NAME --workspace-name $WORKSPACE_NAME
+  # when: manual
+  # only:
+  #   - main
