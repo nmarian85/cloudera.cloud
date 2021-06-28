@@ -23,6 +23,8 @@ cml_provision:
   tags:
     - docker
   before_script:
+    - cdp configure set cdp_access_key_id $CDP_ACCESS_KEY_ID
+    - cdp configure set cdp_private_key $CDP_PRIVATE_KEY
     - export ALL_SUBNETS=$(aws ec2 describe-subnets --region eu-central-1  --query 'Subnets[*][SubnetArn]' --output text | cut -d/ -f2)
     - cdp ml create-workspace --generate-cli-skeleton > skel.json
   script:
