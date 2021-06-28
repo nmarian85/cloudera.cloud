@@ -1,1 +1,4 @@
+before_script:
+  - cdp configure set cdp_access_key_id $CDP_ACCESS_KEY_ID
+  - cdp configure set cdp_private_key $CDP_PRIVATE_KEY
 include: "cml/.gitlab-ci.yml"
