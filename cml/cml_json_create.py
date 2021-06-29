@@ -27,7 +27,7 @@ env_name = os.getenv("ENV_NAME")
 workspace_name = os.getenv("WORKSPACE_NAME")
 
 # aws ec2 describe-subnets --region eu-central-1  --query 'Subnets[*][SubnetArn]' --output text | cut -d/ -f2 | tr -s '\n' ','
-all_subnets = [i for i in os.getenv("ALL_SUBNETS").split(" ")]
+all_subnets = [i for i in os.getenv("ALL_SUBNETS").split("\n")]
 
 # read skeleton from command cdp ml create-workspace --generate-cli-skeleton
 cml_json = json.load(sys.stdin)
