@@ -50,14 +50,15 @@ cml_json_ig[0]["autoscaling"]["maxInstances"] = ml_infra_info["max_instances"]
 cml_json_ig[0]["tags"] = ml_infra_info["tags"]
 
 # mlworker
-cml_json_ig.append(cml_json_ig[0])
-cml_json_ig[1]["instanceType"] = ml_worker_info["instance_type"]
-cml_json_ig[1]["instanceCount"] = ml_worker_info["instance_count"]
-cml_json_ig[1]["name"] = ml_worker_info["name"]
-cml_json_ig[1]["rootVolume"] = ml_worker_info["root_volume"]
-cml_json_ig[1]["autoscaling"]["minInstances"] = ml_worker_info["min_instances"]
-cml_json_ig[1]["autoscaling"]["maxInstances"] = ml_worker_info["max_instances"]
-cml_json_ig[1]["tags"] = ml_worker_info["tags"]
+# cml_json_ig.append(cml_json_ig[0])
+# cml_json_ig[1]["instanceType"] = ml_worker_info["instance_type"]
+# cml_json_ig[1]["instanceCount"] = ml_worker_info["instance_count"]
+# cml_json_ig[1]["name"] = ml_worker_info["name"]
+# cml_json_ig[1]["rootVolume"] = ml_worker_info["root_volume"]
+# cml_json_ig[1]["autoscaling"]["minInstances"] = ml_worker_info["min_instances"]
+# cml_json_ig[1]["autoscaling"]["maxInstances"] = ml_worker_info["max_instances"]
+# cml_json_ig[1]["tags"] = ml_worker_info["tags"]
+
 cml_json["provisionK8sRequest"]["instanceGroups"] = cml_json_ig
 
 print(json.dumps(cml_json, indent=4, sort_keys=True))
