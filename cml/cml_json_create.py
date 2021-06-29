@@ -39,8 +39,7 @@ cml_json["usePublicLoadBalancer"] = False
 cml_json["disableTLS"] = False
 cml_json["enableMonitoring"] = True
 cml_json["enableGovernance"] = True
-cml_json["provisionK8sRequest"]["network"]["plugin"]["topology"]["subnets"] = all_subnets
-
+# cml_json["provisionK8sRequest"]["network"]["plugin"]["topology"]["subnets"] = all_subnets
 cml_json_ig = cml_json["provisionK8sRequest"]["instanceGroups"]
 
 # mlinfra
