@@ -59,7 +59,7 @@ cml_json_ig[1]["autoscaling"]["minInstances"] = ml_worker_info["min_instances"]
 cml_json_ig[1]["autoscaling"]["maxInstances"] = ml_worker_info["max_instances"]
 cml_json_ig[1]["tags"] = ml_worker_info["tags"]
 
-cml_json["provisionK8sRequest"]["instanceGroups"] = cml_json_ig
+cml_json["provisionK8sRequest"]["instanceGroups"] = list(cml_json_ig)
 
 print(json.dumps(cml_json, indent=4, sort_keys=True))
 
