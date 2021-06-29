@@ -31,7 +31,6 @@ all_subnets = [i for i in os.getenv("ALL_SUBNETS").split(" ")]
 
 # read skeleton from command cdp ml create-workspace --generate-cli-skeleton
 cml_json = json.load(sys.stdin)
-print(cml_json["environmentName"])
 
 cml_json["environmentName"] = env_name
 cml_json["workspaceName"] = workspace_name
@@ -39,7 +38,7 @@ cml_json["usePublicLoadBalancer"] = False
 cml_json["disableTLS"] = False
 cml_json["enableMonitoring"] = True
 cml_json["enableGovernance"] = True
-# cml_json["provisionK8sRequest"]["network"]["plugin"]["topology"]["subnets"] = all_subnets
+cml_json["provisionK8sRequest"]["network"]["topology"]["subnets"] = all_subnets
 cml_json_ig = cml_json["provisionK8sRequest"]["instanceGroups"]
 
 # mlinfra
