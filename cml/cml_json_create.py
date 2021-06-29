@@ -29,8 +29,7 @@ workspace_name = os.getenv("WORKSPACE_NAME")
 # aws ec2 describe-subnets --region eu-central-1  --query 'Subnets[*][SubnetArn]' --output text | cut -d/ -f2 | tr -s '\n' ','
 all_subnets = [i for i in os.getenv("ALL_SUBNETS").split(" ")]
 
-# cdp ml create-workspace --generate-cli-skeleton
-
+# read skeleton from command cdp ml create-workspace --generate-cli-skeleton
 cml_json = json.load(sys.stdin)
 cml_json["environmentName"] = env_name
 cml_json["workspaceName"] = workspace_name
@@ -74,7 +73,7 @@ cml_json["provisionK8sRequest"]["instanceGroups"][0]["autoscaling"][
 ] = ml_worker_info["max_instances"]
 cml_json["provisionK8sRequest"]["instanceGroups"][0]["tags"] = ml_worker_info["tags"]
 
-cml_json["network"]["plugin"]["topology"]["subnets"] = all_subnets
+cml_json["provisionK8sRequest"]["network"]["plugin"]["topology"]["subnets"] = all_subnets
 
 cml_json["enableMonitoring"] = True
 cml_json["enableGovernance"] = True
