@@ -31,7 +31,7 @@ all_subnets = [i for i in os.getenv("ALL_SUBNETS").split(" ")]
 
 # read skeleton from command cdp ml create-workspace --generate-cli-skeleton
 cml_json = json.load(sys.stdin)
-print(json.dumps(cml_json, indent=4, sort_keys=True))
+print(cml_json["environmentName"])
 
 cml_json["environmentName"] = env_name
 cml_json["workspaceName"] = workspace_name
