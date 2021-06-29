@@ -30,6 +30,7 @@ cml_provision:
   script:
     - ls -lrt
     - cat skel.json | python cml/cml_json_create.py > env.json
+    - cat env.json
   artifacts:
     paths:
       - skel.json
