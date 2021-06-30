@@ -8,7 +8,7 @@ ml_infra_info = {
     "name": "mlinfra",
     "min_instances": 2,
     "max_instances": 3,
-    "tags": [{"key": "role.node.kubernetes.io/infra", "value": "true"}],
+    # "tags": [{"key": "role.node.kubernetes.io/infra", "value": "true"}],
     "root_volume": 100,
 }
 
@@ -18,7 +18,7 @@ ml_worker_info = {
     "name": "mlcpu0",
     "min_instances": 1,
     "max_instances": 3,
-    "tags": [{"key": "role.node.kubernetes.io/cpu", "value": "true"}],
+    # "tags": [{"key": "role.node.kubernetes.io/cpu", "value": "true"}],
     "root_volume": 100,
 }
 
@@ -47,7 +47,7 @@ cml_json_ig[0]["name"] = ml_infra_info["name"]
 cml_json_ig[0]["rootVolume"]["size"] = ml_infra_info["root_volume"]
 cml_json_ig[0]["autoscaling"]["minInstances"] = ml_infra_info["min_instances"]
 cml_json_ig[0]["autoscaling"]["maxInstances"] = ml_infra_info["max_instances"]
-cml_json_ig[0]["tags"] = ml_infra_info["tags"]
+# cml_json_ig[0]["tags"] = ml_infra_info["tags"]
 
 # mlworker
 cml_json_ig.append(dict(cml_json_ig[0]))
@@ -57,7 +57,7 @@ cml_json_ig[1]["name"] = ml_worker_info["name"]
 cml_json_ig[1]["rootVolume"]["size"] = ml_worker_info["root_volume"]
 cml_json_ig[1]["autoscaling"]["minInstances"] = ml_worker_info["min_instances"]
 cml_json_ig[1]["autoscaling"]["maxInstances"] = ml_worker_info["max_instances"]
-cml_json_ig[1]["tags"] = ml_worker_info["tags"]
+# cml_json_ig[1]["tags"] = ml_worker_info["tags"]
 
 cml_json["provisionK8sRequest"]["instanceGroups"] = list(cml_json_ig)
 
