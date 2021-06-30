@@ -50,7 +50,7 @@ cml_json_ig[0]["autoscaling"]["maxInstances"] = ml_infra_info["max_instances"]
 cml_json_ig[0]["tags"] = ml_infra_info["tags"]
 
 # mlworker
-cml_json_ig.append(cml_json_ig[0])
+cml_json_ig.append(dict(cml_json_ig[0]))
 cml_json_ig[1]["instanceType"] = ml_worker_info["instance_type"]
 cml_json_ig[1]["instanceCount"] = ml_worker_info["instance_count"]
 cml_json_ig[1]["name"] = ml_worker_info["name"]
