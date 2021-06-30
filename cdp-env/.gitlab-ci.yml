@@ -1,8 +1,4 @@
 ---
-stages:
-  - cdp-env_stop
-  - cdp-env_start
-
 # to be modified for various environments
 variables:
   ENV_NAME: cdp-devo-lab-env01

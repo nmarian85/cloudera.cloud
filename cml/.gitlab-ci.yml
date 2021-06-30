@@ -1,9 +1,4 @@
 ---
-# provision and delete are manual jobs
-stages:
-  - cml_provision
-  - cml_delete
-
 # to be modified for various CML workspaces and environments
 variables:
   ENV_NAME: cdp-devo-lab-env01
