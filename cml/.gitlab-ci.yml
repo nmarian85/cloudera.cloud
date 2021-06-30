@@ -11,22 +11,23 @@ variables:
   DOCKER_IMAGE_VERSION: "1.0"
   DOCKER_IMAGE_NAME: cdpcli-ddp
   DOCKER_IMAGE_URL: $DOCKER_REGISTRY/$ARTIFACTORY_REPOSITORY_NAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
-  ML_INFRA_INFO: {
+  ML_INFRA_INFO: '{
     "instance_type": "m5.2xlarge",
     "instance_count": 2,
     "name": "mlinfra",
     "min_instances": 2,
     "max_instances": 3,
     "root_volume": 100,
-}
-ML_WORKER_INFO: {
+}'
+
+ML_WORKER_INFO: '{
     "instance_type": "c4.4xlarge",
     "instance_count": 1,
     "name": "mlcpu0",
     "min_instances": 1,
     "max_instances": 3,
     "root_volume": 100,
-}
+}'
 
 
 image: ${DOCKER_IMAGE_URL}
