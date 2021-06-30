@@ -1,2 +1,3 @@
-include: "cml/.gitlab-ci.yml"
-include: "cdp-env/.gitlab-ci.yml"
+include:
+  - "cml/.gitlab-ci.yml"
+  - "cdp-env/.gitlab-ci.yml"
