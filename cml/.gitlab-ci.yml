@@ -25,7 +25,9 @@ cml_provision:
   before_script:
     - cdp configure set cdp_access_key_id $CDP_ACCESS_KEY_ID
     - cdp configure set cdp_private_key $CDP_PRIVATE_KEY
-    - export ALL_SUBNETS=$(aws ec2 describe-subnets --region eu-central-1  --query 'Subnets[*][SubnetArn]' --output text | cut -d/ -f2)
+    # - export ALL_SUBNETS=$(aws ec2 describe-subnets --region eu-central-1  --query 'Subnets[*][SubnetArn]' --output text | cut -d/ -f2)
+    # current cdp env sees only 3 subnets out of 6. Once new VPC is there then we can use the previous line instead.
+    - export ALL_SUBNETS=$(aws ec2 describe-subnets --region eu-central-1  --query 'Subnets[*][SubnetArn]' --output text | cut -d/ -f2 | egrep 'subnet-029106fec17ba4c79|subnet-01243e9afaaf36d3b|subnet-012c688e22929b604')
     - cdp ml create-workspace --generate-cli-skeleton > skel.json
   script:
     - cat skel.json | python3 cml/cml_json_create.py > env.json
