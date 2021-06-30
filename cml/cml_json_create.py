@@ -37,6 +37,7 @@ cml_json["usePublicLoadBalancer"] = False
 cml_json["disableTLS"] = False
 cml_json["enableMonitoring"] = True
 cml_json["enableGovernance"] = True
+cml_json["provisionK8sRequest"]["environmentName"] = env_name
 cml_json["provisionK8sRequest"]["network"]["topology"]["subnets"] = all_subnets
 cml_json["provisionK8sRequest"]["tags"] = [
     {"key": f"{k}", "value": f"{v}"} for k, v in tags.items()
@@ -50,7 +51,6 @@ cml_json_ig[0]["name"] = ml_infra_info["name"]
 cml_json_ig[0]["rootVolume"]["size"] = ml_infra_info["root_volume"]
 cml_json_ig[0]["autoscaling"]["minInstances"] = ml_infra_info["min_instances"]
 cml_json_ig[0]["autoscaling"]["maxInstances"] = ml_infra_info["max_instances"]
-# cml_json_ig[0]["tags"] = ml_infra_info["tags"]
 
 # mlworker
 cml_json_ig.append(dict(cml_json_ig[0]))
@@ -60,10 +60,7 @@ cml_json_ig[1]["name"] = ml_worker_info["name"]
 cml_json_ig[1]["rootVolume"]["size"] = ml_worker_info["root_volume"]
 cml_json_ig[1]["autoscaling"]["minInstances"] = ml_worker_info["min_instances"]
 cml_json_ig[1]["autoscaling"]["maxInstances"] = ml_worker_info["max_instances"]
-# cml_json_ig[1]["tags"] = ml_worker_info["tags"]
 
 cml_json["provisionK8sRequest"]["instanceGroups"] = list(cml_json_ig)
 
 print(json.dumps(cml_json, indent=4, sort_keys=True))
-
-# bash-4.4# cdp ml create-workspace --cli-input-json $(cdp ml create-workspace --generate-cli-skeleton | python3 helpers/cml_json_create.py)
