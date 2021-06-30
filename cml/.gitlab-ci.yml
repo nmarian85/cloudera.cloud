@@ -30,7 +30,7 @@ cml_provision:
   script:
     - cat skel.json | python3 cml/cml_json_create.py > env.json
     - cat env.json
-    - cdp --debug ml create-workspace --cli-input-json file://env.json
+    - cdp --debug ml create-workspace --environmentName $ENV_NAME --cli-input-json file://env.json
   artifacts:
     paths:
       - skel.json
