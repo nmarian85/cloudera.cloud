@@ -28,16 +28,16 @@ cml_provision:
     - export ALL_SUBNETS=$(aws ec2 describe-subnets --region eu-central-1  --query 'Subnets[*][SubnetArn]' --output text | cut -d/ -f2)
     - cdp ml create-workspace --generate-cli-skeleton > skel.json
   script:
-    - ls -lrt
-    - cat skel.json | python cml/cml_json_create.py > env.json
+    - skel.json < python cml/cml_json_create.py > env.json
     - cat env.json
+    - cdp ml create-workspace --cli-input-json env.json
   artifacts:
     paths:
       - skel.json
       - env.json
     expire_in: 30 days
     when: always
-  # when: manual
+  when: manual
   # only:
   #   - main
 
@@ -46,6 +46,6 @@ cml_delete:
   tags:
     - docker
   script: cdp ml delete-workspace --no-force --remove-storage --environment-name $ENV_NAME --workspace-name $WORKSPACE_NAME
-  # when: manual
+  when: manual
   # only:
   #   - main
