@@ -28,7 +28,7 @@ cml_provision:
     - export ALL_SUBNETS=$(aws ec2 describe-subnets --region eu-central-1  --query 'Subnets[*][SubnetArn]' --output text | cut -d/ -f2)
     - cdp ml create-workspace --generate-cli-skeleton > skel.json
   script:
-    - skel.json < python cml/cml_json_create.py > env.json
+    - cat skel.json | python3 cml/cml_json_create.py > env.json
     - cat env.json
     - cdp ml create-workspace --cli-input-json env.json
   artifacts:
