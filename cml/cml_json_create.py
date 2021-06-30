@@ -38,7 +38,9 @@ cml_json["disableTLS"] = False
 cml_json["enableMonitoring"] = True
 cml_json["enableGovernance"] = True
 cml_json["provisionK8sRequest"]["network"]["topology"]["subnets"] = all_subnets
-cml_json["provisionK8sRequest"]["tags"] = [{f"key:{k}", f"value:{v}"} for k, v in tags.items()]
+cml_json["provisionK8sRequest"]["tags"] = [
+    {"key": f"{k}", "value": f"{v}"} for k, v in tags.items()
+]
 cml_json_ig = list(cml_json["provisionK8sRequest"]["instanceGroups"])
 
 # mlinfra
