@@ -8,7 +8,6 @@ ml_infra_info = {
     "name": "mlinfra",
     "min_instances": 2,
     "max_instances": 3,
-    # "tags": [{"key": "role.node.kubernetes.io/infra", "value": "true"}],
     "root_volume": 100,
 }
 
@@ -18,13 +17,14 @@ ml_worker_info = {
     "name": "mlcpu0",
     "min_instances": 1,
     "max_instances": 3,
-    # "tags": [{"key": "role.node.kubernetes.io/cpu", "value": "true"}],
     "root_volume": 100,
 }
 
 # set in the gitlab pipeline as env variables
 env_name = os.getenv("ENV_NAME")
 workspace_name = os.getenv("WORKSPACE_NAME")
+
+tags = {"env": env_name}
 
 all_subnets = [i for i in os.getenv("ALL_SUBNETS").split("\n")]
 
@@ -38,7 +38,7 @@ cml_json["disableTLS"] = False
 cml_json["enableMonitoring"] = True
 cml_json["enableGovernance"] = True
 cml_json["provisionK8sRequest"]["network"]["topology"]["subnets"] = all_subnets
-cml_json["provisionK8sRequest"]["tags"][0] = {}
+cml_json["provisionK8sRequest"]["tags"] = [{f"key:{k}": f"value:{v}"} for k, v in tags.items()]
 cml_json_ig = list(cml_json["provisionK8sRequest"]["instanceGroups"])
 
 # mlinfra
