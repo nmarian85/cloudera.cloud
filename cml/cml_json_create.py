@@ -2,23 +2,8 @@ import sys
 import json
 import os
 
-ml_infra_info = {
-    "instance_type": "m5.2xlarge",
-    "instance_count": 2,
-    "name": "mlinfra",
-    "min_instances": 2,
-    "max_instances": 3,
-    "root_volume": 100,
-}
-
-ml_worker_info = {
-    "instance_type": "c4.4xlarge",
-    "instance_count": 1,
-    "name": "mlcpu0",
-    "min_instances": 1,
-    "max_instances": 3,
-    "root_volume": 100,
-}
+ml_infra_info = json.loads(os.getenv("ML_INFRA_INFO"))
+ml_worker_info = json.loads(os.getenv("ML_WORKER_INFO"))
 
 # set in the gitlab pipeline as env variables
 env_name = os.getenv("ENV_NAME")
