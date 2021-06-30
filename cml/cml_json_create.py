@@ -37,6 +37,8 @@ cml_json["usePublicLoadBalancer"] = False
 cml_json["disableTLS"] = False
 cml_json["enableMonitoring"] = True
 cml_json["enableGovernance"] = True
+# we are using an internal load balancer
+cml_json["loadBalancerIPWhitelists"] = ["0.0.0.0/0"]
 cml_json["provisionK8sRequest"]["environmentName"] = env_name
 cml_json["provisionK8sRequest"]["network"]["topology"]["subnets"] = all_subnets
 cml_json["provisionK8sRequest"]["tags"] = [
