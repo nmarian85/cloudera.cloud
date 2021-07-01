@@ -1,17 +1,15 @@
 ---
+# unfortunately the CDE cannot be provisioned using a machine user ... so we have to provide our own user's access and secret key as env variables CDP_ACCESS_KEY_ID and CDP_PRIVATE_KEY when we run the job
+
 # to be modified for various CDE environments
 variables:
   ENV_NAME: cdp-devo-lab-env01
-  CDE_NAME: cdp-devo-lab-env01-cde01
+  CDE_NAME: cdp-devo-lab-env01-cde02
   DOCKER_IMAGE_VERSION: "1.0"
   DOCKER_IMAGE_NAME: cdpcli-ddp
   DOCKER_IMAGE_URL: $DOCKER_REGISTRY/$ARTIFACTORY_REPOSITORY_NAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
 
 image: ${DOCKER_IMAGE_URL}
-
-before_script:
-  - cdp configure set cdp_access_key_id $CDP_ACCESS_KEY_ID
-  - cdp configure set cdp_private_key $CDP_PRIVATE_KEY
 
 cde_provision:
   stage: cde_provision
