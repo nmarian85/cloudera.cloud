@@ -21,7 +21,8 @@ for env, env_info in envs.items():
         cml_json["loadBalancerIPWhitelists"] = []
         cml_json["provisionK8sRequest"]["environmentName"] = env
         # cml_json["provisionK8sRequest"]["network"]["topology"]["subnets"] = all_subnets
-        json.dumps(cml_cluster_info, indent=4, sort_keys=True)
+        # json.dumps(cml_cluster_info, indent=4, sort_keys=True)
+        print(cml_cluster_info)
         cml_json["provisionK8sRequest"]["tags"] = [
             {"key": f"{k}", "value": f"{v}"} for k, v in cml_cluster_info["tags"].items()
         ]
