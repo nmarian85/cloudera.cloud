@@ -1,0 +1,9 @@
+stages:
+  - cml_provision
+  - cml_delete
+  - cdp-env_stop
+  - cdp-env_start
+
+include:
+  - "cml/.gitlab-ci.yml"
+  - "cdp-env/.gitlab-ci.yml"

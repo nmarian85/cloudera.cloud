@@ -1,0 +1,51 @@
+---
+# to be modified for various CML workspaces and environments
+variables:
+  ENV_NAME: cdp-devo-lab-env01
+  WORKSPACE_NAME: cdp-devo-lab-env01-cml02
+  DOCKER_IMAGE_VERSION: "1.0"
+  DOCKER_IMAGE_NAME: cdpcli-ddp
+  DOCKER_IMAGE_URL: $DOCKER_REGISTRY/$ARTIFACTORY_REPOSITORY_NAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
+  ML_INFRA_INFO: '{"instance_type": "m5.2xlarge", "instance_count": 2, "name": "mlinfra", "min_instances": 2, "max_instances": 3,
+ "root_volume": 100}'
+  ML_WORKER_INFO: '{"instance_type": "c4.4xlarge", "instance_count": 1, "name": "mlcpu0", "min_instances": 1, "max_instances": 3, "root_volume": 100}'
+
+image: ${DOCKER_IMAGE_URL}
+
+before_script:
+  - cdp configure set cdp_access_key_id $CDP_ACCESS_KEY_ID
+  - cdp configure set cdp_private_key $CDP_PRIVATE_KEY
+
+cml_provision:
+  stage: cml_provision
+  tags:
+    - docker
+  before_script:
+    - cdp configure set cdp_access_key_id $CDP_ACCESS_KEY_ID
+    - cdp configure set cdp_private_key $CDP_PRIVATE_KEY
+    # - export ALL_SUBNETS=$(aws ec2 describe-subnets --region eu-central-1  --query 'Subnets[*][SubnetArn]' --output text | cut -d/ -f2)
+    # current cdp env sees only 3 subnets out of 6. Once new VPC is there then we can use the previous line instead.
+    - export ALL_SUBNETS="subnet-029106fec17ba4c79,subnet-01243e9afaaf36d3b,subnet-012c688e22929b604"
+    - cdp ml create-workspace --generate-cli-skeleton > skel.json
+  script:
+    - cat skel.json | python3 cml/cml_json_create.py > env.json
+    - cat env.json
+    - cdp --debug ml create-workspace --environment-name $ENV_NAME --cli-input-json file://env.json
+  artifacts:
+    paths:
+      - skel.json
+      - env.json
+    expire_in: 30 days
+    when: always
+  when: manual
+  # only:
+  #   - main
+
+cml_delete:
+  stage: cml_delete
+  tags:
+    - docker
+  script: cdp ml delete-workspace --no-force --remove-storage --environment-name $ENV_NAME --workspace-name $WORKSPACE_NAME
+  when: manual
+  # only:
+  #   - main

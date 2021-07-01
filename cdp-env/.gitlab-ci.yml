@@ -1,0 +1,33 @@
+---
+# to be modified for various environments
+variables:
+  ENV_NAME: cdp-devo-lab-env01
+  DOCKER_IMAGE_VERSION: "1.0"
+  DOCKER_IMAGE_NAME: cdpcli-ddp
+  DOCKER_IMAGE_URL: $DOCKER_REGISTRY/$ARTIFACTORY_REPOSITORY_NAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
+
+image: ${DOCKER_IMAGE_URL}
+
+before_script:
+  - cdp configure set cdp_access_key_id $CDP_ACCESS_KEY_ID
+  - cdp configure set cdp_private_key $CDP_PRIVATE_KEY
+
+stop:
+  stage: cdp-env_stop
+  tags:
+    - docker
+  script:
+    - cdp environments stop-environment --environment-name $ENV_NAME
+  when: manual
+  # only:
+  #   - main
+
+start:
+  stage: cdp-env_start
+  tags:
+    - docker
+  script:
+    - cdp environments start-environment --environment-name $ENV_NAME
+  when: manual
+  # only:
+  #   - main
