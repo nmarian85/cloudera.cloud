@@ -54,7 +54,7 @@
                 },
                 "delete": true
             }
-        }
-    },
-    "cdw_clusters": {}
+        },
+        "cdw_clusters": {}
+    }
 }
