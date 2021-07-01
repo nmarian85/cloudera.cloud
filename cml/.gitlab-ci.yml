@@ -2,7 +2,7 @@
 # to be modified for various CML workspaces and environments
 variables:
   ENV_NAME: cdp-devo-lab-env01
-  WORKSPACE_NAME: cdp-devo-lab-env01-cml02
+  WORKSPACE_NAME: cdp-devo-lab-env01-cml01
   DOCKER_IMAGE_VERSION: "1.0"
   DOCKER_IMAGE_NAME: cdpcli-ddp
   DOCKER_IMAGE_URL: $DOCKER_REGISTRY/$ARTIFACTORY_REPOSITORY_NAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
