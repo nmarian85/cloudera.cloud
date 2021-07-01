@@ -8,10 +8,6 @@ variables:
 
 image: ${DOCKER_IMAGE_URL}
 
-before_script:
-  - cdp configure set cdp_access_key_id $CDP_ACCESS_KEY_ID
-  - cdp configure set cdp_private_key $CDP_PRIVATE_KEY
-
 cdp-env_stop:
   stage: cdp-env_stop
   tags:

@@ -2,52 +2,55 @@ import sys
 import json
 import os
 
-ml_infra_info = json.loads(os.getenv("ML_INFRA_INFO"))
-ml_worker_info = json.loads(os.getenv("ML_WORKER_INFO"))
-
-# set in the gitlab pipeline as env variables
-env_name = os.getenv("ENV_NAME")
-workspace_name = os.getenv("WORKSPACE_NAME")
-
-tags = {"env": env_name}
-
-all_subnets = [i for i in os.getenv("ALL_SUBNETS").split(",")]
+with open("envs.json", "r") as read_file:
+    envs = json.load(read_file)
 
 # read skeleton from command cdp ml create-workspace --generate-cli-skeleton
-cml_json = json.load(sys.stdin)
+cml_json_skel = json.load(sys.stdin)
 
-cml_json["environmentName"] = env_name
-cml_json["workspaceName"] = workspace_name
-cml_json["usePublicLoadBalancer"] = False
-cml_json["disableTLS"] = False
-cml_json["enableMonitoring"] = True
-cml_json["enableGovernance"] = True
-# we are using an internal load balancer
-cml_json["loadBalancerIPWhitelists"] = ["0.0.0.0/0"]
-cml_json["provisionK8sRequest"]["environmentName"] = env_name
-cml_json["provisionK8sRequest"]["network"]["topology"]["subnets"] = all_subnets
-cml_json["provisionK8sRequest"]["tags"] = [
-    {"key": f"{k}", "value": f"{v}"} for k, v in tags.items()
-]
-cml_json_ig = list(cml_json["provisionK8sRequest"]["instanceGroups"])
+for env, env_info in envs.items():
+    cml_clusters = env_info["cml_clusters"]
+    for cml_cluster, cml_cluster_info in cml_clusters.items():
+        cml_json = dict(cml_json_skel)
+        cml_json["environmentName"] = env
+        cml_json["workspaceName"] = cml_cluster
+        cml_json["usePublicLoadBalancer"] = False
+        cml_json["disableTLS"] = False
+        cml_json["enableMonitoring"] = True
+        cml_json["enableGovernance"] = True
+        cml_json["loadBalancerIPWhitelists"] = []
+        cml_json["provisionK8sRequest"]["environmentName"] = env
+        # cml_json["provisionK8sRequest"]["network"]["topology"]["subnets"] = all_subnets
+        cml_json["provisionK8sRequest"]["tags"] = [
+            {"key": f"{k}", "value": f"{v}"} for k, v in cml_cluster_info["tags"].items()
+        ]
+        cml_json_ig = list(cml_json["provisionK8sRequest"]["instanceGroups"])
 
-# mlinfra
-cml_json_ig[0]["instanceType"] = ml_infra_info["instance_type"]
-cml_json_ig[0]["instanceCount"] = ml_infra_info["instance_count"]
-cml_json_ig[0]["name"] = ml_infra_info["name"]
-cml_json_ig[0]["rootVolume"]["size"] = ml_infra_info["root_volume"]
-cml_json_ig[0]["autoscaling"]["minInstances"] = ml_infra_info["min_instances"]
-cml_json_ig[0]["autoscaling"]["maxInstances"] = ml_infra_info["max_instances"]
+        # mlinfra
+        cml_json_ig[0]["instanceType"] = cml_cluster_info["ml_infra_info"]["instance_type"]
+        cml_json_ig[0]["instanceCount"] = cml_cluster_info["ml_infra_info"]["instance_count"]
+        cml_json_ig[0]["name"] = cml_cluster_info["ml_infra_info"]["name"]
+        cml_json_ig[0]["rootVolume"]["size"] = cml_cluster_info["ml_infra_info"]["root_volume"]
+        cml_json_ig[0]["autoscaling"]["minInstances"] = cml_cluster_info["ml_infra_info"][
+            "min_instances"
+        ]
+        cml_json_ig[0]["autoscaling"]["maxInstances"] = cml_cluster_info["ml_infra_info"][
+            "max_instances"
+        ]
 
-# mlworker
-cml_json_ig.append(dict(cml_json_ig[0]))
-cml_json_ig[1]["instanceType"] = ml_worker_info["instance_type"]
-cml_json_ig[1]["instanceCount"] = ml_worker_info["instance_count"]
-cml_json_ig[1]["name"] = ml_worker_info["name"]
-cml_json_ig[1]["rootVolume"]["size"] = ml_worker_info["root_volume"]
-cml_json_ig[1]["autoscaling"]["minInstances"] = ml_worker_info["min_instances"]
-cml_json_ig[1]["autoscaling"]["maxInstances"] = ml_worker_info["max_instances"]
+        # mlworker
+        cml_json_ig.append(dict(cml_json_ig[0]))
+        cml_json_ig[1]["instanceType"] = cml_cluster_info["ml_worker_info"]["instance_type"]
+        cml_json_ig[1]["instanceCount"] = cml_cluster_info["ml_worker_info"]["instance_count"]
+        cml_json_ig[1]["name"] = cml_cluster_info["ml_worker_info"]["name"]
+        cml_json_ig[1]["rootVolume"]["size"] = cml_cluster_info["ml_worker_info"]["root_volume"]
+        cml_json_ig[1]["autoscaling"]["minInstances"] = cml_cluster_info["ml_worker_info"][
+            "min_instances"
+        ]
+        cml_json_ig[1]["autoscaling"]["maxInstances"] = cml_cluster_info["ml_worker_info"][
+            "max_instances"
+        ]
 
-cml_json["provisionK8sRequest"]["instanceGroups"] = list(cml_json_ig)
-
-print(json.dumps(cml_json, indent=4, sort_keys=True))
+        cml_json["provisionK8sRequest"]["instanceGroups"] = list(cml_json_ig)
+        with open(f"{cml_cluster}_env.json", "w", encoding="utf-8") as f:
+            json.dump(cml_json, f, ensure_ascii=False, indent=4)

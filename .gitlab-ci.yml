@@ -1,3 +1,11 @@
+---
+variables:
+  DOCKER_IMAGE_VERSION: "1.0"
+  DOCKER_IMAGE_NAME: cdpcli-ddp
+  DOCKER_IMAGE_URL: $DOCKER_REGISTRY/$ARTIFACTORY_REPOSITORY_NAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
+
+image: ${DOCKER_IMAGE_URL}
+
 stages:
   - cml_provision
   - cml_delete
@@ -10,5 +18,103 @@ stages:
 
 include:
   - "cml/.gitlab-ci.yml"
-  - "cde/.gitlab-ci.yml"
-  - "cdp-env/.gitlab-ci.yml"
+  # - "cde/.gitlab-ci.yml"
+  # - "cdp-env/.gitlab-ci.yml"
+  -
+# # to be modified for various CML/CDE/CDW/etc. environments
+# variables:
+#   ENV_NAME: cdp-devo-lab-env01
+#   CDE_NAME: cdp-devo-lab-env01-cde02
+#   DOCKER_IMAGE_VERSION: "1.0"
+#   DOCKER_IMAGE_NAME: cdpcli-ddp
+#   DOCKER_IMAGE_URL: $DOCKER_REGISTRY/$ARTIFACTORY_REPOSITORY_NAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
+#   CDP_ACCESS_KEY_ID:
+#     value: "123"
+#     description: "unfortunately the CDE cannot be provisioned using a machine user ... so we have to provide our own user's access and secret key as env variables CDP_ACCESS_KEY_ID and CDP_PRIVATE_KEY when we run the job"
+#   CDP_PRIVATE_KEY:
+#     value: "123"
+#     description: "unfortunately the CDE cannot be provisioned using a machine user ... so we have to provide our own user's access and secret key as env variables CDP_ACCESS_KEY_ID and CDP_PRIVATE_KEY when we run the job"
+
+# cde_provision:
+#   stage: cde_provision
+#   variables:
+#     CDE_INFRA_INFO: '{"instance_type": "c5.2xlarge", "min_instances": 1, "max_instances": 5, "initial_instances": 1, "min_spot_instances": 1, "max_spot_instances": 5, "initial_spot_instances": 1, "root_vol_size": 100, "use_ssd": true, "tags": {}}'
+#   tags:
+#     - docker
+#   script:
+#     - cdp de enable-service --generate-cli-skeleton > skel.json
+#     - cat skel.json | python3 cde/cde_json_create.py > env.json
+#     - cat env.json
+#     - cdp --debug de enable-service --cli-input-json file://env.json
+#   artifacts:
+#     paths:
+#       - skel.json
+#       - env.json
+#     expire_in: 30 days
+#     when: always
+#   when: manual
+#   # only:
+#   #   - main
+
+# cde_provision_vc:
+#   stage: cde_provision_vc
+#   variables:
+#     CLUSTER_ID: "dsadas"
+#     VC_NAME: ${CDE_NAME}-vc01
+#     VC_CDE_INFRA_INFO: '{"cpuRequests": 5, "memoryRequests": "10Gi", "chartValueOverrides": [{"chartName": "dex-app", "overrides": "airflow.enabled:true"}], "runtimeSpotComponent": "ALL"}'
+#   tags:
+#     - docker
+#   script:
+#     - cdp de create-vc --generate-cli-skeleton > vc_skel.json
+#     - cat vc_skel.json | python3 cde/vc_cde_json_create.py > vc_env.json
+#     - cat vc_env.json
+#     - cdp --debug de create-vc --cli-input-json file://vc_env.json
+#   artifacts:
+#     paths:
+#       - skel.json
+#       - env.json
+#     expire_in: 30 days
+#     when: always
+#   when: manual
+#   # only:
+#   #   - main
+
+# cde_delete:
+#   stage: cde_delete
+#   tags:
+#     - docker
+#   script: cdp --debug ml delete-workspace --no-force --remove-storage --environment-name $ENV_NAME --workspace-name $WORKSPACE_NAME
+#   when: manual
+#   # only:
+#   #   - main
+
+# cde_delete_vc:
+#   stage: cde_delete_vc
+#   tags:
+#     - docker
+#   script: cdp --debug ml delete-workspace --no-force --remove-storage --environment-name $ENV_NAME --workspace-name $WORKSPACE_NAME
+#   when: manual
+#   # only:
+#   #   - main
+
+# image: ${DOCKER_IMAGE_URL}
+
+# cdp-env_stop:
+#   stage: cdp-env_stop
+#   tags:
+#     - docker
+#   script:
+#     - cdp environments stop-environment --environment-name $ENV_NAME
+#   when: manual
+#   # only:
+#   #   - main
+
+# cdp-env_start:
+#   stage: cdp-env_start
+#   tags:
+#     - docker
+#   script:
+#     - cdp environments start-environment --environment-name $ENV_NAME
+#   when: manual
+#   # only:
+#   #   - main
