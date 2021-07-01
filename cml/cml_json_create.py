@@ -10,6 +10,7 @@ cml_json_skel = json.load(sys.stdin)
 
 for env, env_info in envs.items():
     cml_clusters = env_info["cml_clusters"]
+    print(env_info["cml_clusters"])
     for cml_cluster, cml_cluster_info in cml_clusters.items():
         cml_json = dict(cml_json_skel)
         cml_json["environmentName"] = env
@@ -22,7 +23,6 @@ for env, env_info in envs.items():
         cml_json["provisionK8sRequest"]["environmentName"] = env
         # cml_json["provisionK8sRequest"]["network"]["topology"]["subnets"] = all_subnets
         # json.dumps(cml_cluster_info, indent=4, sort_keys=True)
-        print(cml_cluster_info)
         cml_json["provisionK8sRequest"]["tags"] = [
             {"key": f"{k}", "value": f"{v}"} for k, v in cml_cluster_info["tags"].items()
         ]
