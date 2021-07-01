@@ -12,7 +12,7 @@ before_script:
   - cdp configure set cdp_access_key_id $CDP_ACCESS_KEY_ID
   - cdp configure set cdp_private_key $CDP_PRIVATE_KEY
 
-stop:
+cdp-env_stop:
   stage: cdp-env_stop
   tags:
     - docker
@@ -22,7 +22,7 @@ stop:
   # only:
   #   - main
 
-start:
+cdp-env_start:
   stage: cdp-env_start
   tags:
     - docker
