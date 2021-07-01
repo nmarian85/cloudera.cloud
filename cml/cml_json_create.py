@@ -10,7 +10,7 @@ cml_json_skel = json.load(sys.stdin)
 
 for env, env_info in envs.items():
     cml_clusters = env_info["cml_clusters"]
-    print(env_info["cml_clusters"])
+    print(cml_clusters)
     for cml_cluster, cml_cluster_info in cml_clusters.items():
         cml_json = dict(cml_json_skel)
         cml_json["environmentName"] = env
