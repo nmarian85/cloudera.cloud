@@ -1,0 +1,43 @@
+---
+# to be modified for various CDE environments
+variables:
+  ENV_NAME: cdp-devo-lab-env01
+  WORKSPACE_NAME: cdp-devo-lab-env01-cde01
+  DOCKER_IMAGE_VERSION: "1.0"
+  DOCKER_IMAGE_NAME: cdpcli-ddp
+  DOCKER_IMAGE_URL: $DOCKER_REGISTRY/$ARTIFACTORY_REPOSITORY_NAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
+  CDE_INFRA_INFO: '{"instance_type": "c5.2xlarge", "min_instances": "1", "max_instances": "5", "initial_instances": "1", "min_spot_instances": "1", "max_spot_instances": "5", "initial_spot_instances": "1", "root_vol_size": "100" "useSsd": true, "tags": {}}'
+
+image: ${DOCKER_IMAGE_URL}
+
+before_script:
+  - cdp configure set cdp_access_key_id $CDP_ACCESS_KEY_ID
+  - cdp configure set cdp_private_key $CDP_PRIVATE_KEY
+
+cde_provision:
+  stage: cde_provision
+  tags:
+    - docker
+  script:
+    - cdp de enable-service --generate-cli-skeleton > skel.json
+    - cat skel.json | python3 cde/cde_json_create.py > env.json
+    - cat env.json
+    - cdp de enable-service --cli-input-json file://env.json
+  artifacts:
+    paths:
+      - skel.json
+      - env.json
+    expire_in: 30 days
+    when: always
+  when: manual
+  # only:
+  #   - main
+
+cde_delete:
+  stage: cde_delete
+  tags:
+    - docker
+  script: cdp ml delete-workspace --no-force --remove-storage --environment-name $ENV_NAME --workspace-name $WORKSPACE_NAME
+  when: manual
+  # only:
+  #   - main

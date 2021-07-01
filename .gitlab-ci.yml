@@ -6,4 +6,5 @@ stages:
 
 include:
   - "cml/.gitlab-ci.yml"
+  - "cde/.gitlab-ci.yml"
   - "cdp-env/.gitlab-ci.yml"
