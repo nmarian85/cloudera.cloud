@@ -14,7 +14,7 @@ before_script:
   - cdp configure set cdp_access_key_id $CDP_ACCESS_KEY_ID
   - cdp configure set cdp_private_key $CDP_PRIVATE_KEY
 
-cde_provision:
+provision:
   stage: cde_provision
   tags:
     - docker
@@ -33,7 +33,7 @@ cde_provision:
   # only:
   #   - main
 
-cde_delete:
+delete:
   stage: cde_delete
   tags:
     - docker

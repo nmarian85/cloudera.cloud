@@ -1,6 +1,8 @@
 stages:
   - cml_provision
   - cml_delete
+  - cde_provision
+  - cde_delete
   - cdp-env_stop
   - cdp-env_start
 
