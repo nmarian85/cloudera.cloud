@@ -45,7 +45,7 @@ cml_delete:
   stage: cml_delete
   tags:
     - docker
-  script: cdp ml delete-workspace --no-force --remove-storage --environment-name $ENV_NAME --workspace-name $WORKSPACE_NAME
+  script: cdp --debug ml delete-workspace --no-force --remove-storage --environment-name $ENV_NAME --workspace-name $WORKSPACE_NAME
   when: manual
   # only:
   #   - main
