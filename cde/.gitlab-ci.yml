@@ -6,7 +6,7 @@ variables:
   DOCKER_IMAGE_VERSION: "1.0"
   DOCKER_IMAGE_NAME: cdpcli-ddp
   DOCKER_IMAGE_URL: $DOCKER_REGISTRY/$ARTIFACTORY_REPOSITORY_NAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
-  CDE_INFRA_INFO: '{"instance_type": "c5.2xlarge", "min_instances": "1", "max_instances": "5", "initial_instances": "1", "min_spot_instances": "1", "max_spot_instances": "5", "initial_spot_instances": "1", "root_vol_size": "100" "useSsd": true, "tags": {}}'
+  CDE_INFRA_INFO: '{"instance_type": "c5.2xlarge", "min_instances": "1", "max_instances": "5", "initial_instances": "1", "min_spot_instances": "1", "max_spot_instances": "5", "initial_spot_instances": "1", "root_vol_size": "100", "useSsd": true, "tags": {}}'
 
 image: ${DOCKER_IMAGE_URL}
 
