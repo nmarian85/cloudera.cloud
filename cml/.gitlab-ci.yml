@@ -7,8 +7,7 @@ cml_provision:
     - cdp ml create-workspace --generate-cli-skeleton > skel.json
   script:
     - cat skel.json | python3 cml/cml_json_provision.py
-    - cat *env.json
-    # - cdp --debug ml create-workspace --cli-input-json file://env.json
+    - ls -1 *env.json | xargs -I '{}' cdp --debug ml create-workspace --cli-input-json file://'{}'
   artifacts:
     paths:
       - skel.json
