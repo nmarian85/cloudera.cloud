@@ -26,7 +26,7 @@ cml_delete:
   before_script:
     - cdp ml delete-workspace --generate-cli-skeleton > skel.json
     - python3 cml/cml_json_delete.py
-    - cat delete_*.json
+    - cat delete_cml_*.json
   script: ls -1 delete_cml_*.json | xargs -I '{}' cdp --debug ml delete-workspace --cli-input-json file://'{}'
   artifacts:
     paths:
