@@ -6,7 +6,7 @@ cml_provision:
   before_script:
     - cdp ml create-workspace --generate-cli-skeleton > skel.json
   script:
-    - cat skel.json | python3 cml/cml_json_create.py
+    - cat skel.json | python3 cml/cml_json_provision.py
     - cat *env.json
     # - cdp --debug ml create-workspace --cli-input-json file://env.json
   artifacts:
@@ -15,7 +15,7 @@ cml_provision:
       - env.json
     expire_in: 30 days
     when: always
-  # when: manual
+  when: manual
   # only:
   #   - main
 
