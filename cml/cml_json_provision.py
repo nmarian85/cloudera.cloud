@@ -54,5 +54,5 @@ for env, env_info in envs.items():
         ]
 
         cml_json["provisionK8sRequest"]["instanceGroups"] = list(cml_json_ig)
-        with open(f"provision_{cml_cluster}.json", "w", encoding="utf-8") as f:
+        with open(f"provision_cml_{cml_cluster}.json", "w", encoding="utf-8") as f:
             json.dump(cml_json, f, ensure_ascii=False, indent=4)

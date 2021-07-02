@@ -15,5 +15,5 @@ for env, env_info in envs.items():
         cml_json["workspaceName"] = cml_cluster
         cml_json["removeStorage"] = True
         cml_json["force"] = False
-        with open(f"delete_{cml_cluster}.json", "w", encoding="utf-8") as f:
+        with open(f"delete_cml_{cml_cluster}.json", "w", encoding="utf-8") as f:
             json.dump(cml_json, f, ensure_ascii=False, indent=4)

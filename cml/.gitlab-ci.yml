@@ -8,11 +8,11 @@ cml_provision:
     - cat skel.json | python3 cml/cml_json_provision.py
     - cat provision_*.json
   script:
-    - ls -1 provision_*.json | xargs -I '{}' cdp --debug ml create-workspace --cli-input-json file://'{}'
+    - ls -1 provision_cml_*.json | xargs -I '{}' cdp --debug ml create-workspace --cli-input-json file://'{}'
   artifacts:
     paths:
       - skel.json
-      - provision_*.json
+      - provision_cml_*.json
     expire_in: 30 days
     when: always
   when: manual
@@ -27,13 +27,13 @@ cml_delete:
     - cdp ml delete-workspace --generate-cli-skeleton > skel.json
     - cat skel.json | python3 cml/cml_json_delete.py
     - cat delete_*.json
-  script: ls -1 delete_*.json | xargs -I '{}' cdp --debug ml delete-workspace --cli-input-json file://'{}'
+  script: ls -1 delete_cml_*.json | xargs -I '{}' cdp --debug ml delete-workspace --cli-input-json file://'{}'
   artifacts:
     paths:
       - skel.json
-      - delete_*.json
+      - delete_cml_*.json
     expire_in: 30 days
     when: always
-  # when: manual
+  when: manual
   # only:
   #   - main
