@@ -5,8 +5,8 @@ cml_provision:
     - docker
   before_script:
     - cdp ml create-workspace --generate-cli-skeleton > skel.json
-    - cat skel.json | python3 cml/cml_json_provision.py
-    - cat provision_*.json
+    - python3 cml/cml_json_provision.py
+    - cat provision_cml_*.json
   script:
     - ls -1 provision_cml_*.json | xargs -I '{}' cdp --debug ml create-workspace --cli-input-json file://'{}'
   artifacts:
@@ -25,7 +25,7 @@ cml_delete:
     - docker
   before_script:
     - cdp ml delete-workspace --generate-cli-skeleton > skel.json
-    - cat skel.json | python3 cml/cml_json_delete.py
+    - python3 cml/cml_json_delete.py
     - cat delete_*.json
   script: ls -1 delete_cml_*.json | xargs -I '{}' cdp --debug ml delete-workspace --cli-input-json file://'{}'
   artifacts:

@@ -6,7 +6,8 @@ with open("envs.json", "r") as read_file:
     envs = json.load(read_file)
 
 # read skeleton from command cdp ml create-workspace --generate-cli-skeleton
-cml_json_skel = json.load(sys.stdin)
+with open("skel.json") as json_file:
+    cml_json_skel = json.load(json_file)
 
 for env, env_info in envs.items():
     cml_clusters = env_info["cml_clusters"]
@@ -20,9 +21,7 @@ for env, env_info in envs.items():
         cml_json["enableGovernance"] = True
         cml_json["loadBalancerIPWhitelists"] = []
         cml_json["provisionK8sRequest"]["environmentName"] = env
-        # cml_json["provisionK8sRequest"]["network"]["topology"]["subnets"] = all_subnets
         cml_json["provisionK8sRequest"]["network"] = {}
-        # json.dumps(cml_cluster_info, indent=4, sort_keys=True)
         cml_json["provisionK8sRequest"]["tags"] = [
             {"key": f"{k}", "value": f"{v}"} for k, v in cml_cluster_info["tags"].items()
         ]
@@ -54,5 +53,6 @@ for env, env_info in envs.items():
         ]
 
         cml_json["provisionK8sRequest"]["instanceGroups"] = list(cml_json_ig)
-        with open(f"provision_cml_{cml_cluster}.json", "w", encoding="utf-8") as f:
-            json.dump(cml_json, f, ensure_ascii=False, indent=4)
+        if cml_cluster_info["provision"] == "yes":
+            with open(f"provision_cml_{cml_cluster}.json", "w", encoding="utf-8") as f:
+                json.dump(cml_json, f, ensure_ascii=False, indent=4)
