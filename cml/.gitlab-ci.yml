@@ -5,13 +5,14 @@ cml_provision:
     - docker
   before_script:
     - cdp ml create-workspace --generate-cli-skeleton > skel.json
-  script:
     - cat skel.json | python3 cml/cml_json_provision.py
-    - ls -1 *env.json | xargs -I '{}' cdp --debug ml create-workspace --cli-input-json file://'{}'
+    - cat provision_*.json
+  script:
+    - ls -1 provision_*.json | xargs -I '{}' cdp --debug ml create-workspace --cli-input-json file://'{}'
   artifacts:
     paths:
       - skel.json
-      - env.json
+      - provision_*.json
     expire_in: 30 days
     when: always
   when: manual
@@ -22,7 +23,17 @@ cml_delete:
   stage: cml_delete
   tags:
     - docker
-  script: cdp --debug ml delete-workspace --no-force --remove-storage --environment-name $ENV_NAME --workspace-name $WORKSPACE_NAME
-  when: manual
+  before_script:
+    - cdp ml delete-workspace --generate-cli-skeleton > skel.json
+    - cat skel.json | python3 cml/cml_json_delete.py
+    - cat delete_*.json
+  script: ls -1 delete_*.json | xargs -I '{}' cdp --debug ml delete-workspace --cli-input-json file://'{}'
+  artifacts:
+    paths:
+      - skel.json
+      - delete_*.json
+    expire_in: 30 days
+    when: always
+  # when: manual
   # only:
   #   - main
