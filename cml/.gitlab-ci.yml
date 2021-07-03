@@ -36,6 +36,8 @@ cml_delete:
       - delete_cml_*.json
     expire_in: 30 days
     when: always
-  when: manual
-  # only:
-  #   - main
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule"
+      when: manual
+    # only:
+    #   - main
