@@ -20,8 +20,13 @@ include:
   - "cml/.gitlab-ci.yml"
   # - "cde/.gitlab-ci.yml"
   # - "cdp-env/.gitlab-ci.yml"
-  -
-# # to be modified for various CML/CDE/CDW/etc. environments
+
+job:on-schedule:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+  script:
+    - make world
+    # # to be modified for various CML/CDE/CDW/etc. environments
 # variables:
 #   ENV_NAME: cdp-devo-lab-env01
 #   CDE_NAME: cdp-devo-lab-env01-cde02
