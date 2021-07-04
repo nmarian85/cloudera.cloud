@@ -12,14 +12,14 @@ default:
     - docker
 
 stages:
-  - cml_provision
-  - cml_delete
-  - cde_provision
-  - cde_delete
-  - cde_provision_vc
-  - cde_delete_vc
-  - cdp-env_stop
   - cdp-env_start
+  - cml_provision
+  # - cml_delete
+  # - cde_provision
+  # - cde_delete
+  # - cde_provision_vc
+  # - cde_delete_vc
+  # - cdp-env_stop
 
 include:
   - "provision/.gitlab-ci.yml"
