@@ -3,7 +3,7 @@ cdp-env_start:
   stage: cdp-env_start
   script:
     - cdp environments start-environment --environment-name $ENV_NAME
-    - >
+    - |
       timeout 20m bash -c -- "while true; 
       do 
         STATUS=$(cdp environments describe-environment --environment-name $ENV_NAME | python -c 'import json,sys; print(json.load(sys.stdin)['environment']['status'])";
