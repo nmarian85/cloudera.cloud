@@ -3,8 +3,13 @@ variables:
   DOCKER_IMAGE_VERSION: "1.0"
   DOCKER_IMAGE_NAME: cdpcli-ddp
   DOCKER_IMAGE_URL: $DOCKER_REGISTRY/$ARTIFACTORY_REPOSITORY_NAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
+  ENV_NAME: cdp-devo-lab-env01
 
 image: ${DOCKER_IMAGE_URL}
+
+default:
+  tags:
+    - docker
 
 stages:
   - cml_provision
@@ -17,7 +22,7 @@ stages:
   - cdp-env_start
 
 include:
-  - "cml/.gitlab-ci.yml"
+  - "provision/.gitlab-ci.yml"
   # - "cde/.gitlab-ci.yml"
   # - "cdp-env/.gitlab-ci.yml"
 # job:on-schedule:
