@@ -1,0 +1,56 @@
+---
+cdp-env_start:
+  stage: cdp-env_start
+  script:
+    - cdp environments start-environment --environment-name $ENV_NAME
+    - >
+      timeout 20m bash -c -- "while true; 
+      do 
+        STATUS=$(cdp environments describe-environment --environment-name $ENV_NAME | python -c 'import json,sys; print(json.load(sys.stdin)['environment']['status'])";
+        [ $STATUS == 'AVAILABLE' ] && exit 0
+      done'
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule"
+      when: manual
+  # only:
+  #   - main
+
+cml_provision:
+  stage: cml_provision
+  before_script:
+    - cdp ml create-workspace --generate-cli-skeleton > skel.json
+    - python3 provision/cml_json_provision.py
+    - cat cml_*.json
+  script:
+    - ls -1 cml_*.json | xargs -I '{}' cdp --debug ml create-workspace --cli-input-json file://'{}'
+  artifacts:
+    paths:
+      - skel.json
+      - cml_*.json
+    expire_in: 30 days
+    when: always
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule"
+      when: manual
+  # only:
+  #   - main
+# cml_delete:
+#   stage: cml_delete
+#   tags:
+#     - docker
+#   before_script:
+#     - cdp ml delete-workspace --generate-cli-skeleton > skel.json
+#     - python3 cml/cml_json_delete.py
+#     - cat delete_cml_*.json
+#   script: ls -1 delete_cml_*.json | xargs -I '{}' cdp --debug ml delete-workspace --cli-input-json file://'{}'
+#   artifacts:
+#     paths:
+#       - skel.json
+#       - delete_cml_*.json
+#     expire_in: 30 days
+#     when: always
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE != "schedule"
+#       when: manual
+#     # only:
+#     #   - main
