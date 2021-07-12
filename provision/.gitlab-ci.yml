@@ -6,12 +6,13 @@ cdp-env_start:
     - |
       timeout 20m bash -c -- "while true; 
       do 
-        STATUS=$(cdp environments describe-environment --environment-name $ENV_NAME | python -c 'import json,sys; print(json.load(sys.stdin)['environment']['status'])";
+        OUT=$(cdp environments describe-environment --environment-name $ENV_NAME)
+        STATUS=$(echo $OUT | python -c 'import json,sys; print(json.load(sys.stdin)[\"environment\"][\"status\"])');
         [ $STATUS == 'AVAILABLE' ] && exit 0
-      done'
-  # rules:
-  #   - if: $CI_PIPELINE_SOURCE != "schedule"
-  #     when: manual
+      done"
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule"
+      when: manual
   # only:
   #   - main
 
@@ -29,9 +30,9 @@ cml_provision:
       - cml_*.json
     expire_in: 30 days
     when: always
-  # rules:
-  #   - if: $CI_PIPELINE_SOURCE != "schedule"
-  #     when: manual
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule"
+      when: manual
   # only:
   #   - main
 # cml_delete:
