@@ -12,14 +12,13 @@ default:
     - docker
 
 stages:
-  - cdp_env_start
   - cml_provision
-  # - cml_delete
-  # - cde_provision
-  # - cde_delete
-  # - cde_provision_vc
-  # - cde_delete_vc
-  # - cdp-env_stop
+    # - cml_delete
+    # - cde_provision
+    # - cde_delete
+    # - cde_provision_vc
+    # - cde_delete_vc
+    # - cdp-env_stop
 
 include:
   - cml/cml_provision.yml
