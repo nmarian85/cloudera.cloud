@@ -8,7 +8,7 @@ cml_delete:
   artifacts:
     paths:
       - skel.json
-      - delete_cml_*.json
+      - ${CML_CLUSTER_NAME}.json
     expire_in: 30 days
     when: always
   rules:
