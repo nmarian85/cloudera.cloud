@@ -8,7 +8,7 @@ cml_provision:
   before_script:
     - *before_provision
     - cdp ml create-workspace --generate-cli-skeleton > skel.json
-    - python3 provision/cml_json_provision.py
+    - python3 cml/cml_json_provision.py
     - cat cml_*.json
   script:
     - ls -1 cml_*.json | xargs -I '{}' cdp --debug ml create-workspace --cli-input-json file://'{}'
