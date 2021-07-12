@@ -9,9 +9,9 @@ cml_provision:
     - *before_provision
     - cdp ml create-workspace --generate-cli-skeleton > skel.json
     - python3 cml/cml_json_provision.py
-    - cat cml_*.json
+    - cat ${CML_CLUSTER_NAME}.json
   script:
-    - ls -1 cml_*.json | xargs -I '{}' cdp --debug ml create-workspace --cli-input-json file://'{}'
+    - cdp --debug ml create-workspace --cli-input-json file://${CML_CLUSTER_NAME}.json
   artifacts:
     paths:
       - skel.json

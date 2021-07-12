@@ -1,0 +1,18 @@
+cml_delete:
+  stage: cml_delete
+  before_script:
+    - cdp ml delete-workspace --generate-cli-skeleton > skel.json
+    - python3 cml/cml_json_delete.py
+    - cat ${CML_CLUSTER_NAME}.json
+  script: cdp --debug ml delete-workspace --cli-input-json file://${CML_CLUSTER_NAME}.json
+  artifacts:
+    paths:
+      - skel.json
+      - delete_cml_*.json
+    expire_in: 30 days
+    when: always
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule"
+      when: manual
+  # only:
+  #   - main
