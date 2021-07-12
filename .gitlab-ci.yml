@@ -12,7 +12,7 @@ default:
     - docker
 
 stages:
-  - cdp-env_start
+  - cdp_env_start
   - cml_provision
   # - cml_delete
   # - cde_provision
@@ -22,7 +22,8 @@ stages:
   # - cdp-env_stop
 
 include:
-  - "provision/.gitlab-ci.yml"
+  - cml/cml_provision.yml
+  # - "provision/.gitlab-ci.yml"
   # - "cde/.gitlab-ci.yml"
   # - "cdp-env/.gitlab-ci.yml"
 # job:on-schedule:
