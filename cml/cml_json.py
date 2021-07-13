@@ -13,8 +13,8 @@ my_parser.add_argument("-c", "--cluster", help="CML cluster name")
 my_parser.add_argument("-e", "--env", help="CDP env name")
 args = my_parser.parse_args()
 
-cluster_name = args.cluster_name
-env_name = args.env_name
+cluster_name = args.cluster
+env_name = args.env
 
 with open("envs.json", "r") as read_file:
     envs = json.load(read_file)
