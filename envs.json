@@ -19,7 +19,7 @@
                     "root_volume": 100
                 },
                 "tags": {},
-                "provision": false,
+                "provision": true,
                 "delete": true
             },
             "cdp-devo-lab-env01-cml02": {

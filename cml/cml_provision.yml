@@ -1,14 +1,9 @@
 ---
-.before_provision: &before_provision
-  - cdp environments start-environment --environment-name $ENV_NAME || true
-  - timeout 20m bash cdp-env/start_env.sh
-
 cml_provision:
-  stage: cml_provision
+  stage: manage
   before_script:
-    - *before_provision
     - cdp ml create-workspace --generate-cli-skeleton > skel.json
-    - python3 cml/cml_json_provision.py
+    - python3 cml/cml_json.py --action provision --cluster $CML_CLUSTER_NAME --env $ENV_NAME
     - cat ${CML_CLUSTER_NAME}.json
   script:
     - cdp --debug ml create-workspace --cli-input-json file://${CML_CLUSTER_NAME}.json
@@ -18,6 +13,6 @@ cml_provision:
       - ${CML_CLUSTER_NAME}.json
     expire_in: 30 days
     when: always
-  rules:
-    - if: $CI_PIPELINE_SOURCE != "schedule"
-      when: manual
+  # rules:
+  #   - if: $CI_PIPELINE_SOURCE != "schedule"
+  #     when: manual
