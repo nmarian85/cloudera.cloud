@@ -7,9 +7,7 @@ my_parser = argparse.ArgumentParser(description="Manage CML cluster")
 
 # Add the arguments
 my_parser.add_argument(
-    "action",
-    choices=["-p", "--provision", "-d", "--delete"],
-    help="provision or delete CML cluster",
+    "--action", choices=["provision", "delete"], help="provision or delete CML cluster",
 )
 my_parser.add_argument("-c", "--cluster", help="CML cluster name")
 my_parser.add_argument("-e", "--env", help="CDP env name")
@@ -36,7 +34,7 @@ cml_json = dict(cml_json_skel)
 cml_json["environmentName"] = env_name
 cml_json["workspaceName"] = cluster_name
 
-if args.action in ["-p", "--provision"]:
+if args.action == "provision":
     cml_json["usePublicLoadBalancer"] = False
     cml_json["disableTLS"] = False
     cml_json["enableMonitoring"] = True
@@ -71,7 +69,7 @@ if args.action in ["-p", "--provision"]:
         with open(f"{cml_cluster}.json", "w", encoding="utf-8") as f:
             json.dump(cml_json, f, ensure_ascii=False, indent=4)
 
-elif args.action in ["-d", "--delete"]:
+elif args.action == "delete":
     cml_json = dict(cml_json_skel)
     cml_json["removeStorage"] = True
     cml_json["force"] = False

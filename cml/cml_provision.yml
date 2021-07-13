@@ -3,7 +3,7 @@ cml_provision:
   stage: manage
   before_script:
     - cdp ml create-workspace --generate-cli-skeleton > skel.json
-    - python3 cml/cml_json.py --provision --cluster $CML_CLUSTER_NAME --env $ENV_NAME
+    - python3 cml/cml_json.py --action provision --cluster $CML_CLUSTER_NAME --env $ENV_NAME
     - cat ${CML_CLUSTER_NAME}.json
   script:
     - cdp --debug ml create-workspace --cli-input-json file://${CML_CLUSTER_NAME}.json
