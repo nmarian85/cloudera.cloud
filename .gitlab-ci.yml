@@ -5,6 +5,7 @@ variables:
   DOCKER_IMAGE_URL: $DOCKER_REGISTRY/$ARTIFACTORY_REPOSITORY_NAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
   ENV_NAME: cdp-devo-lab-env01
   CML_CLUSTER_NAME: cdp-devo-lab-env01-cml01
+  ACTION: provision
 
 image: ${DOCKER_IMAGE_URL}
 
@@ -18,4 +19,8 @@ stages:
 
 include:
   - cdp-env/start_env.yml
-  - cml/cml_provision.yml
+  - local: cml/cml_provision.yml
+    when: $ACTION == "provision"
+
+  - local: cml/cml_delete.yml
+    when: $ACTION == "delete"
