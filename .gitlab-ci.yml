@@ -5,7 +5,7 @@ variables:
   DOCKER_IMAGE_URL: $DOCKER_REGISTRY/$ARTIFACTORY_REPOSITORY_NAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
   ENV_NAME: cdp-devo-lab-env01
   CML_CLUSTER_NAME: cdp-devo-lab-env01-cml01
-  ACTION: provision
+  ACTION: delete
 
 image: ${DOCKER_IMAGE_URL}
 
@@ -27,3 +27,13 @@ cdp_env_start:
     - if: $CI_PIPELINE_SOURCE != "schedule"
       when: manual
     - if: $ACTION == "provision"
+
+cdp_env_stop:
+  stage: stop_env
+  script:
+    - cdp environments stop-environment --environment-name $ENV_NAME || true
+    - timeout 20m bash cdp-env/wait_for_status.sh "ENV_STOPPED"
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule"
+      when: manual
+    - if: $ACTION == "delete"
