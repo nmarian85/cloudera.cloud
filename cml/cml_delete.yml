@@ -1,5 +1,5 @@
 cml_delete:
-  stage: delete
+  stage: manage
   before_script:
     - cdp ml delete-workspace --generate-cli-skeleton > skel.json
     - python3 cml/cml_json_delete.py

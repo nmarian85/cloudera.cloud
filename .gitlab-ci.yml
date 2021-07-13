@@ -14,9 +14,9 @@ default:
 
 stages:
   - start_env
-  - provision
-  # - delete
+  - manage
 
 include:
   - cdp-env/start_env.yml
   - cml/cml_provision.yml
+  - cml/cml_delete.yml
