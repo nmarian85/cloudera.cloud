@@ -70,7 +70,6 @@ if args.action == "provision":
             json.dump(cml_json, f, ensure_ascii=False, indent=4)
 
 elif args.action == "delete":
-    cml_json = dict(cml_json_skel)
     cml_json["removeStorage"] = True
     cml_json["force"] = False
     if cml_cluster["delete"] is True:
