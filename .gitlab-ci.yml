@@ -18,4 +18,4 @@ stages:
 
 include:
   - cdp-env/start_env.yml
-# - cml/cml_provision.yml
+  - cml/cml_provision.yml
