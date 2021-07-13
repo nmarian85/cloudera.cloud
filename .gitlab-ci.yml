@@ -13,6 +13,7 @@ default:
     - docker
 
 stages:
+  - start_env
   - provision
   # - delete
 
