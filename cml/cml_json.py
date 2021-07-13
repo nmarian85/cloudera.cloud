@@ -10,7 +10,6 @@ my_parser.add_argument(
     "action",
     choices=["-p", "--provision", "-d", "--delete"],
     help="provision or delete CML cluster",
-    action="store_true",
 )
 my_parser.add_argument("-c", "--cluster", help="CML cluster name")
 my_parser.add_argument("-e", "--env", help="CDP env name")
