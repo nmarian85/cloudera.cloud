@@ -26,4 +26,4 @@ cdp_env_start:
   rules:
     # - if: $CI_PIPELINE_SOURCE != "schedule"
     #   when: manual
-    - if: $ACTION == "aaa"
+    - if: $ACTION == "provision"
