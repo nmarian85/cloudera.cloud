@@ -14,8 +14,8 @@ default:
 
 stages:
   - provision
-  - delete
+  # - delete
 
 include:
-  - cdp-env/start_env.yml
+  # - cdp-env/start_env.yml
   - cml/cml_provision.yml
