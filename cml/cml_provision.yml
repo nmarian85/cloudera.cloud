@@ -13,6 +13,6 @@ cml_provision:
       - ${CML_CLUSTER_NAME}.json
     expire_in: 30 days
     when: always
-  # rules:
-  #   - if: $CI_PIPELINE_SOURCE != "schedule"
-  #     when: manual
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule"
+      when: manual
