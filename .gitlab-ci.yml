@@ -19,8 +19,5 @@ stages:
 
 include:
   - cdp-env/start_env.yml
-  - local: cml/cml_provision.yml
-    when: $ACTION == "provision"
-
-  - local: cml/cml_delete.yml
-    when: $ACTION == "delete"
+  # - cml/cml_provision.yml
+  - cml/cml_delete.yml
