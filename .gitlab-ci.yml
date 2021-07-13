@@ -24,9 +24,10 @@ cdp_env_start:
     - cdp environments start-environment --environment-name $ENV_NAME || true
     - timeout 20m bash cdp-env/wait_for_status.sh "AVAILABLE"
   rules:
-    - if: $CI_PIPELINE_SOURCE != "schedule"
-      when: manual
+    # - if: $CI_PIPELINE_SOURCE != "schedule"
+    #   when: manual
     - if: $ACTION == "provision"
+  when: manual
 
 cdp_env_stop:
   stage: stop_env
@@ -34,6 +35,7 @@ cdp_env_stop:
     - cdp environments stop-environment --environment-name $ENV_NAME || true
     - timeout 20m bash cdp-env/wait_for_status.sh "ENV_STOPPED"
   rules:
-    - if: $CI_PIPELINE_SOURCE != "schedule"
-      when: manual
+    # - if: $CI_PIPELINE_SOURCE != "schedule"
+    #   when: manual
     - if: $ACTION == "delete"
+  when: manual
