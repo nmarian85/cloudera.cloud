@@ -1,12 +1,6 @@
 ---
-.before_provision: &before_provision
-  - cdp environments start-environment --environment-name $ENV_NAME || true
-  - timeout 20m bash cdp-env/start_env.sh
-
 cml_provision:
-  stage: cml_provision
-  before_script:
-    - *before_provision
+  stage: provision
     - cdp ml create-workspace --generate-cli-skeleton > skel.json
     - python3 cml/cml_json_provision.py
     - cat ${CML_CLUSTER_NAME}.json
