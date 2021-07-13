@@ -66,7 +66,7 @@ if args.action == "provision":
 
     cml_json["provisionK8sRequest"]["instanceGroups"] = list(cml_json_ig)
     if cml_cluster["provision"] is True:
-        with open(f"{cml_cluster}.json", "w", encoding="utf-8") as f:
+        with open(f"{cluster_name}.json", "w", encoding="utf-8") as f:
             json.dump(cml_json, f, ensure_ascii=False, indent=4)
 
 elif args.action == "delete":
@@ -74,5 +74,5 @@ elif args.action == "delete":
     cml_json["removeStorage"] = True
     cml_json["force"] = False
     if cml_cluster["delete"] is True:
-        with open(f"{cml_cluster}.json", "w", encoding="utf-8") as f:
+        with open(f"{cluster_name}.json", "w", encoding="utf-8") as f:
             json.dump(cml_json, f, ensure_ascii=False, indent=4)
