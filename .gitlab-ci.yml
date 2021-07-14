@@ -15,19 +15,18 @@ default:
     - docker
 
 stages:
-  - start_env
+  - manage_env
   - provision
   - delete
-  - stop_env
 
 cdp_env_start:
-  stage: start_env
+  stage: manage_env
   script:
     - cdp environments start-environment --environment-name $ENV_NAME || true
     - timeout 20m bash wait_for_status.sh "AVAILABLE"
 
 cdp_env_stop:
-  stage: stop_env
+  stage: manage_env
   script:
     - cdp environments stop-environment --environment-name $ENV_NAME || true
     - timeout 20m bash wait_for_status.sh "ENV_STOPPED"
