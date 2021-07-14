@@ -24,9 +24,6 @@ cdp_env_start:
   script:
     - cdp environments start-environment --environment-name $ENV_NAME || true
     - timeout 20m bash wait_for_status.sh "AVAILABLE"
-  rules:
-    - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "provision"
-      when: manual
 
 cdp_env_stop:
   stage: stop_env
