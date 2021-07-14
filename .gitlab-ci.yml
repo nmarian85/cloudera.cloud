@@ -47,8 +47,7 @@ cml_provision:
       done
   artifacts:
     paths:
-      - skel.json
-      - ${CML_CLUSTER_NAME}.json
+      - "*.json"
     expire_in: 30 days
     when: always
   rules:
@@ -60,16 +59,15 @@ cml_delete:
   before_script:
     - cdp ml delete-workspace --generate-cli-skeleton > skel.json
   script:
-    - |
-      for CML_CLUSTER_NAME in $CML_CLUSTERS; do \
-        python3 cml_json.py --action delete --cluster $CML_CLUSTER_NAME --env $ENV_NAME \
-        cat ${CML_CLUSTER_NAME}.json \
-        cdp --debug ml delete-workspace --workspace-name $CML_CLUSTER_NAME --cli-input-json file://${CML_CLUSTER_NAME}.json \
-        done
+    - >
+      for CML_CLUSTER_NAME in $CML_CLUSTERS; do
+        python3 cml_json.py --action delete --cluster $CML_CLUSTER_NAME --env $ENV_NAME
+        cat ${CML_CLUSTER_NAME}.json
+        cdp --debug ml delete-workspace --workspace-name $CML_CLUSTER_NAME --cli-input-json file://${CML_CLUSTER_NAME}.json
+      done
   artifacts:
     paths:
-      - skel.json
-      - ${CML_CLUSTER_NAME}.json
+      - "*.json"
     expire_in: 30 days
     when: always
   rules:
