@@ -1,0 +1,77 @@
+{
+    "cdp-devo-lab-env01": {
+        "cml_clusters": {
+            "cdp-devo-lab-env01-cml01": {
+                "ml_infra_info": {
+                    "instance_type": "m5.2xlarge",
+                    "instance_count": 2,
+                    "name": "mlinfra",
+                    "min_instances": 2,
+                    "max_instances": 3,
+                    "root_volume": 100
+                },
+                "ml_worker_info": {
+                    "instance_type": "c4.4xlarge",
+                    "instance_count": 1,
+                    "name": "mlcpu0",
+                    "min_instances": 1,
+                    "max_instances": 3,
+                    "root_volume": 100
+                },
+                "tags": {},
+                "provision": true,
+                "delete": true
+            },
+            "cdp-devo-lab-env01-cml02": {
+                "ml_infra_info": {
+                    "instance_type": "m5.2xlarge",
+                    "instance_count": 2,
+                    "name": "mlinfra",
+                    "min_instances": 2,
+                    "max_instances": 3,
+                    "root_volume": 100
+                },
+                "ml_worker_info": {
+                    "instance_type": "c4.4xlarge",
+                    "instance_count": 1,
+                    "name": "mlcpu0",
+                    "min_instances": 1,
+                    "max_instances": 3,
+                    "root_volume": 100
+                },
+                "tags": {},
+                "delete": true,
+                "provision": true
+            }
+        },
+        "cde_clusters": {
+            "cdp-devo-lab-env01-cde02": {
+                "instance_type": "c5.2xlarge",
+                "min_instances": 1,
+                "max_instances": 5,
+                "initial_instances": 1,
+                "min_spot_instances": 1,
+                "max_spot_instances": 5,
+                "initial_spot_instances": 1,
+                "root_vol_size": 100,
+                "use_ssd": true,
+                "tags": {},
+                "vcs": {
+                    "cdp-devo-lab-env01-cde02-vc01": {
+                        "cpuRequests": 5,
+                        "memoryRequests": "10Gi",
+                        "chartValueOverrides": [
+                            {
+                                "chartName": "dex-app",
+                                "overrides": "airflow.enabled:true"
+                            }
+                        ],
+                        "runtimeSpotComponent": "ALL"
+                    }
+                },
+                "delete": true
+            }
+        },
+        "cdw_clusters": {}
+    }
+}
