@@ -1,9 +1,0 @@
----
-cdp_env_start:
-  stage: start_env
-  script:
-    - cdp environments start-environment --environment-name $ENV_NAME || true
-    - timeout 20m bash cdp-env/start_env.sh
-  # rules:
-  #   - if: $CI_PIPELINE_SOURCE != "schedule"
-  #     when: manual
