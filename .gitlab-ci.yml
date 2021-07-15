@@ -23,13 +23,16 @@ cdp_env_start:
   stage: start_env
   script:
     - cdp environments start-environment --environment-name $ENV_NAME || true
-    - timeout 20m bash wait_for_status.sh "AVAILABLE"
+    - timeout 20m bash wait_for_status.sh "ENV" "AVAILABLE"
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule"
+      when: manual
 
 cdp_env_stop:
   stage: delete
   script:
     - cdp environments stop-environment --environment-name $ENV_NAME || true
-    - timeout 20m bash wait_for_status.sh "ENV_STOPPED"
+    - timeout 20m bash wait_for_status.sh "ENV" "ENV_STOPPED"
   rules:
     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete"
       when: manual
@@ -44,6 +47,9 @@ cml_provision:
         python3 cml_json.py --action provision --cluster $CML_CLUSTER_NAME --env $ENV_NAME
         cat ${CML_CLUSTER_NAME}.json
         cdp --debug ml create-workspace --cli-input-json file://${CML_CLUSTER_NAME}.json
+      done
+      for CML_CLUSTER_NAME in $CML_CLUSTERS; do
+        timeout 20m bash wait_for_status.sh "CML" "installation:finished"
       done
   artifacts:
     paths:
