@@ -50,7 +50,8 @@ cml_provision:
       done
     - >
       for CML_CLUSTER_NAME in $CML_CLUSTERS; do
-        timeout 20m bash wait_for_status.sh "CML" "installation:finished"
+        export CML_CLUSTER_NAME=$CML_CLUSTER_NAME
+        timeout 1h30m bash wait_for_status.sh "CML" "installation:finished"
       done
   artifacts:
     paths:
