@@ -6,7 +6,7 @@ variables:
   ENV_NAME: cdp-devo-lab-env01
   CML_CLUSTERS: "cdp-devo-lab-env01-cml01"
   CDE_CLUSTERS: "cdp-devo-lab-env01-cde02"
-  ACTION: delete # to add scheduled action and reorder stages :)
+  ACTION: provision # to add scheduled action and reorder stages :)
 
 image: ${DOCKER_IMAGE_URL}
 
