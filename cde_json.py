@@ -31,11 +31,10 @@ with open("skel.json") as json_file:
 
 cde_cluster = envs[env_name]["cde_clusters"][cluster_name]
 cde_json = dict(cde_json_skel)
-cde_json["name"] = cluster_name
-cde_json["env"] = env_name
-
 
 if args.action == "provision":
+    cde_json["name"] = cluster_name
+    cde_json["env"] = env_name
     cde_json["instanceType"] = cde_cluster["instance_type"]
     cde_json["minimumInstances"] = cde_cluster["min_instances"]
     cde_json["maximumInstances"] = cde_cluster["max_instances"]
@@ -57,9 +56,8 @@ if args.action == "provision":
             json.dump(cde_json, f, ensure_ascii=False, indent=4)
 
 elif args.action == "delete":
-    pass
-    # cde_json["removeStorage"] = True
-    # cde_json["force"] = False
-    # if cde_cluster["delete"] is True:
-    #     with open(f"{cluster_name}.json", "w", encoding="utf-8") as f:
-    #         json.dump(cde_json, f, ensure_ascii=False, indent=4)
+    cde_json["clusterId"] = True
+    cde_json["force"] = False
+    if cde_cluster["delete"] is True:
+        with open(f"{cluster_name}.json", "w", encoding="utf-8") as f:
+            json.dump(cde_json, f, ensure_ascii=False, indent=4)
