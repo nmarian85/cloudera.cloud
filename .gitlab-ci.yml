@@ -18,7 +18,6 @@ stages:
   - start_env
   - provision
   - delete
-  - stop_env
 
 cdp_env_start:
   stage: start_env
@@ -27,7 +26,7 @@ cdp_env_start:
     - timeout 20m bash wait_for_status.sh "AVAILABLE"
 
 cdp_env_stop:
-  stage: stop_env
+  stage: delete
   script:
     - cdp environments stop-environment --environment-name $ENV_NAME || true
     - timeout 20m bash wait_for_status.sh "ENV_STOPPED"
