@@ -47,6 +47,7 @@ cml_provision:
         python3 cml_json.py --action provision --cluster $CML_CLUSTER_NAME --env $ENV_NAME
         cat ${CML_CLUSTER_NAME}.json
         cdp --debug ml create-workspace --cli-input-json file://${CML_CLUSTER_NAME}.json
+        echo "exit code is $?"
       done
     - >
       for CML_CLUSTER_NAME in $CML_CLUSTERS; do
