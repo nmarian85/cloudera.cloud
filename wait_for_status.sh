@@ -24,6 +24,7 @@ do
             [ -z $OUT ] && exit 0
             STATUS=$(echo $OUT | python -c 'import json,sys; print(json.load(sys.stdin)["environment"]["status"])')
         ;;
-    
+    esac
+
     [ $STATUS == $EXPECTED_STATUS ] && exit 0
 done
