@@ -48,6 +48,7 @@ cml_provision:
         cat ${CML_CLUSTER_NAME}.json
         cdp --debug ml create-workspace --cli-input-json file://${CML_CLUSTER_NAME}.json
       done
+    - >
       for CML_CLUSTER_NAME in $CML_CLUSTERS; do
         timeout 20m bash wait_for_status.sh "CML" "installation:finished"
       done
