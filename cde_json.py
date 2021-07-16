@@ -54,10 +54,3 @@ if args.action == "provision":
     if cde_cluster["provision"] is True:
         with open(f"{cluster_name}.json", "w", encoding="utf-8") as f:
             json.dump(cde_json, f, ensure_ascii=False, indent=4)
-
-elif args.action == "delete":
-    cde_json["clusterId"] = True
-    cde_json["force"] = False
-    if cde_cluster["delete"] is True:
-        with open(f"{cluster_name}.json", "w", encoding="utf-8") as f:
-            json.dump(cde_json, f, ensure_ascii=False, indent=4)

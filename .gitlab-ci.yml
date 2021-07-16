@@ -6,7 +6,7 @@ variables:
   ENV_NAME: cdp-devo-lab-env01
   CML_CLUSTERS: "cdp-devo-lab-env01-cml01"
   CDE_CLUSTERS: "cdp-devo-lab-env01-cde02"
-  ACTION: delete # to add scheduled action and reorder stages :)
+  ACTION: delete # value can be delete or provision based on which type of pipeline you want to generate; to add scheduled action and reorder stages :)
 
 image: ${DOCKER_IMAGE_URL}
 
@@ -52,7 +52,7 @@ cml_provision:
     - >
       for CML_CLUSTER_NAME in $CML_CLUSTERS; do
         export CML_CLUSTER_NAME=$CML_CLUSTER_NAME
-        timeout 55m bash wait_for_status.sh "CML" "installation:finished"
+        timeout 90m bash wait_for_status.sh "CML" "installation:finished"
       done
   artifacts:
     paths:
@@ -72,12 +72,12 @@ cml_delete:
       for CML_CLUSTER_NAME in $CML_CLUSTERS; do
         python3 cml_json.py --action delete --cluster $CML_CLUSTER_NAME --env $ENV_NAME
         cat ${CML_CLUSTER_NAME}.json
-        cdp --debug ml delete-workspace --workspace-name $CML_CLUSTER_NAME --cli-input-json file://${CML_CLUSTER_NAME}.json
+        cdp --debug ml delete-workspace --workspace-name $CML_CLUSTER_NAME --cli-input-json file://${CML_CLUSTER_NAME}.json || true
       done
     - >
       for CML_CLUSTER_NAME in $CML_CLUSTERS; do
         export CML_CLUSTER_NAME=$CML_CLUSTER_NAME
-        timeout 55m bash wait_for_del.sh "CML"
+        timeout 90m bash wait_for_del.sh "CML"
       done
   artifacts:
     paths:
@@ -97,7 +97,12 @@ cde_provision:
       for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
         python3 cde_json.py --action provision --cluster $CDE_CLUSTER_NAME --env $ENV_NAME
         cat ${CDE_CLUSTER_NAME}.json
-        cdp --debug de enable-service --cli-input-json file://${CDE_CLUSTER_NAME}.json
+        cdp --debug de enable-service --cli-input-json file://${CDE_CLUSTER_NAME}.json || true
+      done
+    - >
+      for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
+        export CDE_CLUSTER_NAME=$CDE_CLUSTER_NAME
+        timeout 90m bash wait_for_status.sh "CDE" "ClusterCreationCompleted"
       done
   artifacts:
     paths:
@@ -106,6 +111,25 @@ cde_provision:
     when: always
   rules:
     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "provision"
+      when: manual
+
+cde_delete:
+  stage: delete
+  before_script:
+    - cdp de disable-service --generate-cli-skeleton > skel.json
+  script:
+    - >
+      for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
+        export CDE_CLUSTER_NAME=$CDE_CLUSTER_NAME
+        timeout 90m bash wait_for_del.sh "CDE"
+      done
+  artifacts:
+    paths:
+      - "*.json"
+    expire_in: 30 days
+    when: always
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete"
       when: manual
       # only:
   #   - main
