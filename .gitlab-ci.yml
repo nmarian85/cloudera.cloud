@@ -25,7 +25,7 @@ cdp_env_start:
     - cdp environments start-environment --environment-name $ENV_NAME || true
     - timeout 20m bash wait_for_status.sh "ENV" "AVAILABLE"
   rules:
-    - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "provision1"
+    - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "provision"
       when: manual
 
 cdp_env_stop:
@@ -52,7 +52,7 @@ cml_provision:
     - >
       for CML_CLUSTER_NAME in $CML_CLUSTERS; do
         export CML_CLUSTER_NAME=$CML_CLUSTER_NAME
-        timeout 55m bash wait_for_status.sh "CML" "installation:finished"
+        timeout 90m bash wait_for_status.sh "CML" "installation:finished"
       done
   artifacts:
     paths:
@@ -77,7 +77,7 @@ cml_delete:
     - >
       for CML_CLUSTER_NAME in $CML_CLUSTERS; do
         export CML_CLUSTER_NAME=$CML_CLUSTER_NAME
-        timeout 55m bash wait_for_del.sh "CML"
+        timeout 90m bash wait_for_del.sh "CML"
       done
   artifacts:
     paths:
@@ -102,7 +102,7 @@ cde_provision:
     - >
       for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
         export CDE_CLUSTER_NAME=$CDE_CLUSTER_NAME
-        timeout 55m bash wait_for_status.sh "CDE" "ClusterCreationCompleted"
+        timeout 90m bash wait_for_status.sh "CDE" "ClusterCreationCompleted"
       done
   artifacts:
     paths:
@@ -121,7 +121,7 @@ cde_delete:
     - >
       for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
         export CDE_CLUSTER_NAME=$CDE_CLUSTER_NAME
-        timeout 55m bash wait_for_del.sh "CDE"
+        timeout 90m bash wait_for_del.sh "CDE"
       done
   artifacts:
     paths:
