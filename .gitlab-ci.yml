@@ -112,6 +112,30 @@ cde_provision:
   rules:
     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "provision"
       when: manual
+
+cde_delete:
+  stage: delete
+  before_script:
+    - cdp de disable-service --generate-cli-skeleton > skel.json
+  script:
+    - >
+      for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
+        python3 cml_json.py --action delete --cluster $CDE_CLUSTER_NAME --env $ENV_NAME
+        cat ${CDE_CLUSTER_NAME}.json
+      done
+    - >
+      for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
+        export CDE_CLUSTER_NAME=$CDE_CLUSTER_NAME
+        timeout 55m bash wait_for_del.sh "CDE"
+      done
+  artifacts:
+    paths:
+      - "*.json"
+    expire_in: 30 days
+    when: always
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete"
+      when: manual
       # only:
   #   - main
 #   # to be modified for various CDE environments
