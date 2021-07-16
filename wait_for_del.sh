@@ -14,7 +14,7 @@ do
         CDE)
         ;;
         ENV)
-            cdp environments describe-environment --environment-name $ENV_NAME) || exit 0
+            cdp environments describe-environment --environment-name $ENV_NAME || exit 0
         ;;
     esac
 done
