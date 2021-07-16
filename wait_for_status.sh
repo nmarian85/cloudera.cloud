@@ -17,7 +17,7 @@ do
         ;;
         CDE)
             cat << EOF > get_cluster_id.py
-import json,sys
+import json,sys,os
 services=json.load(sys.stdin).get("services")
 for service in services:
     if service.get("name") == os.getenv("CDE_CLUSTER_NAME"):
