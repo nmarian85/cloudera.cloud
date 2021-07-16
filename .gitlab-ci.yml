@@ -25,7 +25,7 @@ cdp_env_start:
     - cdp environments start-environment --environment-name $ENV_NAME || true
     - timeout 20m bash wait_for_status.sh "ENV" "AVAILABLE"
   rules:
-    - if: $CI_PIPELINE_SOURCE != "schedule"
+    - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "provision"
       when: manual
 
 cdp_env_stop:
@@ -46,8 +46,7 @@ cml_provision:
       for CML_CLUSTER_NAME in $CML_CLUSTERS; do
         python3 cml_json.py --action provision --cluster $CML_CLUSTER_NAME --env $ENV_NAME
         cat ${CML_CLUSTER_NAME}.json
-        cdp --debug ml create-workspace --cli-input-json file://${CML_CLUSTER_NAME}.json
-        echo "exit code is $?"
+        cdp --debug ml create-workspace --cli-input-json file://${CML_CLUSTER_NAME}.json && echo "OK exit code is $?" || echo "NOT exit code is $?"
       done
     - >
       for CML_CLUSTER_NAME in $CML_CLUSTERS; do
