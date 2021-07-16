@@ -17,11 +17,11 @@ do
         ;;
         CDE)
             cat << EOF > get_cluster_id.py
-            import json,sys
-            services=json.load(sys.stdin).get("services")
-            for service in services:
-                if service.get("name") == os.getenv("CDE_CLUSTER_NAME"):
-                    print(service.get("status"))
+import json,sys
+services=json.load(sys.stdin).get("services")
+for service in services:
+    if service.get("name") == os.getenv("CDE_CLUSTER_NAME"):
+        print(service.get("status"))
 EOF
             STATUS=$(cdp de list-services | python get_cluster_id.py)
             echo $STATUS
