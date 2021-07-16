@@ -69,7 +69,8 @@
                         "runtimeSpotComponent": "ALL"
                     }
                 },
-                "delete": true
+                "delete": true,
+                "provision": true
             }
         },
         "cdw_clusters": {}
