@@ -1,4 +1,5 @@
 #!/bin/bash
+# Waiting for a component to reach a certain status in order to know if the action was succesful
 
 set -eo pipefail
 set -o errexit
