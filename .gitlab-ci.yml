@@ -99,6 +99,11 @@ cde_provision:
         cat ${CDE_CLUSTER_NAME}.json
         cdp --debug de enable-service --cli-input-json file://${CDE_CLUSTER_NAME}.json
       done
+    - >
+      for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
+        export CDE_CLUSTER_NAME=$CDE_CLUSTER_NAME
+        timeout 55m bash wait_for_status.sh "CDE" "installation:finished"
+      done
   artifacts:
     paths:
       - "*.json"
