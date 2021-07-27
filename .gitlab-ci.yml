@@ -6,7 +6,7 @@ variables:
   ENV_NAME: cdp-devo-lab-env01
   CML_CLUSTERS: "cdp-devo-lab-env01-cml01"
   CDE_CLUSTERS: "cdp-devo-lab-env01-cde02"
-  ACTION: provision # value can be delete or provision based on which type of pipeline you want to generate; to add scheduled action and reorder stages :)
+  ACTION: delete # value can be delete or provision based on which type of pipeline you want to generate; to add scheduled action and reorder stages :)
 
 image: ${DOCKER_IMAGE_URL}
 
