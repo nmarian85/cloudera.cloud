@@ -12,7 +12,7 @@ while true;
 do
     case $COMPONENT in
         CML)
-            OUT=$(cdp ml describe-workspace --workspace-name $CML_CLUSTER_NAME --environment-name $ENV_NAME > /dev/null 2>&1)
+            OUT=$(cdp ml describe-workspace --workspace-name $CML_CLUSTER_NAME --environment-name $ENV_NAME)
             STATUS=$(echo $OUT | python -c 'import json,sys; print(json.load(sys.stdin)["workspace"]["instanceStatus"])')
         ;;
         CDE)
@@ -27,7 +27,7 @@ EOF
             echo $STATUS
         ;;
         ENV)
-            OUT=$(cdp environments describe-environment --environment-name $ENV_NAME > /dev/null 2>&1)
+            OUT=$(cdp environments describe-environment --environment-name $ENV_NAME)
             STATUS=$(echo $OUT | python -c 'import json,sys; print(json.load(sys.stdin)["environment"]["status"])')
         ;;
     esac
