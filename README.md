@@ -22,6 +22,8 @@ The building relies on the following variables being set
     where **CI_DOCKER_AUTH** is a *base64* encoded and masked variable containing the artifactory credentials (in the form of *username:password*)
 
 * **Project level**
+  For provisioning we are going to use a technical user's keys. In order to populate the user in CDP we need to perform a first login using SAML. Please be aware that IGAM SSO searches in OU=Users and Groups,OU=ECB,DC=ecb01,DC=ecb,DC=de, hence the technical user needs to be provisioned in that OU (other applications such as MoMo did the same for their monitoring users).
+  Request type to be used in ITSP: Requests to create, modify, extend, delete non-Standard/-SA account in DEV AD environments.
   * **CDP_ACCESS_KEY_ID** : The access key of the CDP technical user.
   * **CDP_PRIVATE_KEY** : The private key of the CDP technical user.
 

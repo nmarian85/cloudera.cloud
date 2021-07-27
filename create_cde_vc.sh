@@ -1,0 +1,4 @@
+          --name <value>
+          --cluster-id <value>
+          --cpu-requests <value>
+          --memory-requests <value>

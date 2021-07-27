@@ -6,7 +6,7 @@ variables:
   ENV_NAME: cdp-devo-lab-env01
   CML_CLUSTERS: "cdp-devo-lab-env01-cml01"
   CDE_CLUSTERS: "cdp-devo-lab-env01-cde02"
-  ACTION: delete # value can be delete or provision based on which type of pipeline you want to generate; to add scheduled action and reorder stages :)
+  ACTION: provision # value can be delete or provision based on which type of pipeline you want to generate; to add scheduled action and reorder stages :)
 
 image: ${DOCKER_IMAGE_URL}
 
@@ -37,7 +37,6 @@ cdp_env_stop:
     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete"
       when: manual
 
-# timeout is set to 55m since the runner timeout in gitlab is set to 1h
 cml_provision:
   stage: provision
   before_script:
@@ -131,16 +130,6 @@ cde_delete:
   rules:
     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete"
       when: manual
-      # only:
-  #   - main
-#   # to be modified for various CDE environments
-#   CDP_ACCESS_KEY_ID:
-#     value: "123"
-#     description: "unfortunately the CDE cannot be provisioned using a machine user ... so we have to provide our own user's access and secret key as env variables CDP_ACCESS_KEY_ID and CDP_PRIVATE_KEY when we run the job"
-#   CDP_PRIVATE_KEY:
-#     value: "123"
-#     description: "unfortunately the CDE cannot be provisioned using a machine user ... so we have to provide our own user's access and secret key as env variables CDP_ACCESS_KEY_ID and CDP_PRIVATE_KEY when we run the job"
-
 # cde_provision_vc:
 #   stage: cde_provision_vc
 #   variables:
