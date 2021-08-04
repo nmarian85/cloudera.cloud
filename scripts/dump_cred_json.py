@@ -10,7 +10,7 @@ my_parser = argparse.ArgumentParser(description="Manage CDP credentials")
 #     "--action", choices=["provision", "delete"], help="provision or delete CML cluster",
 # )
 my_parser.add_argument("-e", "--env", help="Environment (lab, dev, etc.)")
-my_parser.add_argument("-c", "--cdp_cdp_env_name", help="CDP env name")
+my_parser.add_argument("-c", "--cdp-env-name", help="CDP env name")
 
 args = my_parser.parse_args()
 
