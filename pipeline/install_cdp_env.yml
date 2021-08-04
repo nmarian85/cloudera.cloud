@@ -7,7 +7,7 @@ install_cdp_env:
     - cat *cred.json
     - > 
       for F in *_cred.json; do
-        cdp environments create-aws-credential --cli-input-json $F || true
+        cdp environments create-aws-credential --cli-input-json file://$F || true
       done
   artifacts:
     paths:
