@@ -30,9 +30,9 @@ credentials = envs.get(cdp_env_name).get("credentials")
 
 for cred, cred_info in credentials.items():
     cred_json = dict(cred_json_skel)
-    cred_json["credentialName"] = cred_info.credential_name
-    cred_json["roleArn"] = cred_info.role_arn
-    cred_json["description"] = cred_info.description
+    cred_json["credentialName"] = cred_info["credential_name"]
+    cred_json["roleArn"] = cred_info["role_arn"]
+    cred_json["description"] = cred_info["description"]
     with open(f"{cred_info.credential_name}_cred.json", "w", encoding="utf-8") as f:
         json.dump(cred_json, f, ensure_ascii=False, indent=4)
 
