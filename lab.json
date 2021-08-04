@@ -5,12 +5,7 @@
             "credential_name": "devo-cdp-lab-env01-ca-all-perm-cred",
             "role_arn": "arn:aws:iam::303413094647:role/devo-cdp-mc-crossaccount-role",
             "description": "Cross account role credentials for CDP provisioning"
-            },
-            "cross_account_cdw_min_perm" : {
-                "credential_name": "devo-cdp-lab-env01-ca-cdw-min-perm-cred",
-                "role_arn": "arn:aws:iam::303413094647:role/devo-cdp-cdw-prov-min-perm-role",
-                "description": "Cross account role credentials with minimum permissions for CDW provisioning"
-                }
+            }
         },
         "cml_clusters": {
             "devo-cdp-lab-env01-cml01": {
