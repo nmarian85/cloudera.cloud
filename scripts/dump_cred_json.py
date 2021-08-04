@@ -17,7 +17,7 @@ args = my_parser.parse_args()
 cdp_env_name = args.cdp_env_name
 env = args.env
 
-with open(f"{cdp_env_name}.json", "r") as read_file:
+with open(f"{env}.json", "r") as read_file:
     envs = json.load(read_file)
 
 if envs.get(cdp_env_name) is None:
@@ -26,7 +26,7 @@ if envs.get(cdp_env_name) is None:
 
 credentials = envs.get(cdp_env_name).get("credentials")
 for credential in credentials:
-    json.dump(credential, f, ensure_ascii=False, indent=4)
+    json.dumps(credential, ensure_ascii=False, indent=4)
 
 # # read skeleton from command cdp ml create-workspace --generate-cli-skeleton
 # with open("skel.json") as json_file:
