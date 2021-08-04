@@ -26,7 +26,7 @@ if envs.get(cdp_env_name) is None:
 
 credentials = envs.get(cdp_env_name).get("credentials")
 for credential in credentials:
-    json.dumps(credential, ensure_ascii=False, indent=4)
+    print(json.dumps(credential, ensure_ascii=False, indent=4))
 
 # # read skeleton from command cdp ml create-workspace --generate-cli-skeleton
 # with open("skel.json") as json_file:
