@@ -9,7 +9,7 @@ install_cdp_env:
     #   for F in *_cred.json; do
     #     cdp --debug environments create-aws-credential --cli-input-json file://$F || true
     #   done
-    - cdp environments create-aws-credential --credential-name devo-cdp-lab-env01-ca-all-perm-cred --role-arn rn:aws:iam::303413094647:role/devo-cdp-mc-crossaccount-role
+    - cdp environments create-aws-credential --credential-name devo-cdp-lab-env01-ca-all-perm-cred --role-arn arn:aws:iam::303413094647:role/devo-cdp-mc-crossaccount-role
   artifacts:
     paths:
       - "*.json"
