@@ -4,12 +4,12 @@ install_cdp_env:
     - cdp environments create-aws-credential  --generate-cli-skeleton > skel.json
     - python3 scripts/dump_cred_json.py --env $ENV --cdp-env-name $CDP_ENV_NAME
   script:
-    # - cat *cred.json
-    # - > 
-    #   for F in *_cred.json; do
-    #     cdp --debug environments create-aws-credential --cli-input-json file://$F || true
-    #   done
-    - cdp environments create-aws-credential --credential-name devo-cdp-lab-env01-ca-all-perm-cred --role-arn arn:aws:iam::303413094647:role/devo-cdp-mc-crossaccount-role
+    - cat *cred.json
+    - > 
+      for F in *_cred.json; do
+        cdp --debug environments create-aws-credential --cli-input-json file://$F || true
+      done
+    # - cdp environments create-aws-credential --credential-name devo-cdp-lab-env01-ca-all-perm-cred --role-arn arn:aws:iam::303413094647:role/devo-cdp-mc-crossaccount-role
   artifacts:
     paths:
       - "*.json"
