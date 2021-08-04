@@ -33,6 +33,11 @@ stages:
   - start
   - stop
 
+include:
+  # Common steps
+  ## Environment independent
+  - 'pipeline/install_cdp_env.yml'
+
 # cdp_env_start:
 #   stage: start_env
 #   script:
