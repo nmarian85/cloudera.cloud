@@ -23,14 +23,18 @@ with open(f"{env}.json", "r") as read_file:
 if envs.get(cdp_env_name) is None:
     raise ValueError(f"Unable to find {cdp_env_name} in env.json")
 
+with open("skel.json") as json_file:
+    cred_json_skel = json.load(json_file)
 
 credentials = envs.get(cdp_env_name).get("credentials")
-for credential in credentials:
-    print(json.dumps(credential, ensure_ascii=False, indent=4))
 
-# # read skeleton from command cdp ml create-workspace --generate-cli-skeleton
-# with open("skel.json") as json_file:
-#     cml_json_skel = json.load(json_file)
+for cred, cred_info in credentials.items():
+    cred_json = dict(cred_json_skel)
+    cred_json["credentialName"] = cred_info.credential_name
+    cred_json["roleArn"] = cred_info.role_arn
+    cred_json["description"] = cred_info.description
+    with open(f"{cred_info.credential_name}_cred.json", "w", encoding="utf-8") as f:
+        json.dump(cred_json, f, ensure_ascii=False, indent=4)
 
 # cml_cluster = envs[cdp_env_name]["cml_clusters"][cluster_name]
 # cml_json = dict(cml_json_skel)

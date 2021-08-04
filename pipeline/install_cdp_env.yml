@@ -1,12 +1,20 @@
 install_cdp_env:
   stage: install
   before_script:
+    - cdp environments create-aws-credential  --generate-cli-skeleton > skel.json
     - python3 scripts/dump_cred_json.py --env $ENV --cdp-env-name $CDP_ENV_NAME
   script:
+    - cat *cred.json
     - > 
       for F in "*_cred.json" do
         cdp environments create-aws-credential --cli-input-json $F || true
       done
+  artifacts:
+    paths:
+      - "*.json"
+    expire_in: 30 days
+    when: always
+
     # - timeout 20m bash wait_for_status.sh "ENV" "AVAILABLE"
   # rules:
   #   - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "install"
