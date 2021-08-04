@@ -1,5 +1,5 @@
 install_cdp_env:
-  stage: install_cdp_env
+  stage: install
   before_script:
     - python3 scripts/dump_cred_json.py --env $ENV --cdp_env_name $CDP_ENV_NAME
   script:
