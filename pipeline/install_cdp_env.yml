@@ -1,51 +1,51 @@
-install_cdp_env:
-  stage: install
-  before_script:
-    - cdp environments create-aws-credential  --generate-cli-skeleton > skel.json
-    - python3 scripts/dump_cred_json.py --env $ENV --cdp-env-name $CDP_ENV_NAME
-  script:
-    - cat *cred.json
-    - > 
-      for F in *_cred.json; do
-        cdp --debug environments create-aws-credential --cli-input-json file://$F || true
-      done
-    # - cdp environments create-aws-credential --credential-name devo-cdp-lab-env01-ca-all-perm-cred --role-arn arn:aws:iam::303413094647:role/devo-cdp-mc-crossaccount-role
-  artifacts:
-    paths:
-      - "*.json"
-    expire_in: 30 days
-    when: always
-
-    # - timeout 20m bash wait_for_status.sh "ENV" "AVAILABLE"
-  # rules:
-  #   - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "install"
-  #     when: manual
-
-
-# cml_provision:
-#   stage: provision
+# Apparently this works only with the credentials of the environment owner (which has IamGroupAdmin role that cannot be assumed to anyone else) and we are using for provisioning a technical user. For now we create the credentials manually in the CDP mgmt console.
+# install_cdp_env:
+#   stage: install
 #   before_script:
-#     - cdp ml create-workspace --generate-cli-skeleton > skel.json
+#     - cdp environments create-aws-credential  --generate-cli-skeleton > skel.json
+#     - python3 scripts/dump_cred_json.py --env $ENV --cdp-env-name $CDP_ENV_NAME
 #   script:
-#     - >
-#       for CML_CLUSTER_NAME in $CML_CLUSTERS; do
-#         python3 cml_json.py --action provision --cluster $CML_CLUSTER_NAME --env $ENV_NAME
-#         cat ${CML_CLUSTER_NAME}.json
-#         cdp --debug ml create-workspace --cli-input-json file://${CML_CLUSTER_NAME}.json || true
-#       done
-#     - >
-#       for CML_CLUSTER_NAME in $CML_CLUSTERS; do
-#         export CML_CLUSTER_NAME=$CML_CLUSTER_NAME
-#         timeout 90m bash wait_for_status.sh "CML" "installation:finished"
+#     - cat *cred.json
+#     - > 
+#       for F in *_cred.json; do
+#         cdp --debug environments create-aws-credential --cli-input-json file://$F || true
 #       done
 #   artifacts:
 #     paths:
 #       - "*.json"
 #     expire_in: 30 days
 #     when: always
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "provision"
-#       when: manual
+# rules:
+#   - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "install"
+#     when: manual
+
+# - timeout 20m bash wait_for_status.sh "ENV" "AVAILABLE"
+
+
+install_cdp_env:
+  stage: provision
+  before_script:
+    - cdp ml create-workspace --generate-cli-skeleton > skel.json
+  script:
+    - >
+      for CML_CLUSTER_NAME in $CML_CLUSTERS; do
+        python3 cml_json.py --action provision --cluster $CML_CLUSTER_NAME --env $ENV_NAME
+        cat ${CML_CLUSTER_NAME}.json
+        cdp --debug ml create-workspace --cli-input-json file://${CML_CLUSTER_NAME}.json || true
+      done
+    - >
+      for CML_CLUSTER_NAME in $CML_CLUSTERS; do
+        export CML_CLUSTER_NAME=$CML_CLUSTER_NAME
+        timeout 90m bash wait_for_status.sh "CML" "installation:finished"
+      done
+  artifacts:
+    paths:
+      - "*.json"
+    expire_in: 30 days
+    when: always
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "provision"
+      when: manual
 
 # mariann@ip-10-130-18-139 ➜  ~ cdp environments create-aws-credential  --generate-cli-skeleton
 
