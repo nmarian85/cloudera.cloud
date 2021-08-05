@@ -10,6 +10,8 @@ my_parser.add_argument(
     "--action", choices=["install", "delete"], help="install or delete CDP environment",
 )
 my_parser.add_argument("-e", "--env", help="CDP env name")
+my_parser.add_argument("-c", "--cdp-env-name", help="CDP env name")
+
 args = my_parser.parse_args()
 
 cdp_env_name = args.cdp_env_name
