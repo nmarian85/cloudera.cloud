@@ -1,8 +1,8 @@
 # Apparently this works only with the credentials of the environment owner (which has IamGroupAdmin role that cannot be assumed to anyone else) and we are using for provisioning a technical user. For now we create the credentials manually in the CDP mgmt console.
-# install_cdp_env:
+# create_cdp_creds:
 #   stage: install
 #   before_script:
-#     - cdp environments create-aws-credential  --generate-cli-skeleton > skel.json
+#     - cdp environments create-aws-credential --generate-cli-skeleton > skel.json
 #     - python3 scripts/dump_cred_json.py --env $ENV --cdp-env-name $CDP_ENV_NAME
 #   script:
 #     - cat *cred.json
@@ -25,182 +25,17 @@
 install_cdp_env:
   stage: provision
   before_script:
-    - cdp ml create-workspace --generate-cli-skeleton > skel.json
+    - cdp environments create-aws-environment --generate-cli-skeleton > skel.json
+    - python3 scripts/dump_env_json.py --action install --env $ENV --cdp-env-name $CDP_ENV_NAME
   script:
-    - >
-      for CML_CLUSTER_NAME in $CML_CLUSTERS; do
-        python3 cml_json.py --action provision --cluster $CML_CLUSTER_NAME --env $ENV_NAME
-        cat ${CML_CLUSTER_NAME}.json
-        cdp --debug ml create-workspace --cli-input-json file://${CML_CLUSTER_NAME}.json || true
-      done
-    - >
-      for CML_CLUSTER_NAME in $CML_CLUSTERS; do
-        export CML_CLUSTER_NAME=$CML_CLUSTER_NAME
-        timeout 90m bash wait_for_status.sh "CML" "installation:finished"
-      done
+    - cat *.json
+    - cdp --debug environments create-aws-environment --cli-input-json file://${CDP_ENV_NAME}.json || true
+    - timeout 90m bash scripts/wait_for_status.sh "ENV" "AVAILABLE"
   artifacts:
     paths:
       - "*.json"
     expire_in: 30 days
     when: always
-  rules:
-    - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "provision"
-      when: manual
-
-# mariann@ip-10-130-18-139 ➜  ~ cdp environments create-aws-credential  --generate-cli-skeleton
-
-
-# {
-#     "credentialName": "",
-#     "roleArn": "",
-#     "description": ""
-# }
-
-
-
-# mariann@ip-10-130-18-139 ➜  ~ cdp environments create-aws-environment  --generate-cli-skeleton
-# {
-#     "environmentName": "",
-#     "credentialName": "",
-#     "region": "",
-#     "securityAccess": {
-#         "cidr": "",
-#         "securityGroupIdForKnox": "",
-#         "defaultSecurityGroupId": ""
-#     },
-#     "authentication": {
-#         "publicKey": "",
-#         "publicKeyId": ""
-#     },
-#     "logStorage": {
-#         "storageLocationBase": "",
-#         "instanceProfile": ""
-#     },
-#     "networkCidr": "",
-#     "vpcId": "",
-#     "subnetIds": [
-#         ""
-#     ],
-#     "endpointAccessGatewayScheme": "",
-#     "endpointAccessGatewaySubnetIds": [
-#         ""
-#     ],
-#     "s3GuardTableName": "",
-#     "description": "",
-#     "enableTunnel": true,
-#     "workloadAnalytics": true,
-#     "reportDeploymentLogs": true,
-#     "freeIpa": {
-#         "instanceCountByGroup": 0
-#     },
-#     "image": {
-#         "catalog": "",
-#         "id": ""
-#     },
-#     "tags": [
-#         {
-#             "key": "",
-#             "value": ""
-#         }
-#     ],
-#     "proxyConfigName": ""
-# }
-
-
-
-
-# {
-#     "environment": {
-#         "environmentName": "cdp-devo-lab-env01",
-#         "crn": "crn:cdp:environments:us-west-1:0e62c9c8-e9cd-483b-81b3-651fe7a22deb:environment:f85b8fd2-a7af-4426-9f43-44a6b342658a",
-#         "status": "AVAILABLE",
-#         "region": "eu-central-1",
-#         "cloudPlatform": "AWS",
-#         "credentialName": "cdp-devo-policy-lab",
-#         "network": {
-#             "subnetIds": [
-#                 "subnet-0e27b087b7fe35ff6",
-#                 "subnet-01243e9afaaf36d3b",
-#                 "subnet-012c688e22929b604",
-#                 "subnet-029106fec17ba4c79",
-#                 "subnet-02cda3e72e4840aef",
-#                 "subnet-0c07b692fe1c6f3d7"
-#             ],
-#             "endpointAccessGatewayScheme": "PRIVATE",
-#             "endpointAccessGatewaySubnetIds": [],
-#             "aws": {
-#                 "vpcId": "vpc-0132344c3ea4aa8e7"
-#             },
-#             "networkCidr": "10.130.18.0/24",
-#             "subnetMetadata": {
-#                 "subnet-0e27b087b7fe35ff6": {
-#                     "subnetId": "subnet-0e27b087b7fe35ff6",
-#                     "subnetName": "EcbAws-DEVO-LAB-FE-AZ3",
-#                     "availabilityZone": "eu-central-1c",
-#                     "cidr": "10.130.18.128/26"
-#                 },
-#                 "subnet-01243e9afaaf36d3b": {
-#                     "subnetId": "subnet-01243e9afaaf36d3b",
-#                     "subnetName": "EcbAws-DEVO-LAB-BE-AZ1",
-#                     "availabilityZone": "eu-central-1a",
-#                     "cidr": "10.129.48.0/24"
-#                 },
-#                 "subnet-012c688e22929b604": {
-#                     "subnetId": "subnet-012c688e22929b604",
-#                     "subnetName": "EcbAws-DEVO-LAB-BE-AZ3",
-#                     "availabilityZone": "eu-central-1c",
-#                     "cidr": "10.129.50.0/24"
-#                 },
-#                 "subnet-029106fec17ba4c79": {
-#                     "subnetId": "subnet-029106fec17ba4c79",
-#                     "subnetName": "EcbAws-DEVO-LAB-BE-AZ2",
-#                     "availabilityZone": "eu-central-1b",
-#                     "cidr": "10.129.49.0/24"
-#                 },
-#                 "subnet-02cda3e72e4840aef": {
-#                     "subnetId": "subnet-02cda3e72e4840aef",
-#                     "subnetName": "EcbAws-DEVO-LAB-FE-AZ2",
-#                     "availabilityZone": "eu-central-1b",
-#                     "cidr": "10.130.18.64/26"
-#                 },
-#                 "subnet-0c07b692fe1c6f3d7": {
-#                     "subnetId": "subnet-0c07b692fe1c6f3d7",
-#                     "subnetName": "EcbAws-DEVO-LAB-FE-AZ1",
-#                     "availabilityZone": "eu-central-1a",
-#                     "cidr": "10.130.18.0/26"
-#                 }
-#             }
-#         },
-#         "logStorage": {
-#             "enabled": true,
-#             "awsDetails": {
-#                 "storageLocationBase": "s3a://cdp-devo-lab-env01-dl01-admin-logs",
-#                 "instanceProfile": "arn:aws:iam::405945523162:instance-profile/env01-log-access-instance-profile"
-#             }
-#         },
-#         "authentication": {
-#             "publicKeyId": "cdp-devo-key-lab",
-#             "loginUserName": "cloudbreak"
-#         },
-#         "securityAccess": {
-#             "securityGroupIdForKnox": "sg-06475680081c165f6",
-#             "defaultSecurityGroupId": "sg-06475680081c165f6"
-#         },
-#         "description": "First CDP environment",
-#         "statusReason": "Error message: \"Freeipa should be in Available state but currently is STOPPED\"",
-#         "created": "2021-03-16T12:52:16.806000+00:00",
-#         "creator": "crn:altus:iam:us-west-1:0e62c9c8-e9cd-483b-81b3-651fe7a22deb:user:c4791741-9f30-40b9-aaf9-72f79c6ce986",
-#         "awsDetails": {
-#             "s3GuardTableName": "env01-dynamodb-table"
-#         },
-#         "reportDeploymentLogs": false,
-#         "freeipa": {
-#             "crn": "crn:cdp:freeipa:us-west-1:0e62c9c8-e9cd-483b-81b3-651fe7a22deb:freeipa:04e239a8-7133-49ba-bbd2-ddbcb65f69fc",
-#             "domain": "cdp-devo.ftjq-cdim.cloudera.site",
-#             "hostname": "ipaserver",
-#             "serverIP": [
-#                 "10.129.50.190"
-#             ]
-#         }
-#     }
-# }
+  # rules:
+  #   - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "install"
+  #     when: manual

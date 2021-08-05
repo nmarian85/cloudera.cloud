@@ -1,5 +1,12 @@
 {
     "devo-cdp-lab-env01": {
+        "vpc_id": "vpc-020623901c07da0ac",
+        "sg": "sg-016ca51f4988af6d4",
+        "log_bucket": "devo-cdp-adm-logs-ffppyd8q",
+        "log_role": "devo-cdp-log-role",
+        "idbroker_role": "devo-cdp-idbroker-role",
+        "public_key_id": "cdp-devo-key-lab"
+        "account_id": "303413094647",
         "credentials": {
             "cross_account_all_perm" : {
             "credential_name": "devo-cdp-lab-env01-ca-all-perm-cred",
