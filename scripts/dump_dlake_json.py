@@ -42,7 +42,7 @@ cdp_dl_json["datalakeName"] = dlake_name
 
 
 cdp_dl_json["cloudProviderConfiguration"]["storageBucketLocation"] = (
-    f'{cdp_dl_info["data_bucket"]}/{cdp_env_name}'
+    f's3a://{cdp_dl_info["data_bucket"]}/{cdp_env_name}'
 )
 data_instance_profile = f'{cdp_dl_info["data_role"]}-instance-profile'
 role_iam_arn = f'arn:aws:iam::{cdp_env_info["account_id"]}'
