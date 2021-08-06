@@ -22,6 +22,7 @@
                 "description": "Cross account role credentials with minimum permissions for CDW provisioning"
                 }
         },
+        "tags": [],
         "cml_clusters": {
             "devo-cdp-lab-env01-cml01": {
                 "ml_infra_info": {
