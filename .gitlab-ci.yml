@@ -39,6 +39,35 @@ include:
   - 'pipeline/install_cdp_env.yml'
   - 'pipeline/delete_cdp_env.yml'
 
+# cdp environments create-aws-environment \
+# --environment-name cdp-devo-lab-env01 \
+# --credential-name cdp-devo-policy-lab \
+# --region "eu-central-1" \
+# --security-access defaultSecurityGroupId=sg-06475680081c165f6,securityGroupIdForKnox=sg-06475680081c165f6 \
+# --description "First CDP environment" \
+# --enable-tunnel \
+# --authentication publicKeyId="cdp-devo-key-lab" \
+# --log-storage storageLocationBase=s3a://cdp-devo-lab-env01-dl01-admin-logs,instanceProfile=arn:aws:iam::405945523162:instance-profile/env01-log-access-instance-profile \
+# --vpc-id vpc-0132344c3ea4aa8e7 \
+# --subnet-ids subnet-0e27b087b7fe35ff6 subnet-01243e9afaaf36d3b subnet-012c688e22929b604 subnet-029106fec17ba4c79 subnet-02cda3e72e4840aef subnet-0c07b692fe1c6f3d7 \
+# --s3-guard-table-name env01-dynamodb-table \
+# --free-ipa instanceCountByGroup=1 
+
+#   cdp environments set-id-broker-mappings \
+# --environment-name cdp-devo-lab-env01 \
+# --data-access-role arn:aws:iam::405945523162:role/env01-datalake-admin-role \
+# --ranger-audit-role arn:aws:iam::405945523162:role/env01-ranger-audit-role \
+# --mappings '[{"accessorCrn":"crn:altus:iam:us-west-1:0e62c9c8-e9cd-483b-81b3-651fe7a22deb:group:ecbt1-igamfs-app-cdp-admin/0ed6b112-549e-4c85-b315-547935cc6f9b","role":"arn:aws:iam::405945523162:role/env01-datalake-admin-role"},{"accessorCrn":"crn:altus:iam:us-west-1:0e62c9c8-e9cd-483b-81b3-651fe7a22deb:group:ecbt1-igamfs-app-cdp-expert/2a9079df-74a2-4594-a1d2-f5dfcd8906f6","role":"arn:aws:iam::405945523162:role/env01-datalake-admin-role"},{"accessorCrn":"crn:altus:iam:us-west-1:0e62c9c8-e9cd-483b-81b3-651fe7a22deb:user:ded06801-4bed-41b3-9f99-edadd851bcf2","role":"arn:aws:iam::405945523162:role/devo-discdata-s3-access-airosam-iam-role"},{"accessorCrn":"crn:altus:iam:us-west-1:0e62c9c8-e9cd-483b-81b3-651fe7a22deb:user:ef7aac7f-ba34-4be3-9d13-1d239c438d58","role":"arn:aws:iam::405945523162:role/devo-discdata-s3-access-mariann-iam-role"}]' 
+
+
+# cdp datalake create-aws-datalake \
+# --datalake-name cdp-devo-lab-env01-dl01 \
+# --environment-name cdp-devo-lab-env01 \
+# --cloud-provider-configuration instanceProfile=arn:aws:iam::405945523162:instance-profile/env01-data-access-instance-profile,storageBucketLocation=s3a://cdp-devo-lab-env01-dl01-admin-data \
+# --scale LIGHT_DUTY \
+# --runtime 7.2.7 
+
+
 # cdp_env_start:
 #   stage: start_env
 #   script:
