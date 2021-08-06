@@ -25,7 +25,9 @@
             "name": "devo-cdp-lab-env01-dl",
             "data_bucket": "devo-cdp-adm-data-i7ijrnh8",
             "data_role": "devo-cdp-datalake-admin-role",
-            "tags": []
+            "ranger_role": "devo-cdp-datalake-admin-role",
+            "tags": [],
+            "scale": "LIGHT_DUTY"
         },
         "cml_clusters": {
             "devo-cdp-lab-env01-cml01": {

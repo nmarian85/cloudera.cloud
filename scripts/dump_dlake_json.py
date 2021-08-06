@@ -36,6 +36,7 @@ del cdp_dl_json["scale"]
 
 cdp_dl_json["environmentName"] = cdp_env_name
 cdp_dl_json["tags"] = cdp_dl_info["tags"]
+cdp_dl_json["scale"] = cdp_dl_info["scale"]
 
 dlake_name = cdp_dl_info["name"]
 cdp_dl_json["datalakeName"] = dlake_name
@@ -53,4 +54,8 @@ cdp_dl_json["cloudProviderConfiguration"]["instanceProfile"] = (
 with open(f'{dlake_name}.json', "w", encoding="utf-8") as f:
     json.dump(cdp_dl_json, f, ensure_ascii=False, indent=4)
 
-print(dlake_name)
+print(
+    f'''{dlake_name},'''
+    f'''{role_iam_arn}:role/{cdp_dl_json["ranger_role"]},'''
+    f'''{role_iam_arn}:role/{cdp_dl_json["data_role"]}')'''
+)
