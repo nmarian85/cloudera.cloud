@@ -35,6 +35,7 @@ del cdp_dl_json["image"]
 del cdp_dl_json["scale"]
 
 cdp_dl_json["environmentName"] = cdp_env_name
+cdp_dl_json["tags"] = cdp_dl_info["tags"]
 
 dlake_name = cdp_dl_info["name"]
 cdp_dl_json["datalakeName"] = dlake_name
