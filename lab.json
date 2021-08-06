@@ -1,28 +1,30 @@
 {
-    "cdp-devo-lab-env01": {
-        "cml_clusters": {
-            "cdp-devo-lab-env01-cml01": {
-                "ml_infra_info": {
-                    "instance_type": "m5.2xlarge",
-                    "instance_count": 2,
-                    "name": "mlinfra",
-                    "min_instances": 2,
-                    "max_instances": 3,
-                    "root_volume": 100
-                },
-                "ml_worker_info": {
-                    "instance_type": "c4.4xlarge",
-                    "instance_count": 1,
-                    "name": "mlcpu0",
-                    "min_instances": 1,
-                    "max_instances": 3,
-                    "root_volume": 100
-                },
-                "tags": {},
-                "provision": true,
-                "delete": true
+    "devo-cdp-lab-env01": {
+        "vpc_id": "vpc-020623901c07da0ac",
+        "sg": "sg-016ca51f4988af6d4",
+        "log_bucket": "devo-cdp-adm-logs-ffppyd8q",
+        "log_role": "devo-cdp-log-role",
+        "idbroker_role": "devo-cdp-idbroker-role",
+        "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbeW5dvQZdyLWnjbuFmmP+j1Q9c6tcNaaQwmuZ9gzn7Pbm+aXytEdCj2R6s6EhrO0Ip87Z2UOPM979vfe7fO9uWa/WjQ24A7KgltYWAVBRIdhIxbFCzXAIQVvnMyo0dnODLIFupNw0RpoM/Cn+aMNqv+xmhhbNUJJS8i7t1Nsv/RT30dkIW1WMpVR2suDDzySEezYOAED5TXErAl7ruericcUKAw/l8SHfphY7Rw+j4dveMeKCNLNGLdEahPNDLdxLr6rmDgX6rxF2nWNlSZse9fW6xelhcF8Lu2D1oxxqI+ZNq0G/Q5u50RVDTSqkujVVoUPeEYO1rwUWW2cEDhRT",
+        "account_id": "303413094647",
+        "freeipa_image_catalog": "958145178466/freeipa-cdh--2103081256",
+        "freeipa_image_id": "ami-004ec11be4e369e29",
+        "subnets": ["subnet-04024eed8cf2426fc", "subnet-06118f58006e50a3d","subnet-0d158af8d06ee2fcc","subnet-033b3f7f751101ef9", "subnet-0d01ccd888602a535", "subnet-07079829836761e42"],
+        "credentials": {
+            "cross_account_all_perm" : {
+            "credential_name": "devo-cdp-lab-env01-ca-all-perm-cred",
+            "role_arn": "arn:aws:iam::303413094647:role/devo-cdp-mc-crossaccount-role",
+            "description": "Cross account role credentials for CDP provisioning"
             },
-            "cdp-devo-lab-env01-cml02": {
+            "cross_account_cdw_min_perm" : {
+                "credential_name": "devo-cdp-lab-env01-ca-cdw-min-perm-cred",
+                "role_arn": "arn:aws:iam::303413094647:role/devo-cdp-cdw-prov-min-perm-role",
+                "description": "Cross account role credentials with minimum permissions for CDW provisioning"
+                }
+        },
+        "tags": [],
+        "cml_clusters": {
+            "devo-cdp-lab-env01-cml01": {
                 "ml_infra_info": {
                     "instance_type": "m5.2xlarge",
                     "instance_count": 2,
@@ -39,13 +41,30 @@
                     "max_instances": 3,
                     "root_volume": 100
                 },
-                "tags": {},
-                "delete": true,
-                "provision": true
+                "tags": {}
+            },
+            "devo-cdp-lab-env01-cml02": {
+                "ml_infra_info": {
+                    "instance_type": "m5.2xlarge",
+                    "instance_count": 2,
+                    "name": "mlinfra",
+                    "min_instances": 2,
+                    "max_instances": 3,
+                    "root_volume": 100
+                },
+                "ml_worker_info": {
+                    "instance_type": "c4.4xlarge",
+                    "instance_count": 1,
+                    "name": "mlcpu0",
+                    "min_instances": 1,
+                    "max_instances": 3,
+                    "root_volume": 100
+                },
+                "tags": {}
             }
         },
         "cde_clusters": {
-            "cdp-devo-lab-env01-cde02": {
+            "devo-cdp-lab-env01-cde02": {
                 "instance_type": "c5.2xlarge",
                 "min_instances": 1,
                 "max_instances": 5,
@@ -57,7 +76,7 @@
                 "use_ssd": true,
                 "tags": {},
                 "vcs": {
-                    "cdp-devo-lab-env01-cde02-vc01": {
+                    "devo-cdp-lab-env01-cde02-vc01": {
                         "cpuRequests": 5,
                         "memoryRequests": "10Gi",
                         "chartValueOverrides": [
@@ -68,9 +87,7 @@
                         ],
                         "runtimeSpotComponent": "ALL"
                     }
-                },
-                "delete": true,
-                "provision": true
+                }
             }
         },
         "cdw_clusters": {}

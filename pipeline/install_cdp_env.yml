@@ -1,0 +1,43 @@
+# Apparently this  works only with the credentials of the environment owner (which has IamGroupAdmin role that cannot be assumed to anyone else) and we are using for provisioning a technical user. For now we create the credentials manually in the CDP mgmt console.
+# create_cdp_creds:
+#   stage: install
+#   before_script:
+#     - cdp environments create-aws-credential --generate-cli-skeleton > skel.json
+#     - python3 scripts/dump_cred_json.py --env $ENV --cdp-env-name $CDP_ENV_NAME
+#   script:
+#     - cat *cred.json
+#     - > 
+#       for F in *_cred.json; do
+#         cdp --debug environments create-aws-credential --cli-input-json file://$F || true
+#       done
+#   artifacts:
+#     paths:
+#       - "*.json"
+#     expire_in: 30 days
+#     when: always
+# rules:
+#   - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "install"
+#     when: manual
+
+# - timeout 20m bash wait_for_status.sh "ENV" "AVAILABLE"
+
+
+install_cdp_env:
+  stage: install
+  before_script:
+    - cdp environments create-aws-environment --generate-cli-skeleton > skel.json
+    - python3 scripts/dump_env_json.py --action install --env $ENV --cdp-env-name $CDP_ENV_NAME
+  script:
+    - cat *.json
+    - cdp --debug environments create-aws-environment --cli-input-json file://${CDP_ENV_NAME}.json
+    - timeout 90m bash scripts/wait_for_status.sh "ENV" "AVAILABLE"
+  artifacts:
+    paths:
+      - "*.json"
+    expire_in: 30 days
+    when: always
+  rules:
+    - if: $ACTION == "install"
+  # rules:
+  #   - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "install"
+  #     when: manual
