@@ -3,7 +3,6 @@ install_cdp_dlake:
   before_script:
     - cdp datalake create-aws-datalake --generate-cli-skeleton > skel.json
     - OUT=$(python3 scripts/dump_dlake_json.py --action install --env $ENV --cdp-env-name $CDP_ENV_NAME)
-    - echo $OUT
     - export DLAKE_NAME=$(echo $OUT | awk -F, '{print $1}')
     - export RANGER_ROLE=$(echo $OUT | awk -F, '{print $2}')
     - export DATA_ROLE=$(echo $OUT | awk -F, '{print $3}')
