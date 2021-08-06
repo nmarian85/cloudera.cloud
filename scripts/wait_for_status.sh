@@ -28,7 +28,7 @@ EOF
         ;;
         ENV)
             OUT=$(cdp environments describe-environment --environment-name $CDP_ENV_NAME || true)
-            [ -z "$OUT"] || STATUS=$(echo "$OUT" | python -c 'import json,sys; print(json.load(sys.stdin)["environment"]["status"])')
+            [ -z "$OUT" ] || STATUS=$(echo "$OUT" | python -c 'import json,sys; print(json.load(sys.stdin)["environment"]["status"])')
         ;;
     esac
 
