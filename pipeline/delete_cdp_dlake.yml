@@ -2,7 +2,7 @@
 delete_cdp_env:
   stage: delete
   script:
-    - DLAKE_NAME=$(cat ${ENV}.json | python -c "import json,sys; print(json.load(sys.stdin)[$CDP_ENV_NAME]['datalake']['name'])")
+    - DLAKE_NAME=$(python -c "import json; print(json.load(${ENV}.json)[$CDP_ENV_NAME]['datalake']['name'])")
     - export DLAKE_NAME=$DLAKE_NAME
     - cdp --debug datalake delete-datalake --datalake-name $DLAKE_NAME || true
     - timeout 90m bash scripts/wait_for_del.sh "DL"
