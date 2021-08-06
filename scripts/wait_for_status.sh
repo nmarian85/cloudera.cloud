@@ -1,7 +1,7 @@
 #!/bin/bash
 # Waiting for a component to reach a certain status in order to know if the action was succesful
 
-set -o pipefail
+set -eo pipefail
 set -o errexit
 set -o nounset
 
@@ -27,7 +27,7 @@ EOF
             echo $STATUS
         ;;
         ENV)
-            OUT=$(cdp environments describe-environment --environment-name $CDP_ENV_NAME)
+            OUT=$(cdp environments describe-environment --environment-name $CDP_ENV_NAME || true)
             STATUS=$(echo $OUT | python -c 'import json,sys; print(json.load(sys.stdin)["environment"]["status"])')
         ;;
     esac
