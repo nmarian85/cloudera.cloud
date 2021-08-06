@@ -5,7 +5,6 @@
         "log_bucket": "devo-cdp-adm-logs-ffppyd8q",
         "log_role": "devo-cdp-log-role",
         "idbroker_role": "devo-cdp-idbroker-role",
-        "public_key_id": "cdp-devo-key-lab",
         "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbeW5dvQZdyLWnjbuFmmP+j1Q9c6tcNaaQwmuZ9gzn7Pbm+aXytEdCj2R6s6EhrO0Ip87Z2UOPM979vfe7fO9uWa/WjQ24A7KgltYWAVBRIdhIxbFCzXAIQVvnMyo0dnODLIFupNw0RpoM/Cn+aMNqv+xmhhbNUJJS8i7t1Nsv/RT30dkIW1WMpVR2suDDzySEezYOAED5TXErAl7ruericcUKAw/l8SHfphY7Rw+j4dveMeKCNLNGLdEahPNDLdxLr6rmDgX6rxF2nWNlSZse9fW6xelhcF8Lu2D1oxxqI+ZNq0G/Q5u50RVDTSqkujVVoUPeEYO1rwUWW2cEDhRT",
         "account_id": "303413094647",
         "freeipa_image_catalog": "958145178466/freeipa-cdh--2103081256",
