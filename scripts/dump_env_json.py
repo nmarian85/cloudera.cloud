@@ -46,6 +46,7 @@ cdp_env_json["image"]["id"] = cdp_env_info["freeipa_image_id"]
 cdp_env_json["endpointAccessGatewayScheme"] = "PRIVATE"
 # cdp_env_json["authentication"]["publicKey"]
 cdp_env_json["authentication"]["publicKeyId"] = cdp_env_info["public_key_id"]
+cdp_env_json["authentication"]["publicKey"] = cdp_env_info["public_key"]
 
 with open(f'{cdp_env_name}.json', "w", encoding="utf-8") as f:
     json.dump(cdp_env_json, f, ensure_ascii=False, indent=4)
