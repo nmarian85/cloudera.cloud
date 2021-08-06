@@ -9,6 +9,7 @@
         "account_id": "303413094647",
         "freeipa_image_catalog": "958145178466/freeipa-cdh--2103081256",
         "freeipa_image_id": "ami-004ec11be4e369e29",
+        "subnets": ["subnet-04024eed8cf2426fc", "subnet-06118f58006e50a3d","subnet-0d158af8d06ee2fcc","subnet-033b3f7f751101ef9", "subnet-0d01ccd888602a535", "subnet-07079829836761e42"],
         "credentials": {
             "cross_account_all_perm" : {
             "credential_name": "devo-cdp-lab-env01-ca-all-perm-cred",

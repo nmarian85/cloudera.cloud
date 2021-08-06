@@ -36,6 +36,7 @@ cdp_env_json["subnetIds"] = []
 cdp_env_json["vpcId"] = cdp_env_info["vpc_id"]
 cdp_env_json["enableTunnel"] = True
 cdp_env_json["tags"] = cdp_env_info["tags"]
+cdp_env_json["subnet-ids"] = cdp_env_info["subnets"]
 cdp_env_json["securityAccess"] = {
     "securityGroupIdForKnox": cdp_env_info["sg"],
     "defaultSecurityGroupId": cdp_env_info["sg"]
