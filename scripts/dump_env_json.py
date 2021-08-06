@@ -32,11 +32,10 @@ cdp_env_json = dict(env_json_skel)
 cdp_env_json["environmentName"] = cdp_env_name
 cdp_env_json["credentialName"] = cdp_env_info["credentials"]["cross_account_all_perm"]["credential_name"]
 cdp_env_json["region"] = "eu-central-1"
-cdp_env_json["subnetIds"] = []
+cdp_env_json["subnetIds"] = cdp_env_info["subnets"]
 cdp_env_json["vpcId"] = cdp_env_info["vpc_id"]
 cdp_env_json["enableTunnel"] = True
 cdp_env_json["tags"] = cdp_env_info["tags"]
-cdp_env_json["subnet-ids"] = cdp_env_info["subnets"]
 cdp_env_json["securityAccess"] = {
     "securityGroupIdForKnox": cdp_env_info["sg"],
     "defaultSecurityGroupId": cdp_env_info["sg"]
