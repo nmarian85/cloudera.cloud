@@ -7,7 +7,7 @@
         "idbroker_role": "devo-cdp-idbroker-role",
         "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbeW5dvQZdyLWnjbuFmmP+j1Q9c6tcNaaQwmuZ9gzn7Pbm+aXytEdCj2R6s6EhrO0Ip87Z2UOPM979vfe7fO9uWa/WjQ24A7KgltYWAVBRIdhIxbFCzXAIQVvnMyo0dnODLIFupNw0RpoM/Cn+aMNqv+xmhhbNUJJS8i7t1Nsv/RT30dkIW1WMpVR2suDDzySEezYOAED5TXErAl7ruericcUKAw/l8SHfphY7Rw+j4dveMeKCNLNGLdEahPNDLdxLr6rmDgX6rxF2nWNlSZse9fW6xelhcF8Lu2D1oxxqI+ZNq0G/Q5u50RVDTSqkujVVoUPeEYO1rwUWW2cEDhRT",
         "account_id": "303413094647",
-        "freeipa_image_catalog": "958145178466/freeipa-cdh--2103081256",
+        "freeipa_image_catalog": "freeipa-cdh--2103081256",
         "freeipa_image_id": "ami-004ec11be4e369e29",
         "subnets": ["subnet-04024eed8cf2426fc", "subnet-06118f58006e50a3d","subnet-0d158af8d06ee2fcc","subnet-033b3f7f751101ef9", "subnet-0d01ccd888602a535", "subnet-07079829836761e42"],
         "credentials": {

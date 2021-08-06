@@ -29,7 +29,7 @@ with open("skel.json") as json_file:
 cdp_env_info = envs.get(cdp_env_name)
 cdp_env_json = dict(env_json_skel)
 
-del cdp_env_json["networkCidr"] 
+del cdp_env_json["networkCidr"]
 cdp_env_json["environmentName"] = cdp_env_name
 cdp_env_json["credentialName"] = cdp_env_info["credentials"]["cross_account_all_perm"]["credential_name"]
 cdp_env_json["region"] = "eu-central-1"
