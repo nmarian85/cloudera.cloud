@@ -6,7 +6,7 @@ install_cdp_dlake:
     - export DLAKE_NAME=$DLAKE_NAME
   script:
     - cat *.json
-    - cdp --debug datalake create-aws-datalake --cli-input-json file://*_dlake.json || true
+    - cdp --debug datalake create-aws-datalake --cli-input-json file://${DLAKE_NAME}.json || true
     - timeout 90m bash scripts/wait_for_status.sh "DL" "RUNNING"
   artifacts:
     paths:

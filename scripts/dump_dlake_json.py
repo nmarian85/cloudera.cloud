@@ -50,7 +50,7 @@ cdp_dl_json["cloudProviderConfiguration"]["instanceProfile"] = (
     f'{role_iam_arn}:instance-profile/{data_instance_profile}'
 )
 
-with open(f'{dlake_name}_dlake.json', "w", encoding="utf-8") as f:
+with open(f'{dlake_name}.json', "w", encoding="utf-8") as f:
     json.dump(cdp_dl_json, f, ensure_ascii=False, indent=4)
 
 print(dlake_name)
