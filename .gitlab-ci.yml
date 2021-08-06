@@ -3,16 +3,9 @@ variables:
   DOCKER_IMAGE_VERSION: "1.0"
   DOCKER_IMAGE_NAME: cdpcli-ddp
   DOCKER_IMAGE_URL: $DOCKER_REGISTRY/$ARTIFACTORY_REPOSITORY_NAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
-  ACTION: install
+  ACTION: delete
   CDP_ENV_NAME: devo-cdp-lab-env01
   ENV: lab
-
-
-# CCM is used by default for environments registered via CDP web interface, 
-# but it is not used by default for environments 
-# registered via CDP CLI. 
-# Therefore, if you are registering your environment via 
-# CDP CLI and you would like to use CCM, you must explicitly enable it during environment registration.
 
 image: ${DOCKER_IMAGE_URL}
 
@@ -29,7 +22,8 @@ stages:
 include:
   # - 'pipeline/install_cdp_env.yml'
   # - 'pipeline/delete_cdp_env.yml'
-  - 'pipeline/install_cdp_dlake.yml'
+  # - 'pipeline/install_cdp_dlake.yml'
+  - 'pipeline/delete_cdp_dlake.yml'
 
 # cdp environments create-aws-environment \
 # --environment-name cdp-devo-lab-env01 \
