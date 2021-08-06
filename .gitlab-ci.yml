@@ -10,7 +10,7 @@ variables:
   # ENV_NAME: cdp-devo-lab-env01
   # CML_CLUSTERS: "cdp-devo-lab-env01-cml01"
   # CDE_CLUSTERS: "cdp-devo-lab-env01-cde02"
-  ACTION: install_cdp_env
+  ACTION: delete
   CDP_ENV_NAME: devo-cdp-lab-env01
   ENV: lab
 
@@ -36,6 +36,7 @@ stages:
 include:
   # Common steps
   ## Environment independent
+  - 'pipeline/install_cdp_env.yml'
   - 'pipeline/install_cdp_env.yml'
 
 # cdp_env_start:

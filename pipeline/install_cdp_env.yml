@@ -30,12 +30,14 @@ install_cdp_env:
   script:
     - cat *.json
     - cdp --debug environments create-aws-environment --cli-input-json file://${CDP_ENV_NAME}.json || true
-    # - timeout 90m bash scripts/wait_for_status.sh "ENV" "AVAILABLE"
+    - timeout 90m bash scripts/wait_for_status.sh "ENV" "AVAILABLE"
   artifacts:
     paths:
       - "*.json"
     expire_in: 30 days
     when: always
+    rules:
+      - if: $ACTION == "install"
   # rules:
   #   - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "install"
   #     when: manual
