@@ -47,7 +47,7 @@ cdp_dl_json["cloudProviderConfiguration"]["storageBucketLocation"] = (
 )
 role_iam_arn = f'arn:aws:iam::{cdp_env_info["account_id"]}'
 cdp_dl_json["cloudProviderConfiguration"]["instanceProfile"] = (
-    f'{role_iam_arn}:instance-profile/{cdp_dl_json["idbroker_role_instance_profile"]}'
+    f'{role_iam_arn}:instance-profile/{cdp_dl_info["idbroker_role_instance_profile"]}'
 )
 
 with open(f'{dlake_name}.json', "w", encoding="utf-8") as f:
