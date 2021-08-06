@@ -37,7 +37,7 @@ include:
   # Common steps
   ## Environment independent
   - 'pipeline/install_cdp_env.yml'
-  - 'pipeline/install_cdp_env.yml'
+  - 'pipeline/delete_cdp_env.yml'
 
 # cdp_env_start:
 #   stage: start_env
