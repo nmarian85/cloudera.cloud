@@ -32,5 +32,5 @@ EOF
         ;;
     esac
 
-    [ $STATUS == $EXPECTED_STATUS ] && exit 0
+    [ "$STATUS" == $EXPECTED_STATUS ] && exit 0
 done
