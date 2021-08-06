@@ -25,7 +25,8 @@
             "name": "devo-cdp-lab-env01-dl",
             "data_bucket": "devo-cdp-adm-data-i7ijrnh8",
             "data_role": "devo-cdp-datalake-admin-role",
-            "ranger_role": "devo-cdp-datalake-admin-role",
+            "ranger_role": "devo-cdp-ranger-audit-role",
+            "idbroker_role_instance_profile": "devo-cdp-idbroker-role-instance-profile",
             "tags": [],
             "scale": "LIGHT_DUTY"
         },
