@@ -1,15 +1,8 @@
 ---
-#TODO:
-  # create aws credential
-  # create environment using NLB/accessgw/ccm
-
 variables:
   DOCKER_IMAGE_VERSION: "1.0"
   DOCKER_IMAGE_NAME: cdpcli-ddp
   DOCKER_IMAGE_URL: $DOCKER_REGISTRY/$ARTIFACTORY_REPOSITORY_NAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
-  # ENV_NAME: cdp-devo-lab-env01
-  # CML_CLUSTERS: "cdp-devo-lab-env01-cml01"
-  # CDE_CLUSTERS: "cdp-devo-lab-env01-cde02"
   ACTION: install
   CDP_ENV_NAME: devo-cdp-lab-env01
   ENV: lab
@@ -34,10 +27,9 @@ stages:
   - stop
 
 include:
-  # Common steps
-  ## Environment independent
-  - 'pipeline/install_cdp_env.yml'
-  - 'pipeline/delete_cdp_env.yml'
+  # - 'pipeline/install_cdp_env.yml'
+  # - 'pipeline/delete_cdp_env.yml'
+  - 'pipeline/install_cdp_dlake.yml'
 
 # cdp environments create-aws-environment \
 # --environment-name cdp-devo-lab-env01 \

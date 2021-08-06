@@ -1,0 +1,17 @@
+install_cdp_env:
+  stage: install
+  before_script:
+    - cdp datalake create-aws-datalake --generate-cli-skeleton > skel.json
+    - DLAKE_NAME=$(python3 scripts/dump_dlake_json.py --action install --env $ENV --cdp-env-name $CDP_ENV_NAME)
+    - export DLAKE_NAME=$DLAKE_NAME
+  script:
+    - cat *.json
+    - cdp --debug environments create-aws-datalake --cli-input-json file://*_dlake.json || true
+    - timeout 90m bash scripts/wait_for_status.sh "DL" "RUNNING"
+  artifacts:
+    paths:
+      - "*.json"
+    expire_in: 30 days
+    when: always
+  rules:
+    - if: $ACTION == "install"
