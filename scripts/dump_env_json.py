@@ -36,8 +36,10 @@ cdp_env_json["subnetIds"] = []
 cdp_env_json["vpcId"] = cdp_env_info["vpc_id"]
 cdp_env_json["enableTunnel"] = True
 cdp_env_json["tags"] = cdp_env_info["tags"]
-cdp_env_json["securityAccess"]["securityGroupIdForKnox"] = cdp_env_info["sg"]
-cdp_env_json["securityAccess"]["defaultSecurityGroupId"] = cdp_env_info["sg"]
+cdp_env_json["securityAccess"] = {
+    "securityGroupIdForKnox": cdp_env_info["sg"],
+    "defaultSecurityGroupId": cdp_env_info["sg"]
+}
 cdp_env_json["logStorage"]["storageLocationBase"] = f'{cdp_env_info["log_bucket"]}/{cdp_env_name}'
 log_instance_profile = f'{cdp_env_info["log_role"]}-instance-profile'
 role_iam_arn = f'arn:aws:iam::{cdp_env_info["account_id"]}'
