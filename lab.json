@@ -7,6 +7,8 @@
         "idbroker_role": "devo-cdp-idbroker-role",
         "public_key_id": "cdp-devo-key-lab",
         "account_id": "303413094647",
+        "freeipa_image_catalog": "958145178466/freeipa-cdh--2103081256",
+        "freeipa_image_id": "ami-004ec11be4e369e29",
         "credentials": {
             "cross_account_all_perm" : {
             "credential_name": "devo-cdp-lab-env01-ca-all-perm-cred",

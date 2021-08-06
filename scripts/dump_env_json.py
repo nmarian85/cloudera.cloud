@@ -41,6 +41,8 @@ role_iam_arn = f'arn:aws:iam::{cdp_env_info["account_id"]}'
 cdp_env_json["logStorage"]["instanceProfile"] = (
     f'{role_iam_arn}:instance-profile/${log_instance_profile}')
 cdp_env_json["freeIpa"]["instanceCountByGroup"] = 1
+cdp_env_json["image"]["catalog"] = cdp_env_info["freeipa_image_catalog"]
+cdp_env_json["image"]["id"] = cdp_env_info["freeipa_image_id"]
 cdp_env_json["endpointAccessGatewayScheme"] = "PRIVATE"
 # cdp_env_json["authentication"]["publicKey"]
 cdp_env_json["authentication"]["publicKeyId"] = cdp_env_info["public_key_id"]

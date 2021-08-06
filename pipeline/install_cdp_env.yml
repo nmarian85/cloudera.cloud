@@ -30,7 +30,7 @@ install_cdp_env:
   script:
     - cat *.json
     - cdp --debug environments create-aws-environment --cli-input-json file://${CDP_ENV_NAME}.json || true
-    - timeout 90m bash scripts/wait_for_status.sh "ENV" "AVAILABLE"
+    # - timeout 90m bash scripts/wait_for_status.sh "ENV" "AVAILABLE"
   artifacts:
     paths:
       - "*.json"
