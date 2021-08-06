@@ -3,7 +3,7 @@ delete_cdp_env:
   stage: delete
   script:
     - cdp --debug environments delete-environment --environment-name $CDP_ENV_NAME || true
-    - timeout 90m bash wait_for_del.sh "ENV"
+    - timeout 90m bash scripts/wait_for_del.sh "ENV"
   rules:
     - if: $ACTION == "delete"
   # rules:
