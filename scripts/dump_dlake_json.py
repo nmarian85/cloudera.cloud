@@ -56,6 +56,6 @@ with open(f'{dlake_name}.json', "w", encoding="utf-8") as f:
 
 print(
     f'''{dlake_name},'''
-    f'''{role_iam_arn}:role/{cdp_dl_json["ranger_role"]},'''
-    f'''{role_iam_arn}:role/{cdp_dl_json["data_role"]}')'''
+    f'''{role_iam_arn}:role/{cdp_dl_info["ranger_role"]},'''
+    f'''{role_iam_arn}:role/{cdp_dl_info["data_role"]}')'''
 )
