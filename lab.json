@@ -1,7 +1,7 @@
 {
     "devo-cdp-lab-env01": {
         "vpc_id": "vpc-020623901c07da0ac",
-        "sg": "sg-016ca51f4988af6d4",
+        "sg": "sg-0fa5162218bb5ef17",
         "log_bucket": "devo-cdp-adm-logs-ffppyd8q",
         "log_role": "devo-cdp-log-role",
         "idbroker_role": "devo-cdp-idbroker-role",

@@ -21,7 +21,7 @@ stages:
 
 include:
   # - 'pipeline/install_cdp_env.yml'
-  # - 'pipeline/delete_cdp_env.yml'
+  - 'pipeline/delete_cdp_env.yml'
   # - 'pipeline/install_cdp_dlake.yml'
   # - 'pipeline/delete_cdp_dlake.yml'
 
