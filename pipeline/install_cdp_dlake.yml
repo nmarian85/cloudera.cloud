@@ -10,7 +10,7 @@ install_cdp_dlake:
     - cat *.json
     - cdp environments set-id-broker-mappings --set-empty-mappings --environment-name $CDP_ENV_NAME --data-access-role $DATA_ROLE --ranger-audit-role $RANGER_ROLE
     - cdp --debug datalake create-aws-datalake --cli-input-json file://${DLAKE_NAME}.json || true
-    - timeout 90m bash scripts/wait_for_status.sh "DL" "RUNNING"
+    - timeout 120m bash scripts/wait_for_status.sh "DL" "RUNNING"
   artifacts:
     paths:
       - "*.json"
