@@ -1,5 +1,5 @@
 
-delete_cdp_env:
+delete_cdp_dlake:
   stage: delete
   script:
     - DLAKE_NAME=$(cat ${ENV}.json | python -c "import os,json,sys; env_dict=json.load(sys.stdin); print(env_dict[os.getenv('CDP_ENV_NAME')]['datalake']['name'])")
