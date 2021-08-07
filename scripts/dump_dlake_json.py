@@ -32,7 +32,6 @@ cdp_dl_json = dict(env_json_skel)
 
 del cdp_dl_json["runtime"]
 del cdp_dl_json["image"]
-del cdp_dl_json["scale"]
 
 cdp_dl_json["environmentName"] = cdp_env_name
 cdp_dl_json["tags"] = cdp_dl_info["tags"]
