@@ -7,8 +7,6 @@ delete_cdp_dlake:
     - cdp --debug datalake delete-datalake --datalake-name $DLAKE_NAME --force || true
     - timeout 90m bash scripts/wait_for_del.sh "DL"
   rules:
-    - if: $ACTION == "delete"
-  # rules:
-  #   - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "install"
-  #     when: manual
+    - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete"
+      when: manual
 

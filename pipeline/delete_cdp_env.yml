@@ -5,8 +5,6 @@ delete_cdp_env:
     - cdp --debug environments delete-environment --environment-name $CDP_ENV_NAME || true
     - timeout 90m bash scripts/wait_for_del.sh "ENV"
   rules:
-    - if: $ACTION == "delete"
-  # rules:
-  #   - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "install"
-  #     when: manual
-
+    - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete"
+      when: manual
+  needs: ["delete_cdp_dlake"]
