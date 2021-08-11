@@ -15,16 +15,17 @@ default:
 
 stages:
   - install
-  - delete
+  - delete_cdp_dlake
+  - delete_cdp_env
   - start
   - stop
 
 #TODO: add needs relationship for install
 include:
-  - 'pipeline/delete_cdp_dlake.yml'
-  - 'pipeline/delete_cdp_env.yml'
   - 'pipeline/install_cdp_env.yml'
   - 'pipeline/install_cdp_dlake.yml'
+  -  'pipeline/delete_cdp_dlake.yml'
+  - 'pipeline/delete_cdp_env.yml'
 
 # cdp environments create-aws-environment \
 # --environment-name cdp-devo-lab-env01 \
