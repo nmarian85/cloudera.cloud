@@ -1,5 +1,5 @@
 ---
-cdp_env_start:
+start_cdp_env:
   stage: start
   script:
     - cdp environments start-environment --environment-name $CDP_ENV_NAME || true

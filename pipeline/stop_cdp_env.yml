@@ -1,5 +1,5 @@
 ---
-cdp_env_stop:
+stop_cdp_env:
   stage: stop
   script:
     - cdp environments stop-environment --environment-name $CDP_ENV_NAME || true
