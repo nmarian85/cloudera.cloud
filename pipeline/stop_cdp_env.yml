@@ -2,7 +2,7 @@
 cdp_env_stop:
   stage: stop
   script:
-    - cdp environments stop-environment --environment-name $ENV_NAME || true
-    - timeout 20m bash scripts/wait_for_status.sh "ENV_STOPPED"
+    - cdp environments stop-environment --environment-name $CDP_ENV_NAME || true
+    - timeout 20m bash scripts/wait_for_status.sh "ENV" "ENV_STOPPED"
   rules:
     - if: $ACTION == "stop"

@@ -2,7 +2,7 @@
 cdp_env_start:
   stage: start
   script:
-    - cdp environments start-environment --environment-name $ENV_NAME || true
-    - timeout 20m bash scripts/wait_for_status.sh "AVAILABLE"
+    - cdp environments start-environment --environment-name $CDP_ENV_NAME || true
+    - timeout 20m bash scripts/wait_for_status.sh "ENV" "AVAILABLE"
   rules:
     - if: $ACTION == "start"
