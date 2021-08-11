@@ -3,7 +3,16 @@ variables:
   DOCKER_IMAGE_VERSION: "1.0"
   DOCKER_IMAGE_NAME: cdpcli-ddp
   DOCKER_IMAGE_URL: $DOCKER_REGISTRY/$ARTIFACTORY_REPOSITORY_NAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
-  ACTION: stop # can be install, delete, start or stop
+  # can be one of the following:
+  # - install (installs environment and datalake)
+  # - delete (deletes environment and datalake)
+  # - start (starts environment and datalake)
+  # - stop (stops environment and datalake)
+  # - install_cml (installs CML cluster)
+  # - delete_cml (installs CML cluster)
+  # - install_cde (installs CDE cluster)
+  # - delete_cde (deletes CDE cluster)
+  ACTION: stop 
   CDP_ENV_NAME: devo-cdp-lab-env01
   ENV: lab
 
@@ -20,6 +29,7 @@ stages:
   - delete_cdp_env
   - start
   - stop
+  - install_cml
 
 include:
   - 'pipeline/install_cdp_env.yml'
