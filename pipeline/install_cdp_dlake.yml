@@ -1,5 +1,5 @@
 install_cdp_dlake:
-  stage: install
+  stage: install_cdp_dlake
   before_script:
     - cdp datalake create-aws-datalake --generate-cli-skeleton > skel.json
     - OUT=$(python3 scripts/dump_dlake_json.py --action install --env $ENV --cdp-env-name $CDP_ENV_NAME)

@@ -23,7 +23,7 @@
 
 
 install_cdp_env:
-  stage: install
+  stage: install_cdp_env
   before_script:
     - cdp environments create-aws-environment --generate-cli-skeleton > skel.json
     - python3 scripts/dump_env_json.py --action install --env $ENV --cdp-env-name $CDP_ENV_NAME
