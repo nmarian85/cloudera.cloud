@@ -7,4 +7,3 @@ delete_cdp_env:
   rules:
     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete"
       when: manual
-  needs: ["delete_cdp_dlake"]
