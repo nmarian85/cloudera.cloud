@@ -71,7 +71,7 @@
             }
         },
         "cde_clusters": {
-            "devo-cdp-lab-env01-cde02": {
+            "devo-cdp-lab-env01-cde01": {
                 "instance_type": "c5.2xlarge",
                 "min_instances": 1,
                 "max_instances": 5,
