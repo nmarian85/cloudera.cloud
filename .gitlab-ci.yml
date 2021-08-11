@@ -16,7 +16,7 @@ variables:
   CDP_ENV_NAME: devo-cdp-lab-env01
   ENV: lab
   CML_CLUSTERS: 
-  - "devo-cdp-lab-env01-cml01"
+  - devo-cdp-lab-env01-cml01
 
 image: ${DOCKER_IMAGE_URL}
 
