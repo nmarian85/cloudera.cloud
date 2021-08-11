@@ -73,13 +73,11 @@ if args.action == "install":
     cml_json_ig[1]["autoscaling"]["maxInstances"] = cml_cluster["ml_worker_info"]["max_instances"]
 
     cml_json["provisionK8sRequest"]["instanceGroups"] = list(cml_json_ig)
-    if cml_cluster["provision"] is True:
-        with open(f"{cluster_name}.json", "w", encoding="utf-8") as f:
-            json.dump(cml_json, f, ensure_ascii=False, indent=4)
+    with open(f"{cluster_name}.json", "w", encoding="utf-8") as f:
+        json.dump(cml_json, f, ensure_ascii=False, indent=4)
 
 elif args.action == "delete":
     cml_json["removeStorage"] = True
     cml_json["force"] = False
-    if cml_cluster["delete"] is True:
-        with open(f"{cluster_name}.json", "w", encoding="utf-8") as f:
-            json.dump(cml_json, f, ensure_ascii=False, indent=4)
+    with open(f"{cluster_name}.json", "w", encoding="utf-8") as f:
+        json.dump(cml_json, f, ensure_ascii=False, indent=4)
