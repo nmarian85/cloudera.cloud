@@ -12,7 +12,7 @@ variables:
   # - delete_cml (installs CML cluster)
   # - install_cde (installs CDE cluster)
   # - delete_cde (deletes CDE cluster)
-  ACTION: install_cml 
+  ACTION: delete_cml 
   CDP_ENV_NAME: devo-cdp-lab-env01
   ENV: lab
   CML_CLUSTERS: "devo-cdp-lab-env01-cml01" # space delimited as per Gitlab variable limitation (export can be used as well)
@@ -31,6 +31,7 @@ stages:
   - start
   - stop
   - install_cml
+  - delete_cml
 
 include:
   - 'pipeline/install_cdp_env.yml'
@@ -40,65 +41,9 @@ include:
   - 'pipeline/start_cdp_env.yml'
   - 'pipeline/stop_cdp_env.yml'
   - 'pipeline/install_cml.yml'
+  - 'pipeline/delete_cml.yml'
 
-# cdp_env_stop:
-#   stage: delete
-#   script:
-#     - cdp environments stop-environment --environment-name $ENV_NAME || true
-#     - timeout 20m bash wait_for_status.sh "ENV" "ENV_STOPPED"
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete"
-#       when: manual
-
-# cml_provision:
-#   stage: provision
-#   before_script:
-#     - cdp ml create-workspace --generate-cli-skeleton > skel.json
-#   script:
-#     - >
-#       for CML_CLUSTER_NAME in $CML_CLUSTERS; do
-#         python3 cml_json.py --action provision --cluster $CML_CLUSTER_NAME --env $ENV_NAME
-#         cat ${CML_CLUSTER_NAME}.json
-#         cdp --debug ml create-workspace --cli-input-json file://${CML_CLUSTER_NAME}.json || true
-#       done
-#     - >
-#       for CML_CLUSTER_NAME in $CML_CLUSTERS; do
-#         export CML_CLUSTER_NAME=$CML_CLUSTER_NAME
-#         timeout 90m bash wait_for_status.sh "CML" "installation:finished"
-#       done
-#   artifacts:
-#     paths:
-#       - "*.json"
-#     expire_in: 30 days
-#     when: always
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "provision"
-#       when: manual
-
-# cml_delete:
-#   stage: delete
-#   before_script:
-#     - cdp ml delete-workspace --generate-cli-skeleton > skel.json
-#   script:
-#     - >
-#       for CML_CLUSTER_NAME in $CML_CLUSTERS; do
-#         python3 cml_json.py --action delete --cluster $CML_CLUSTER_NAME --env $ENV_NAME
-#         cat ${CML_CLUSTER_NAME}.json
-#         cdp --debug ml delete-workspace --workspace-name $CML_CLUSTER_NAME --cli-input-json file://${CML_CLUSTER_NAME}.json || true
-#       done
-#     - >
-#       for CML_CLUSTER_NAME in $CML_CLUSTERS; do
-#         export CML_CLUSTER_NAME=$CML_CLUSTER_NAME
-#         timeout 90m bash wait_for_del.sh "CML"
-#       done
-#   artifacts:
-#     paths:
-#       - "*.json"
-#     expire_in: 30 days
-#     when: always
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete"
-#       when: manual
+  #TODO: Add 'grant access to admin/jumpserver role AWS IAM role EKS cluster control plane'
 
 # cde_enable:
 #   stage: provision

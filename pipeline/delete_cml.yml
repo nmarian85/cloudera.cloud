@@ -1,0 +1,24 @@
+delete_cml:
+  stage: delete_cml
+  before_script:
+    - cdp ml delete-workspace --generate-cli-skeleton > skel.json
+  script:
+    - >
+      for CML_CLUSTER_NAME in $CML_CLUSTERS; do
+        python3 scripts/dump_cml_json.py --action delete --cmlcluster $CML_CLUSTER_NAME --env $ENV --cdp-env-name $CDP_ENV_NAME
+        cat ${CML_CLUSTER_NAME}.json
+        cdp --debug ml delete-workspace --workspace-name $CML_CLUSTER_NAME --cli-input-json file://${CML_CLUSTER_NAME}.json || true
+      done
+    - >
+      for CML_CLUSTER_NAME in $CML_CLUSTERS; do
+        export CML_CLUSTER_NAME=$CML_CLUSTER_NAME
+        timeout 90m bash wait_for_del.sh "CML"
+      done
+  artifacts:
+    paths:
+      - "*.json"
+    expire_in: 30 days
+    when: always
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete_cml"
+      when: manual
