@@ -42,7 +42,7 @@ include:
   - 'pipeline/install_cml.yml'
   - 'pipeline/delete_cml.yml'
   - 'pipeline/install_cde.yml'
-  - 'pipeline/delete_cde.yml'
+  # - 'pipeline/delete_cde.yml'
 
   #TODO: Add 'grant access to admin/jumpserver role AWS IAM role EKS cluster control plane'
 
