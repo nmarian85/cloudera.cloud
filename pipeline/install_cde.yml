@@ -1,5 +1,5 @@
 install_cde:
-  stage: install
+  stage: install_cde
   before_script:
     - cdp de enable-service --generate-cli-skeleton > skel.json
   script:
