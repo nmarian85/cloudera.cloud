@@ -23,13 +23,13 @@
 
 
 install_cdp_env:
-  stage: install
+  stage: install_cdp_env
   before_script:
     - cdp environments create-aws-environment --generate-cli-skeleton > skel.json
     - python3 scripts/dump_env_json.py --action install --env $ENV --cdp-env-name $CDP_ENV_NAME
   script:
     - cat *.json
-    - cdp --debug environments create-aws-environment --cli-input-json file://${CDP_ENV_NAME}.json
+    - cdp --debug environments create-aws-environment --cli-input-json file://${CDP_ENV_NAME}.json || true
     - timeout 90m bash scripts/wait_for_status.sh "ENV" "AVAILABLE"
   artifacts:
     paths:
@@ -37,7 +37,5 @@ install_cdp_env:
     expire_in: 30 days
     when: always
   rules:
-    - if: $ACTION == "install"
-  # rules:
-  #   - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "install"
-  #     when: manual
+    - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "install"
+      when: manual

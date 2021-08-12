@@ -1,0 +1,12 @@
+
+delete_cdp_dlake:
+  stage: delete_cdp_dlake
+  script:
+    - DLAKE_NAME=$(cat ${ENV}.json | python -c "import os,json,sys; env_dict=json.load(sys.stdin); print(env_dict[os.getenv('CDP_ENV_NAME')]['datalake']['name'])")
+    - export DLAKE_NAME=$DLAKE_NAME
+    - cdp --debug datalake delete-datalake --datalake-name $DLAKE_NAME --force || true
+    - timeout 90m bash scripts/wait_for_del.sh "DL"
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete"
+      when: manual
+

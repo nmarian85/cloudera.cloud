@@ -1,25 +1,21 @@
 ---
-#TODO:
-  # create aws credential
-  # create environment using NLB/accessgw/ccm
-
 variables:
   DOCKER_IMAGE_VERSION: "1.0"
   DOCKER_IMAGE_NAME: cdpcli-ddp
   DOCKER_IMAGE_URL: $DOCKER_REGISTRY/$ARTIFACTORY_REPOSITORY_NAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
-  # ENV_NAME: cdp-devo-lab-env01
-  # CML_CLUSTERS: "cdp-devo-lab-env01-cml01"
-  # CDE_CLUSTERS: "cdp-devo-lab-env01-cde02"
-  ACTION: install
+  # can be one of the following:
+  # - install (installs environment and datalake)
+  # - delete (deletes environment and datalake)
+  # - start (starts environment and datalake)
+  # - stop (stops environment and datalake)
+  # - install_cml (installs CML cluster)
+  # - delete_cml (installs CML cluster)
+  # - install_cde (installs CDE cluster)
+  # - delete_cde (deletes CDE cluster)
+  ACTION: delete_cml 
   CDP_ENV_NAME: devo-cdp-lab-env01
   ENV: lab
-
-
-# CCM is used by default for environments registered via CDP web interface, 
-# but it is not used by default for environments 
-# registered via CDP CLI. 
-# Therefore, if you are registering your environment via 
-# CDP CLI and you would like to use CCM, you must explicitly enable it during environment registration.
+  CML_CLUSTERS: "devo-cdp-lab-env01-cml01" # space delimited as per Gitlab variable limitation (export can be used as well)
 
 image: ${DOCKER_IMAGE_URL}
 
@@ -28,113 +24,26 @@ default:
     - docker
 
 stages:
-  - install
-  - delete
+  - install_cdp_env
+  - install_cdp_dlake
+  - delete_cdp_dlake
+  - delete_cdp_env
   - start
   - stop
+  - install_cml
+  - delete_cml
 
 include:
-  # Common steps
-  ## Environment independent
   - 'pipeline/install_cdp_env.yml'
+  - 'pipeline/install_cdp_dlake.yml'
+  - 'pipeline/delete_cdp_dlake.yml'
   - 'pipeline/delete_cdp_env.yml'
+  - 'pipeline/start_cdp_env.yml'
+  - 'pipeline/stop_cdp_env.yml'
+  - 'pipeline/install_cml.yml'
+  - 'pipeline/delete_cml.yml'
 
-# cdp environments create-aws-environment \
-# --environment-name cdp-devo-lab-env01 \
-# --credential-name cdp-devo-policy-lab \
-# --region "eu-central-1" \
-# --security-access defaultSecurityGroupId=sg-06475680081c165f6,securityGroupIdForKnox=sg-06475680081c165f6 \
-# --description "First CDP environment" \
-# --enable-tunnel \
-# --authentication publicKeyId="cdp-devo-key-lab" \
-# --log-storage storageLocationBase=s3a://cdp-devo-lab-env01-dl01-admin-logs,instanceProfile=arn:aws:iam::405945523162:instance-profile/env01-log-access-instance-profile \
-# --vpc-id vpc-0132344c3ea4aa8e7 \
-# --subnet-ids subnet-0e27b087b7fe35ff6 subnet-01243e9afaaf36d3b subnet-012c688e22929b604 subnet-029106fec17ba4c79 subnet-02cda3e72e4840aef subnet-0c07b692fe1c6f3d7 \
-# --s3-guard-table-name env01-dynamodb-table \
-# --free-ipa instanceCountByGroup=1 
-
-#   cdp environments set-id-broker-mappings \
-# --environment-name cdp-devo-lab-env01 \
-# --data-access-role arn:aws:iam::405945523162:role/env01-datalake-admin-role \
-# --ranger-audit-role arn:aws:iam::405945523162:role/env01-ranger-audit-role \
-# --mappings '[{"accessorCrn":"crn:altus:iam:us-west-1:0e62c9c8-e9cd-483b-81b3-651fe7a22deb:group:ecbt1-igamfs-app-cdp-admin/0ed6b112-549e-4c85-b315-547935cc6f9b","role":"arn:aws:iam::405945523162:role/env01-datalake-admin-role"},{"accessorCrn":"crn:altus:iam:us-west-1:0e62c9c8-e9cd-483b-81b3-651fe7a22deb:group:ecbt1-igamfs-app-cdp-expert/2a9079df-74a2-4594-a1d2-f5dfcd8906f6","role":"arn:aws:iam::405945523162:role/env01-datalake-admin-role"},{"accessorCrn":"crn:altus:iam:us-west-1:0e62c9c8-e9cd-483b-81b3-651fe7a22deb:user:ded06801-4bed-41b3-9f99-edadd851bcf2","role":"arn:aws:iam::405945523162:role/devo-discdata-s3-access-airosam-iam-role"},{"accessorCrn":"crn:altus:iam:us-west-1:0e62c9c8-e9cd-483b-81b3-651fe7a22deb:user:ef7aac7f-ba34-4be3-9d13-1d239c438d58","role":"arn:aws:iam::405945523162:role/devo-discdata-s3-access-mariann-iam-role"}]' 
-
-
-# cdp datalake create-aws-datalake \
-# --datalake-name cdp-devo-lab-env01-dl01 \
-# --environment-name cdp-devo-lab-env01 \
-# --cloud-provider-configuration instanceProfile=arn:aws:iam::405945523162:instance-profile/env01-data-access-instance-profile,storageBucketLocation=s3a://cdp-devo-lab-env01-dl01-admin-data \
-# --scale LIGHT_DUTY \
-# --runtime 7.2.7 
-
-
-# cdp_env_start:
-#   stage: start_env
-#   script:
-#     - cdp environments start-environment --environment-name $ENV_NAME || true
-#     - timeout 20m bash wait_for_status.sh "ENV" "AVAILABLE"
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "provision"
-#       when: manual
-
-# cdp_env_stop:
-#   stage: delete
-#   script:
-#     - cdp environments stop-environment --environment-name $ENV_NAME || true
-#     - timeout 20m bash wait_for_status.sh "ENV" "ENV_STOPPED"
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete"
-#       when: manual
-
-# cml_provision:
-#   stage: provision
-#   before_script:
-#     - cdp ml create-workspace --generate-cli-skeleton > skel.json
-#   script:
-#     - >
-#       for CML_CLUSTER_NAME in $CML_CLUSTERS; do
-#         python3 cml_json.py --action provision --cluster $CML_CLUSTER_NAME --env $ENV_NAME
-#         cat ${CML_CLUSTER_NAME}.json
-#         cdp --debug ml create-workspace --cli-input-json file://${CML_CLUSTER_NAME}.json || true
-#       done
-#     - >
-#       for CML_CLUSTER_NAME in $CML_CLUSTERS; do
-#         export CML_CLUSTER_NAME=$CML_CLUSTER_NAME
-#         timeout 90m bash wait_for_status.sh "CML" "installation:finished"
-#       done
-#   artifacts:
-#     paths:
-#       - "*.json"
-#     expire_in: 30 days
-#     when: always
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "provision"
-#       when: manual
-
-# cml_delete:
-#   stage: delete
-#   before_script:
-#     - cdp ml delete-workspace --generate-cli-skeleton > skel.json
-#   script:
-#     - >
-#       for CML_CLUSTER_NAME in $CML_CLUSTERS; do
-#         python3 cml_json.py --action delete --cluster $CML_CLUSTER_NAME --env $ENV_NAME
-#         cat ${CML_CLUSTER_NAME}.json
-#         cdp --debug ml delete-workspace --workspace-name $CML_CLUSTER_NAME --cli-input-json file://${CML_CLUSTER_NAME}.json || true
-#       done
-#     - >
-#       for CML_CLUSTER_NAME in $CML_CLUSTERS; do
-#         export CML_CLUSTER_NAME=$CML_CLUSTER_NAME
-#         timeout 90m bash wait_for_del.sh "CML"
-#       done
-#   artifacts:
-#     paths:
-#       - "*.json"
-#     expire_in: 30 days
-#     when: always
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete"
-#       when: manual
+  #TODO: Add 'grant access to admin/jumpserver role AWS IAM role EKS cluster control plane'
 
 # cde_enable:
 #   stage: provision
