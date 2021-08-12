@@ -9,7 +9,7 @@ my_parser = argparse.ArgumentParser(description="Manage CML cluster")
 my_parser.add_argument(
     "--action", choices=["install", "delete"], help="install or delete CML cluster",
 )
-my_parser.add_argument("-e", "--env", help="CDP env name")
+my_parser.add_argument("-e", "--env", help="Environment (e.g. lab)")
 my_parser.add_argument("-c", "--cdp-env-name", help="CDP env name")
 my_parser.add_argument("-m", "--cmlcluster", help="CML cluster name")
 

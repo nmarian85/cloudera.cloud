@@ -1,0 +1,24 @@
+install_cde:
+  stage: install
+  before_script:
+    - cdp de enable-service --generate-cli-skeleton > skel.json
+  script:
+    - >
+      for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
+        python3 scripts/dump_cde_json.py --action install --cdecluster $CDE_CLUSTER_NAME --env $ENV --cdp-env-name $CDP_ENV_NAME
+        cat ${CDE_CLUSTER_NAME}.json
+        cdp --debug de enable-service --cli-input-json file://${CDE_CLUSTER_NAME}.json || true
+      done
+    - >
+      for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
+        export CDE_CLUSTER_NAME=$CDE_CLUSTER_NAME
+        timeout 90m bash scripts/wait_for_status.sh "CDE" "ClusterCreationCompleted"
+      done
+  artifacts:
+    paths:
+      - "*.json"
+    expire_in: 30 days
+    when: always
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "install_cde"
+      when: manual
