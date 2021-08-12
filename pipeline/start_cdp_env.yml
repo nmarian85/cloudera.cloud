@@ -6,4 +6,3 @@ start_cdp_env:
     - timeout 30m bash scripts/wait_for_status.sh "ENV" "AVAILABLE"
   rules:
     - if: $ACTION == "start" || $ACTION == "install_cml" || $ACTION == "delete_cml"
-      when: manual
