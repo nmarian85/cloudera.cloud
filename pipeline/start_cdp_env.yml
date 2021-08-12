@@ -5,4 +5,4 @@ start_cdp_env:
     - cdp environments start-environment --environment-name $CDP_ENV_NAME || true
     - timeout 30m bash scripts/wait_for_status.sh "ENV" "AVAILABLE"
   rules:
-    - if: $ACTION == "start" || $ACTION == "install_cml" || $ACTION == "delete_cml"
+    - if: $ACTION == "start" || $ACTION == "install_cml" || $ACTION == "delete_cml" || $ACTION == "install_cde" || $ACTION == "delete_cde"
