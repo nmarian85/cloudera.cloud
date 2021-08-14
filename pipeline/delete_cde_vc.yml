@@ -1,14 +1,14 @@
-install_cde_vc:
-  stage: install_cde_vc
+delete_cde_vc:
+  stage: delete_cde_vc
   before_script:
-    - cdp de create-vc --generate-cli-skeleton > skel.json
+    - cdp de delete-vc --generate-cli-skeleton > skel.json
     - cdp de list-services > services.json
   script:
     - >
       for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
-        python3 scripts/dump_cde_vc_json.py --action install --cdecluster $CDE_CLUSTER_NAME --env $ENV --cdp-env-name $CDP_ENV_NAME
+        python3 scripts/dump_cde_vc_json.py --action delete --cdecluster $CDE_CLUSTER_NAME --env $ENV --cdp-env-name $CDP_ENV_NAME
         cat *.json
-        ls -1 *_vc.json | xargs -I '{}' cdp --debug de create-vc --cli-input-json file://'{}' || true
+        ls -1 *_vc.json | xargs -I '{}' cdp --debug de delete-vc --cli-input-json file://'{}' || true
       done
     # - >
     #   for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
@@ -21,5 +21,5 @@ install_cde_vc:
     expire_in: 30 days
     when: always
   rules:
-    - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "install_cde_vc"
+    - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete_cde_vc"
       # when: manual

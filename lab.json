@@ -95,7 +95,7 @@
                         "runtime_spot_component": "DEFAULT"
                     },
                     "devo-cdp-lab-env01-cde01-vc02": {
-                        "cpu_requests": "50",
+                        "cpu_requests": "20",
                         "memory_requests": "20Gi",
                         "chart_value_overrides": [
                             {
