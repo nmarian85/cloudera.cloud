@@ -3,6 +3,11 @@ import json
 import os
 import argparse
 
+def get_vc_id(all_vcs, vc_name):
+    for vc in all_vcs["vcs"]:
+        if vc["vcName"] == vc_name:
+            return vc["vcId"]
+
 my_parser = argparse.ArgumentParser(description="Install or delete CDE virtual clusters")
 
 # Add the arguments
@@ -70,8 +75,3 @@ for vc_name, vc_info in vcs.items():
         cde_vc_json["vcId"] = get_vc_id(all_vcs, vc_name)
     with open(f"{vc_name}_vc.json", "w", encoding="utf-8") as f:
         json.dump(cde_vc_json, f, ensure_ascii=False, indent=4)
-
-def get_vc_id(all_vcs, vc_name):
-    for vc in all_vcs["vcs"]:
-        if vc["vcName"] == vc_name:
-            return vc["vcId"]
