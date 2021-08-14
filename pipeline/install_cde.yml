@@ -20,5 +20,5 @@ install_cde:
     expire_in: 30 days
     when: always
   rules:
-    - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "install_cde"
+    - if: $CI_PIPELINE_SOURCE != "schedule" && ( $ACTION == "install_cde" || $ACTION == "install_cde_vc")
       when: manual

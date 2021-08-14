@@ -1,5 +1,5 @@
 install_cde_vc:
-  stage: install_cde
+  stage: install_cde_vc
   before_script:
     - cdp de create-vc --generate-cli-skeleton > skel.json
   script:
@@ -21,5 +21,5 @@ install_cde_vc:
     expire_in: 30 days
     when: always
   rules:
-    - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "install_cde"
+    - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "install_cde_vc"
       when: manual

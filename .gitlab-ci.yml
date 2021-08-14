@@ -33,6 +33,7 @@ stages:
   - install_cml
   - delete_cml
   - install_cde
+  - install_cde_vc
 
 include:
   - 'pipeline/install_cdp_env.yml'
