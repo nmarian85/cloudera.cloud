@@ -84,7 +84,7 @@
                 "tags": {},
                 "vcs": {
                     "devo-cdp-lab-env01-cde01-vc01": {
-                        "cpu_requests": 50,
+                        "cpu_requests": "50",
                         "memory_requests": "15Gi",
                         "chart_value_overrides": [
                             {
@@ -95,7 +95,7 @@
                         "runtime_spot_component": ""
                     },
                     "devo-cdp-lab-env01-cde01-vc02": {
-                        "cpu_requests": 50,
+                        "cpu_requests": "50",
                         "memory_requests": "20Gi",
                         "chart_value_overrides": [
                             {
