@@ -61,4 +61,4 @@ Most of the actions are manual in order to allow the user to confirm the action 
 
 * Commit the code and run the pipeline
 
-# TODO: Add section with documentation for each cluster type
+# TODO: Add section with documentation for each cluster type and talk about idempotency and scripts

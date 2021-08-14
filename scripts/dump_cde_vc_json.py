@@ -47,7 +47,7 @@ with open("skel.json") as json_file:
 with open("services.json") as json_file:
     services = json.load(json_file)
 
-for service in services:
+for service in services["services"]:
     if service["name"] == cluster_name:
         cluster_id = service["clusterId"]
 
