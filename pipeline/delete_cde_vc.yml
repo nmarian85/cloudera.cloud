@@ -6,7 +6,9 @@ delete_cde_vc:
   script:
     - >
       for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
-        python3 scripts/dump_cde_vc_json.py --action delete --cdecluster $CDE_CLUSTER_NAME --env $ENV --cdp-env-name $CDP_ENV_NAME
+        CLUSTER_ID=$(python3 scripts/get_cde_cluster_id)
+        cdp de list-vcs --cluster-id $CLUSTER_ID > vcs.json
+        python3 scripts/dump_cde_vc_json.py --action delete --cdeclusterid $CLUSTER_ID --cdecluster $CDE_CLUSTER_NAME --env $ENV --cdp-env-name $CDP_ENV_NAME
         cat *.json
         ls -1 *_vc.json | xargs -I '{}' cdp --debug de delete-vc --cli-input-json file://'{}' || true
       done
