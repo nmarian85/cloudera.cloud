@@ -103,7 +103,7 @@
                                 "overrides": "airflow.enabled:true"
                             }
                         ],
-                        "runtime_spot_component": ""
+                        "runtime_spot_component": "DEFAULT"
                     }
                 }
             }

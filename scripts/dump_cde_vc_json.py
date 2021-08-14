@@ -64,6 +64,10 @@ for vc_name, vc_info in vcs.items():
     cde_vc_json["cpuRequests"] = vc_info["cpu_requests"]
     cde_vc_json["memoryRequests"] = vc_info["memory_requests"]
     cde_vc_json["chartValueOverrides"] = vc_info["chart_value_overrides"]
-    cde_vc_json["runtimeSpotComponent"] = vc_info["runtime_spot_component"]
+    rsc = vc_info["runtime_spot_component"]
+    if rsc == "DEFAULT":
+        del cde_vc_json["runtimeSpotComponent"]
+    else:
+        cde_vc_json["runtimeSpotComponent"] = rsc
     with open(f"{vc_name}_vc.json", "w", encoding="utf-8") as f:
         json.dump(cde_vc_json, f, ensure_ascii=False, indent=4)
