@@ -92,7 +92,7 @@
                                 "overrides": "airflow.enabled:true"
                             }
                         ],
-                        "runtime_spot_component": ""
+                        "runtime_spot_component": "DEFAULT"
                     },
                     "devo-cdp-lab-env01-cde01-vc02": {
                         "cpu_requests": "50",
