@@ -6,6 +6,7 @@ delete_cde_vc:
   script:
     - >
       for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
+        export CDE_CLUSTER_NAME=$CDE_CLUSTER_NAME
         CLUSTER_ID=$(python3 scripts/get_cde_cluster_id.py)
         cdp de list-vcs --cluster-id $CLUSTER_ID > vcs.json
         python3 scripts/dump_cde_vc_json.py --action delete --cdeclusterid $CLUSTER_ID --cdecluster $CDE_CLUSTER_NAME --env $ENV --cdp-env-name $CDP_ENV_NAME
