@@ -22,7 +22,6 @@ args = my_parser.parse_args()
 cdp_env_name = args.cdp_env_name
 env = args.env
 cluster_name = args.cdecluster
-cluster_id = args.clusterid
 
 with open(f"{env}.json", "r") as read_file:
     envs = json.load(read_file)

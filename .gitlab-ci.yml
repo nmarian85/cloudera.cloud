@@ -11,7 +11,9 @@ variables:
 # delete_cml (deletes a CML cluster)
 # install_cde (installs a CDE cluster)
 # delete_cde (deletes a CDE cluster)
-  ACTION: install_cde
+# install_cde_vc (installs a CDE VC cluster)
+# delete_cde_vc (deletes a CDE VC cluster)
+  ACTION: install_cde_vc
   CDP_ENV_NAME: devo-cdp-lab-env01
   ENV: lab
   CML_CLUSTERS: "devo-cdp-lab-env01-cml01" # space delimited list of CML clusters as per Gitlab variable limitation
