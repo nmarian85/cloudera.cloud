@@ -25,7 +25,6 @@ for service in services:
         print(service.get("status"))
 EOF
             STATUS=$(cdp de list-services | python get_cluster_id.py)
-            echo $STATUS
         ;;
         
         ENV)

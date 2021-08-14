@@ -60,3 +60,5 @@ Most of the actions are manual in order to allow the user to confirm the action 
 * If installing or deleting CDE/CML/CDW clusters please define them in the env variable list (e.g. `CML_CLUSTERS` when working with CML clusters)
 
 * Commit the code and run the pipeline
+
+# TODO: Add section with documentation for each cluster type

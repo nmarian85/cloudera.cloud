@@ -59,3 +59,5 @@ if args.action == "install":
 
     with open(f"{cluster_name}.json", "w", encoding="utf-8") as f:
         json.dump(cde_json, f, ensure_ascii=False, indent=4)
+
+

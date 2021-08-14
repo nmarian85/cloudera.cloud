@@ -11,7 +11,7 @@ variables:
 # delete_cml (deletes a CML cluster)
 # install_cde (installs a CDE cluster)
 # delete_cde (deletes a CDE cluster)
-  ACTION: install_cml
+  ACTION: install_cde
   CDP_ENV_NAME: devo-cdp-lab-env01
   ENV: lab
   CML_CLUSTERS: "devo-cdp-lab-env01-cml01" # space delimited list of CML clusters as per Gitlab variable limitation
@@ -44,6 +44,7 @@ include:
   - 'pipeline/install_cml.yml'
   - 'pipeline/delete_cml.yml'
   - 'pipeline/install_cde.yml'
+  - 'pipeline/install_cde_vc.yml'
   # - 'pipeline/delete_cde.yml'
 
   #TODO: Add 'grant access to admin/jumpserver role AWS IAM role EKS cluster control plane'
@@ -69,22 +70,6 @@ include:
 #     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete"
 #       when: manual
 
-# cde_provision_vc:
-#   stage: provision
-#   tags:
-#     - docker
-#   script:
-#     - cdp de create-vc --generate-cli-skeleton > vc_skel.json
-#     - cat vc_skel.json | python3 vc_cde_json_create.py > vc_env.json
-#     - cat vc_env.json
-#     - cdp --debug de create-vc --cli-input-json file://vc_env.json
-#   artifacts:
-#     paths:
-#       - "*.json"
-#     expire_in: 30 days
-#     when: always
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete"
-#       when: manual
+
 
 
