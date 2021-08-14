@@ -22,4 +22,4 @@ install_cde_vc:
     when: always
   rules:
     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "install_cde_vc"
-      when: manual
+      # when: manual

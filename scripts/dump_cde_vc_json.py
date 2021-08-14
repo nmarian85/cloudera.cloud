@@ -57,7 +57,7 @@ if args.cdevccluster:
 else:
     vcs = cde_cluster["vcs"]
 
-for vc_name, vc_info in vcs:
+for vc_name, vc_info in vcs.items():
     cde_vc_json = dict(cde_vc_json_skel)
     cde_vc_json["name"] = vc_name
     cde_vc_json["clusterId"] = cluster_id

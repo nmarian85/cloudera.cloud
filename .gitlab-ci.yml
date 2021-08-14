@@ -42,11 +42,11 @@ include:
   - 'pipeline/install_cdp_dlake.yml'
   - 'pipeline/delete_cdp_dlake.yml'
   - 'pipeline/delete_cdp_env.yml'
-  - 'pipeline/start_cdp_env.yml'
+  # - 'pipeline/start_cdp_env.yml'
   - 'pipeline/stop_cdp_env.yml'
   - 'pipeline/install_cml.yml'
   - 'pipeline/delete_cml.yml'
-  - 'pipeline/install_cde.yml'
+  # - 'pipeline/install_cde.yml'
   - 'pipeline/install_cde_vc.yml'
   # - 'pipeline/delete_cde.yml'
 
