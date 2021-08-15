@@ -18,7 +18,7 @@ args = my_parser.parse_args()
 with open("skel.json") as json_file:
     cde_vc_json_skel = json.load(json_file)
 
-for cluster_name in os.getenv("CDE_CLUSTERS"):
+for cluster_name in os.getenv("CDE_CLUSTERS").split():
     cde_cluster = env_info.cdp_env_info["cde_clusters"][cluster_name]
 
     if cde_cluster is None:
