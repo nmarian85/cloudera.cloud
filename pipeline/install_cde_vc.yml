@@ -4,7 +4,20 @@ install_cde_vc:
     - cdp de create-vc --generate-cli-skeleton > skel.json
     - cdp de list-services > services.json
   script:
-    - python3 scripts/dump_cde_vc_json.py --action install
+    - > 
+      for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
+        export CDE_CLUSTER_NAME=$CDE_CLUSTER_NAME
+        python3 scripts/get_cde_cluster_id.py
+    - >
+      for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
+        export CDE_CLUSTER_NAME=$CDE_CLUSTER_NAME
+
+            for service in services["services"]:
+        if service["name"] == cde_cluster_name:
+            return service["clusterId"]
+        CLUSTER_ID=$(python3 scripts/get_cde_cluster_id.py)
+
+        python3 scripts/dump_cde_vc_json.py --action install
     - cat *.json
     - ls -1 *_vc.json | xargs -I '{}' cdp --debug de create-vc --cli-input-json file://'{}' || true
     # - >
