@@ -12,6 +12,8 @@ install_cde_vc:
         export CLUSTER_ID=$CLUSTER_ID
         python3 scripts/dump_cde_vc_json.py --action install
       done
+    - ls -1 *_vc.json | xargs -I '{}' cdp --debug de create-vc --cli-input-json file://'{}' || true
+
     # - >
     #   for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
     #     export CDE_CLUSTER_NAME=$CDE_CLUSTER_NAME
