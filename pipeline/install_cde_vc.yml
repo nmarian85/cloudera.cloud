@@ -11,6 +11,7 @@ install_cde_vc:
         CLUSTER_ID=$(cat ${CDE_CLUSTER_NAME}_cid.txt)
         export CLUSTER_ID=$CLUSTER_ID
         python3 scripts/dump_cde_vc_json.py --action install
+      done
     # - >
     #   for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
     #     export CDE_CLUSTER_NAME=$CDE_CLUSTER_NAME
