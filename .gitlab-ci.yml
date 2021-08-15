@@ -13,12 +13,12 @@ variables:
 # delete_cde (deletes a CDE cluster)
 # install_cde_vc (installs a CDE VC cluster)
 # delete_cde_vc (deletes a CDE VC cluster)
-  ACTION: delete_cde_vc
+  ACTION: install_cde_vc
   CDP_ENV_NAME: devo-cdp-lab-env01
   ENV: lab
   CML_CLUSTERS: "devo-cdp-lab-env01-cml01" # space delimited list of CML clusters as per Gitlab variable limitation
   CDE_CLUSTERS: "devo-cdp-lab-env01-cde01" # space delimited list of CDE clusters as per Gitlab variable limitation
-  CDE_VC_CLUSTERS: "" # space delimited list of CDE clusters as per Gitlab variable limitation
+  CDE_VC_CLUSTERS: "devo-cdp-lab-env01-cde01-vc01" # space delimited list of CDE clusters as per Gitlab variable limitation
 
 image: ${DOCKER_IMAGE_URL}
 
