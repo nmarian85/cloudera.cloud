@@ -37,7 +37,7 @@ else:
     vcs = {vc_name: cde_cluster["vcs"][vc_name] for vc_name in vcs_list}
 
 if args.action == "delete":
-    with open(f"{cluster_name}_vcs.json") as json_vcs_file:
+    with open("vcs.json") as json_vcs_file:
         all_vcs = json.load(json_vcs_file)
 
 for vc_name, vc_info in vcs.items():
