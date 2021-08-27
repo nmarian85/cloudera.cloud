@@ -26,7 +26,8 @@ All commands are being run inside a Docker container based on the Docker image b
 
   * **CDP_ACCESS_KEY_ID** : The access key of the CDP technical user.
   * **CDP_PRIVATE_KEY** : The private key of the CDP technical user.
-
+Find the CDP admin group in User Management and click on its Admins tab (https://console.cdp.cloudera.com/iam/index.html#/groups/ecbt1-igamfs-app-cdp-admin?tab=admins). Add the technical user.
+User ap-devo-cdp has been assigned resource role IamGroupAdmin for ecbt1-igamfs-app-cdp-admin.
 ## How does the code work
 
 The `{env}.json` file contains a description of all the components part of an environment. The code parses this file, extracts the information it needs regarding a specific component and then generates a CDP component (e.g. CML) compliant JSON. This file is then fed to the cdpcli command responsible for the action we want to achieve (e.g. deleting a cluster).
