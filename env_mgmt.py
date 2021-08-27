@@ -47,7 +47,7 @@ def dump_install_json(cdp_env_name, cdp_env_info, env_json_skel):
 @click.option("--action", type=click.Choice(["install-env", "delete-env"]), required=True)
 @click.option(
     "--env",
-    type=click.Choice(["lab", "test", "acc", "prod"]),
+    type=click.Choice(["lab", "test", "dev", "acc", "prod"]),
     help="ECB environment: lab, test, etc.",
     required=True,
 )
