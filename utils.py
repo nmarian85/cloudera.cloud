@@ -18,4 +18,4 @@ def get_env_info(env, cdp_env_name):
     if cdp_env_info is None:
         raise ValueError(f"Unable to find {cdp_env_name} in env.json")
     else:
-        return cdp_env_info
+        return cdp_env_info, env_json_skel

@@ -62,7 +62,7 @@ def main(dryrun, env, cdp_env_name, action):
     if dryrun:
         show_progress("This is a dryrun")
 
-    cdp_env_info = get_env_info(env, cdp_env_name)
+    cdp_env_info, env_json_skel = get_env_info(env, cdp_env_name)
     env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
 
     if action == "install-env":
