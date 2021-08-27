@@ -41,7 +41,7 @@ def dump_install_json(cdp_env_name, cdp_env_info, env_json_skel):
 
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
-@click.option("--action", type=click.Choice(['install-env', 'delete-env']))
+@click.option("--action", type=click.Choice(['install-env', 'delete-env']), required=True)
 @click.option("--env")
 @click.option("--cdp-env-name")
 def main(
