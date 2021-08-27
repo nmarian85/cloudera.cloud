@@ -119,6 +119,6 @@ def generate_headers(http_req_type, url):
     headers["x-altus-auth"] = make_signature_header(
         http_req_type, url, headers, os.getenv("CDP_ACCESS_KEY_ID"), os.getenv("CDP_PRIVATE_KEY")
     )
-
-    for header_key, header_value in headers.items():
-        print(f"{header_key}:{header_value}")
+    return headers
+    # for header_key, header_value in headers.items():
+    #     print(f"{header_key}:{header_value}")

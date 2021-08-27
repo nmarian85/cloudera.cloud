@@ -72,17 +72,38 @@ def main(dryrun, env, cdp_env_name, action):
         raise ValueError(f"Unable to find {cdp_env_name} in env.json")
 
     cdp_env_info = envs.get(cdp_env_name)
+    env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
+
     if action == "install-env":
         cdp_env_json = dump_install_json(cdp_env_name, cdp_env_info, env_json_skel)
+        action_url = f"{env_url}/createAWSEnvironment"
 
     click.echo("-------------------Generated JSON-----------------------------")
     click.echo(json.dumps(cdp_env_json, indent=4, sort_keys=True))
 
-    with open(f"{cdp_env_name}.json", "w", encoding="utf-8") as f:
-        json.dump(cdp_env_json, f, ensure_ascii=False, indent=4)
+    if not dryrun:
+        # dumping to a file so that we have evidence which will be stored by the Gitlab pipeline
+        with open(f"{cdp_env_name}.json", "w", encoding="utf-8") as f:
+            json.dump(cdp_env_json, f, ensure_ascii=False, indent=4)
 
-    generate_headers("POST", requests_ops.CDP_IAM_ENDPOINT)
+        env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
+        return requests_ops.send_http_request(
+            srv_url=action_url,
+            req_type="post",
+            data=cdp_env_json,
+            headers=generate_headers("POST", action_url),
+        )
 
 
 if __name__ == "__main__":
     main()
+
+""" Dependencies
+Python: pip3 install --upgrade --user click cdpcli
+Env variables: 
+    - REQUESTS_CA_BUNDLE=
+        - /etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt for RHEL/Amazon Linux
+        - /etc/ssl/certs/ca-certificates.crt for Ubuntu/Alpine
+    - CDP_ACCESS_KEY_ID
+    - CDP_PRIVATE_KEY
+"""
