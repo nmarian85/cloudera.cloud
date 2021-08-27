@@ -28,7 +28,6 @@ import os
 import sys
 from urllib.parse import urlparse
 
-import configargparse
 from pure25519 import eddsa
 
 from cdpcurl.cdpconfig import load_cdp_config
