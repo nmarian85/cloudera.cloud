@@ -30,8 +30,6 @@ from urllib.parse import urlparse
 
 from pure25519 import eddsa
 
-from cdpcurl.cdpconfig import load_cdp_config
-
 
 def create_canonical_request_string(method, uri, headers, auth_method):
     """
