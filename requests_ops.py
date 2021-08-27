@@ -26,12 +26,11 @@ If working on Red Hat the location is \
     )
 
 DEFAULT_TIMEOUT = 120  # seconds
-
+CDP_IAM_ENDPOINT = "iamapi.us-west-1.altus.cloudera.com"
+CDP_SERVICES_ENDPOINT = "api.us-west-1.cdp.cloudera.com"
 
 # @lru_cache()
-def send_http_request(
-    srv_url, req_type="get", params=None, data=None, auth=None, headers=None
-):
+def send_http_request(srv_url, req_type="get", params=None, data=None, auth=None, headers=None):
     """
     Wrapper for requests (HTTP POST, PUT, GET, DELETE) with some error checking
     """
@@ -39,12 +38,7 @@ def send_http_request(
         raise ValueError("Unknown request type")
 
     res = getattr(requests, req_type)(
-        url=srv_url,
-        json=data,
-        timeout=DEFAULT_TIMEOUT,
-        auth=auth,
-        params=params,
-        headers=headers,
+        url=srv_url, json=data, timeout=DEFAULT_TIMEOUT, auth=auth, params=params, headers=headers,
     )
 
     # Check if the response HTTP status code is not a 4xx or a 5xx

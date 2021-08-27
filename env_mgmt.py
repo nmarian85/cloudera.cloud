@@ -10,6 +10,8 @@ import sys
 import json
 import os
 from utils import show_progress
+from cdpv1sign import generate_headers
+import requests_ops
 
 
 def dump_install_json(cdp_env_name, cdp_env_info, env_json_skel):
@@ -73,11 +75,13 @@ def main(dryrun, env, cdp_env_name, action):
     if action == "install-env":
         cdp_env_json = dump_install_json(cdp_env_name, cdp_env_info, env_json_skel)
 
-    click.echo("Generated JSON")
+    click.echo("-------------------Generated JSON-----------------------------")
     click.echo(json.dumps(cdp_env_json, indent=4, sort_keys=True))
 
     with open(f"{cdp_env_name}.json", "w", encoding="utf-8") as f:
         json.dump(cdp_env_json, f, ensure_ascii=False, indent=4)
+
+    generate_headers("POST", requests_ops.CDP_IAM_ENDPOINT)
 
 
 if __name__ == "__main__":
