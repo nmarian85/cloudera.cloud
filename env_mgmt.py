@@ -9,7 +9,7 @@ import click
 import sys
 import json
 import os
-from utils import show_progress
+from utils import show_progress, get_env_info
 from cdpv1sign import generate_headers
 import requests_ops
 
@@ -62,16 +62,7 @@ def main(dryrun, env, cdp_env_name, action):
     if dryrun:
         show_progress("This is a dryrun")
 
-    with open("skel.json") as json_file:
-        env_json_skel = json.load(json_file)
-
-    with open(f"{env}.json", "r") as read_file:
-        envs = json.load(read_file)
-
-    if envs.get(cdp_env_name) is None:
-        raise ValueError(f"Unable to find {cdp_env_name} in env.json")
-
-    cdp_env_info = envs.get(cdp_env_name)
+    cdp_env_info = get_env_info(env, cdp_env_name)
     env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
 
     if action == "install-env":
