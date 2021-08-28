@@ -81,7 +81,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
             with open(f'{cred_info["credential_name"]}_cred.json', "w", encoding="utf-8") as f:
                 json.dump(cdp_cred_json, f, ensure_ascii=False, indent=4)
             check_url = f"{env_url}/listCredentials"
-            return run_command(action_url, check_url, cdp_cred_json)
+            run_command(action_url, check_url, cdp_cred_json)
 
 
 if __name__ == "__main__":
