@@ -58,11 +58,19 @@ def dump_install_json(cdp_env_name, cdp_env_info, env_json_skel):
     help="Please see {env}.json file where you defined the CDP env name",
     required=True,
 )
+@click.option(
+    "--json-skel",
+    help="JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
+    required=True,
+)
 def main(dryrun, env, cdp_env_name, action):
     if dryrun:
         show_progress("This is a dryrun")
 
-    cdp_env_info, env_json_skel = get_env_info(env, cdp_env_name)
+    with open(json_skel) as json_file:
+        env_json_skel = json.load(json_file)
+
+    cdp_env_info = get_env_info(env, cdp_env_name)
     env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
 
     if action == "install-env":
