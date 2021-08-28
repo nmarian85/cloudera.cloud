@@ -33,7 +33,7 @@ def run_command(action_url, check_url, cdp_cred_json):
     # return requests_ops.fetch_cm_cmd_info(action_url, "{env_url}/deleteCredential"
 
     #         return fetch_cm_cmd_info(self.cm_url, json_response.get("id"))
-    json.dumps(json_reponse, indent=4, sort_keys=True)
+    click.echo(json_reponse)
 
 
 @click.command()
