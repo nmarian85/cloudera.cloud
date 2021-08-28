@@ -34,7 +34,7 @@ def dump_create_cred_json(cred_info, json_skel):
     help="JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
     required=True,
 )
-def main(dryrun, env, cdp_env_name, action):
+def main(dryrun, env, cdp_env_name, action, json_skel):
     if dryrun:
         show_progress("This is a dryrun")
 

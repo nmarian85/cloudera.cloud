@@ -63,7 +63,7 @@ def dump_install_json(cdp_env_name, cdp_env_info, env_json_skel):
     help="JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
     required=True,
 )
-def main(dryrun, env, cdp_env_name, action):
+def main(dryrun, env, cdp_env_name, action, json_skel):
     if dryrun:
         show_progress("This is a dryrun")
 
