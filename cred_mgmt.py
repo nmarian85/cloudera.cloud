@@ -48,7 +48,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     for cred, cred_info in credentials.items():
         click.echo("-------------------Generated JSON-----------------------------")
         if action == "create-cred":
-            cdp_cred_json = dump_create_cred_json(cdp_env_info, cred_json_skel)
+            cdp_cred_json = dump_create_cred_json(cred_info, cred_json_skel)
             action_url = f"{env_url}/createAWSCredential"
         click.echo(json.dumps(cdp_cred_json, indent=4, sort_keys=True))
 
