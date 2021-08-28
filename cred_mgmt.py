@@ -15,6 +15,12 @@ def dump_create_cred_json(cred_info, json_skel):
     return cred_json
 
 
+def dump_delete_cred_json(cred_info, json_skel):
+    cred_json = dict(json_skel)
+    cred_json["credentialName"] = cred_info["credential_name"]
+    return cred_json
+
+
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
 @click.option("--action", type=click.Choice(["create-cred", "delete-cred"]), required=True)
@@ -50,6 +56,10 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         if action == "create-cred":
             cdp_cred_json = dump_create_cred_json(cred_info, cred_json_skel)
             action_url = f"{env_url}/createAWSCredential"
+        elif action == "delete-cred":
+            cdp_cred_json = dump_delete_cred_json(cred_info, cred_json_skel)
+            action_url = f"{env_url}/deleteCredential"
+
         click.echo(json.dumps(cdp_cred_json, indent=4, sort_keys=True))
 
         if not dryrun:
