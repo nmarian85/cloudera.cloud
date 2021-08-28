@@ -29,10 +29,11 @@ def run_command(action_url, check_url, cdp_cred_json):
         data=cdp_cred_json,
         headers=generate_headers("POST", action_url),
     )
-    print(json_reponse["credentialName"])
+    # print(json_reponse["credentialName"])
     # return requests_ops.fetch_cm_cmd_info(action_url, "{env_url}/deleteCredential"
 
     #         return fetch_cm_cmd_info(self.cm_url, json_response.get("id"))
+    json.dump(cdp_cred_json, f, ensure_ascii=False, indent=4)
 
 
 @click.command()
