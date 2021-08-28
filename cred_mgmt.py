@@ -21,6 +21,20 @@ def dump_delete_cred_json(cred_info, json_skel):
     return cred_json
 
 
+# @requests_ops.check_cm_command_result(error_msg=f"Unable to take action on credential")
+def run_command(action_url, check_url, cdp_cred_json):
+    json_reponse = requests_ops.send_http_request(
+        srv_url=action_url,
+        req_type="post",
+        data=cdp_cred_json,
+        headers=generate_headers("POST", action_url),
+    )
+    print(json_reponse["credentialName"])
+    # return requests_ops.fetch_cm_cmd_info(action_url, "{env_url}/deleteCredential"
+
+    #         return fetch_cm_cmd_info(self.cm_url, json_response.get("id"))
+
+
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
 @click.option("--action", type=click.Choice(["create-cred", "delete-cred"]), required=True)
@@ -65,12 +79,8 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         if not dryrun:
             with open(f'{cred_info["credential_name"]}_cred.json', "w", encoding="utf-8") as f:
                 json.dump(cdp_cred_json, f, ensure_ascii=False, indent=4)
-            requests_ops.send_http_request(
-                srv_url=action_url,
-                req_type="post",
-                data=cdp_cred_json,
-                headers=generate_headers("POST", action_url),
-            )
+            check_url = f"{env_url}/listCredentials"
+            return run_command(action_url, check_url, cdp_cred_json)
 
 
 if __name__ == "__main__":
