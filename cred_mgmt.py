@@ -23,7 +23,7 @@ def dump_delete_cred_json(cred_info, json_skel):
 
 # @requests_ops.check_cm_command_result(error_msg=f"Unable to take action on credential")
 def run_command(action_url, check_url, cdp_cred_json):
-    json_reponse = requests_ops.send_http_request(
+    json_response = requests_ops.send_http_request(
         srv_url=action_url,
         req_type="post",
         data=cdp_cred_json,
@@ -33,8 +33,8 @@ def run_command(action_url, check_url, cdp_cred_json):
     # return requests_ops.fetch_cm_cmd_info(action_url, "{env_url}/deleteCredential"
 
     #         return fetch_cm_cmd_info(self.cm_url, json_response.get("id"))
-    if "credential" in json_reponse:
-        click.echo(json_reponse["credential"]["credentialName"])
+    if "credential" in json_response:
+        click.echo(json_response["credential"]["credentialName"])
     else:
         print(json_response)
 
