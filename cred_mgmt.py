@@ -33,7 +33,7 @@ def run_command(action_url, check_url, cdp_cred_json):
     # return requests_ops.fetch_cm_cmd_info(action_url, "{env_url}/deleteCredential"
 
     #         return fetch_cm_cmd_info(self.cm_url, json_response.get("id"))
-    if action_url == "create-cred":
+    if "credential" in json_reponse:
         click.echo(json_reponse["credential"]["credentialName"])
 
 
