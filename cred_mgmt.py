@@ -36,7 +36,7 @@ def poll_for_status(poll_url, expected_value):
     json_response = requests_ops.send_http_request(
         srv_url=poll_url, req_type="post", headers=generate_headers("POST", poll_url),
     )
-    for cred in json_response.get("credentials"):
+    for cred in dict(json_response.get("credentials")):
         if cred["credentialName"] == expected_value:
             return True
     return False
