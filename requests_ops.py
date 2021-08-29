@@ -9,8 +9,6 @@ from click import echo
 from os import getenv
 from abc import ABC, abstractmethod
 from time import strftime, gmtime, sleep, time
-
-# from pprint import pprint
 from functools import wraps
 
 dryrun = True
@@ -25,15 +23,6 @@ If working on Red Hat the location is \
 
 # how much to wait until timing out a HTTP request
 DEFAULT_TIMEOUT = 120  # seconds
-
-# how much to wait until timing out when checking
-# for the success status of a submitted command to the management console
-DEFAULT_TIMEOUT_COMMAND = 3600  # seconds
-
-
-# polling interval when checking the status of a submitted command
-DEFAULT_WAIT_PERIOD = 60  # seconds
-DEFAULT_WAIT_PERIOD_INCREMENT = 120  # seconds
 
 CDP_API_VERSION = "1"
 CDP_IAM_ENDPOINT = "iamapi.us-west-1.altus.cloudera.com"
@@ -55,7 +44,7 @@ def send_http_request(srv_url, req_type="get", params=None, data=None, auth=None
     if not res.ok:
         if res.text:
             echo(res.text)
-    # res.raise_for_status()
+    res.raise_for_status()
     try:
         out = res.json()
     except json.decoder.JSONDecodeError:
@@ -66,40 +55,6 @@ def send_http_request(srv_url, req_type="get", params=None, data=None, auth=None
     else:
         res.data = out
         return res.data
-
-
-def sleep_wait(func):
-    """    HTTP requests are async hence we will priodically poll the
-    result of the job to check its success
-
-    Args:
-        func ([type]): [description]
-
-    Raises:
-        TimeoutError: [description]
-
-    Returns:
-        [type]: [description]
-    """
-
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        mustend = time() + DEFAULT_TIMEOUT_COMMAND
-        new_period = DEFAULT_WAIT_PERIOD
-
-        while time() < mustend:
-            current_status = func(*args, **kwargs)
-            echo(f"Waiting for command to finish")
-            if current_status == kwargs["expected_value"]:
-                return
-            else:
-                sleep(new_period)
-                # increasing the wait time
-                new_period = new_period + DEFAULT_WAIT_PERIOD_INCREMENT
-                echo(f"Checking again in {new_period}s")
-        raise TimeoutError("Timeout reached while checking for expected value")
-
-    return wrapper
 
 
 # class FrozenJSON:
