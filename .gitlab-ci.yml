@@ -3,19 +3,22 @@ variables:
   DOCKER_IMAGE_VERSION: "1.0"
   DOCKER_IMAGE_NAME: cdpcli-ddp
   DOCKER_IMAGE_URL: $DOCKER_REGISTRY/$ARTIFACTORY_REPOSITORY_NAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
-  # can be one of the following:
-  # - install (installs environment and datalake)
-  # - delete (deletes environment and datalake)
-  # - start (starts environment and datalake)
-  # - stop (stops environment and datalake)
-  # - install_cml (installs CML cluster)
-  # - delete_cml (installs CML cluster)
-  # - install_cde (installs CDE cluster)
-  # - delete_cde (deletes CDE cluster)
-  ACTION: delete_cml 
+# install (installs a CDP environment and its attached datalake)
+# delete (deletes a CDP environment and its attached datalake)
+# start (starts a CDP environment and its attached datalake)
+# stop (stops environment and its attached datalake)
+# install_cml (installs CML cluster)
+# delete_cml (deletes a CML cluster)
+# install_cde (installs a CDE cluster)
+# delete_cde (deletes a CDE cluster)
+# install_cde_vc (installs a CDE VC cluster)
+# delete_cde_vc (deletes a CDE VC cluster)
+  ACTION: delete_cde_vc
   CDP_ENV_NAME: devo-cdp-lab-env01
   ENV: lab
-  CML_CLUSTERS: "devo-cdp-lab-env01-cml01" # space delimited as per Gitlab variable limitation (export can be used as well)
+  CML_CLUSTERS: "devo-cdp-lab-env01-cml01" # space delimited list of CML clusters as per Gitlab variable limitation
+  CDE_CLUSTERS: "devo-cdp-lab-env01-cde01" # space delimited list of CDE clusters as per Gitlab variable limitation
+  CDE_VC_CLUSTERS: "devo-cdp-lab-env01-cde01-vc01" # space delimited list of CDE clusters as per Gitlab variable limitation
 
 image: ${DOCKER_IMAGE_URL}
 
@@ -32,43 +35,28 @@ stages:
   - stop
   - install_cml
   - delete_cml
+  - install_cde
+  - install_cde_vc
+  - delete_cde_vc
 
 include:
   - 'pipeline/install_cdp_env.yml'
   - 'pipeline/install_cdp_dlake.yml'
   - 'pipeline/delete_cdp_dlake.yml'
   - 'pipeline/delete_cdp_env.yml'
-  - 'pipeline/start_cdp_env.yml'
+  # - 'pipeline/start_cdp_env.yml'
   - 'pipeline/stop_cdp_env.yml'
   - 'pipeline/install_cml.yml'
   - 'pipeline/delete_cml.yml'
+  # - 'pipeline/install_cde.yml'
+  - 'pipeline/install_cde_vc.yml'
+  - 'pipeline/delete_cde_vc.yml'
+  # - 'pipeline/delete_cde.yml'
 
-  #TODO: Add 'grant access to admin/jumpserver role AWS IAM role EKS cluster control plane'
+  #TODO: 
+    # Add 'grant access to admin/jumpserver role AWS IAM role EKS cluster control plane'
+    # Add access to kube api server for group; EKS sgs might need to be recreated via TF
 
-# cde_enable:
-#   stage: provision
-#   before_script:
-#     - cdp de enable-service --generate-cli-skeleton > skel.json
-#   script:
-#     - >
-#       for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
-#         python3 cde_json.py --action provision --cluster $CDE_CLUSTER_NAME --env $ENV_NAME
-#         cat ${CDE_CLUSTER_NAME}.json
-#         cdp --debug de enable-service --cli-input-json file://${CDE_CLUSTER_NAME}.json || true
-#       done
-#     - >
-#       for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
-#         export CDE_CLUSTER_NAME=$CDE_CLUSTER_NAME
-#         timeout 90m bash wait_for_status.sh "CDE" "ClusterCreationCompleted"
-#       done
-#   artifacts:
-#     paths:
-#       - "*.json"
-#     expire_in: 30 days
-#     when: always
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "provision"
-#       when: manual
 
 # cde_delete:
 #   stage: delete
@@ -89,22 +77,6 @@ include:
 #     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete"
 #       when: manual
 
-# cde_provision_vc:
-#   stage: provision
-#   tags:
-#     - docker
-#   script:
-#     - cdp de create-vc --generate-cli-skeleton > vc_skel.json
-#     - cat vc_skel.json | python3 vc_cde_json_create.py > vc_env.json
-#     - cat vc_env.json
-#     - cdp --debug de create-vc --cli-input-json file://vc_env.json
-#   artifacts:
-#     paths:
-#       - "*.json"
-#     expire_in: 30 days
-#     when: always
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete"
-#       when: manual
+
 
 

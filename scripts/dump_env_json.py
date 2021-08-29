@@ -43,7 +43,7 @@ cdp_env_json["securityAccess"] = {
     "securityGroupIdForKnox": cdp_env_info["sg"],
     "defaultSecurityGroupId": cdp_env_info["sg"]
 }
-cdp_env_json["logStorage"]["storageLocationBase"] = f'{cdp_env_info["log_bucket"]}/{cdp_env_name}'
+cdp_env_json["logStorage"]["storageLocationBase"] = f'{cdp_env_info["log_bucket"]}'
 log_instance_profile = f'{cdp_env_info["log_role"]}-instance-profile'
 role_iam_arn = f'arn:aws:iam::{cdp_env_info["account_id"]}'
 cdp_env_json["logStorage"]["instanceProfile"] = (

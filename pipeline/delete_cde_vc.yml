@@ -1,0 +1,30 @@
+delete_cde_vc:
+  stage: delete_cde_vc
+  before_script:
+    - cdp de delete-vc --generate-cli-skeleton > skel.json
+    - cdp de list-services > services.json
+  script:
+    - python3 scripts/get_cde_cluster_ids.py
+    - >
+      for CDE_CLUSTER_NAME in $CDE_CLUSTERS; do
+        export CDE_CLUSTER_NAME=$CDE_CLUSTER_NAME
+        CLUSTER_ID=$(cat ${CDE_CLUSTER_NAME}_cid.txt)
+        export CLUSTER_ID=$CLUSTER_ID
+        cdp de list-vcs --cluster-id $CLUSTER_ID > vcs.json
+        python3 scripts/dump_cde_vc_json.py --action delete
+        cat *.json
+        ls -1 *_vc.json | xargs -I '{}' cdp --debug de delete-vc --cli-input-json file://'{}' || true
+      done
+    - >
+      for VC_FILE in $(ls -1 *_vc.json); do
+        export VC_FILE=$VC_FILE
+        timeout 90m bash scripts/wait_for_del.sh "CDE_VC"
+      done
+  artifacts:
+    paths:
+      - "*.json"
+    expire_in: 30 days
+    when: always
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete_cde_vc"
+      # when: manual
