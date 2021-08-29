@@ -104,7 +104,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         if action == "create-cred":
             poll_for_status(
                 poll_url=poll_url,
-                poll_http_req_json={cred_name},
+                poll_http_req_json={"credentialName": cred_name},
                 poll_result_json_keys=["credential", "credentialName"],
                 expected_status=cred_name,
             )
