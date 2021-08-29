@@ -88,7 +88,10 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         if not dryrun:
             cred_name = cred_info["credential_name"]
             requests_ops.send_http_request(
-                srv_url=action_url, req_type="post", headers=generate_headers("POST", action_url),
+                srv_url=action_url,
+                req_type="post",
+                data=cdp_cred_json,
+                headers=generate_headers("POST", action_url),
             )
             click.echo(f"Waiting for {action} on credential {cred_name}")
             poll_for_status(
