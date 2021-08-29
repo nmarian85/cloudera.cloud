@@ -8,14 +8,12 @@ import json
 from click import echo
 from os import getenv
 from abc import ABC, abstractmethod
-from time import strftime, gmtime, sleep
-from collections import namedtuple
-from collections import abc
+from time import strftime, gmtime, sleep, time
 
 # from pprint import pprint
 from functools import wraps
 
-dry_run = True
+dryrun = True
 
 if getenv("REQUESTS_CA_BUNDLE") is None:
     raise ValueError(
@@ -25,7 +23,18 @@ If working on Red Hat the location is \
 /etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt"""
     )
 
+# how much to wait until timing out a HTTP request
 DEFAULT_TIMEOUT = 120  # seconds
+
+# how much to wait until timing out when checking
+# for the success status of a submitted command to the management console
+DEFAULT_TIMEOUT_COMMAND = 3600  # seconds
+
+
+# polling interval when checking the status of a submitted command
+DEFAULT_WAIT_PERIOD = 60  # seconds
+DEFAULT_WAIT_PERIOD_INCREMENT = 120  # seconds
+
 CDP_API_VERSION = "1"
 CDP_IAM_ENDPOINT = "iamapi.us-west-1.altus.cloudera.com"
 CDP_SERVICES_ENDPOINT = f"https://api.us-west-1.cdp.cloudera.com/api/v{CDP_API_VERSION}"
@@ -59,72 +68,30 @@ def send_http_request(srv_url, req_type="get", params=None, data=None, auth=None
         return res.data
 
 
-def sleep_wait(timeout, retry=100):
+def sleep_wait(func):
     """
-    Wait for the CM command finish during a predefined period.
-    If the command did not finish during that period we will timeout
-    and exit. Normally in a decorator we don't need 3 layers of
-    functions but here we want to pass parameters to the
-    decorator not to the function
+    HTTP requests are async hence we will priodically poll the result 
+    of the job to check its success
     """
 
-    def wait_for_cm_command(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            retries = 0
-            while retries < retry:
-                try:
-                    cmd_json = func(*args, **kwargs)
-                except json.decoder.JSONDecodeError:
-                    echo("Retrying request")
-                else:
-                    if isinstance(cmd_json, dict) and cmd_json.get("active") is False:
-                        return cmd_json
-                # we invalidate the lru cache if we did not get the expected result
-                # func.cache_clear()
-                echo(f"Waiting for CM command to finish, checking again in {timeout}s")
-                sleep(timeout)
-                retries += 1
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        mustend = time() + DEFAULT_TIMEOUT_COMMAND
+        new_period = DEFAULT_WAIT_PERIOD
 
-            raise TimeoutError("Timeout reached while waiting for a JSON response")
-
-        return wrapper
-
-    return wait_for_cm_command
-
-
-@sleep_wait(2)
-def fetch_cm_cmd_info(cm_url, cmd_id):
-    """
-    Each HTTP request sent to CM is fulfilled via a CM job. We will
-    priodically poll the result of the job to check its success
-    """
-    if not dry_run:
-        return send_http_request(srv_url=f"{cm_url}/commands/{cmd_id}")
-
-
-def check_cm_command_result(error_msg, status="success", value=True):
-    """checks if a command sent to CM which has finished
-    was succesful or not. Normally in a decorator we don't need 3 layers of
-    functions but here we want to pass parameters to the
-    decorator not to the function.
-    """
-
-    def check_exit_code(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            if not dry_run:
-                cmd_json = func(*args, **kwargs)
-                if cmd_json.get(status) == value:
-                    return True
-                else:
-                    raise ValueError(f'{error_msg}: {cmd_json.get("resultMessage")}')
+        while time() < mustend:
+            current_status = func(*args, **kwargs)
+            if current_status == kwargs["expected_status"]:
+                return
             else:
-                func(*args, **kwargs)
+                echo(f"Waiting for command to finish")
+                sleep(new_period)
+                # increasing the wait time
+                new_period = new_period + DEFAULT_WAIT_PERIOD_INCREMENT
+                echo(f"checking again in {new_period}s")
+        raise TimeoutError("Timeout reached while checking for status")
 
-        return wrapper
-
-    return check_exit_code
+    return wrapper
 
 
 # class FrozenJSON:

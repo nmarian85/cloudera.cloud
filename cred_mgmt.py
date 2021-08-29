@@ -21,22 +21,29 @@ def dump_delete_cred_json(cred_info, json_skel):
     return cred_json
 
 
-# @requests_ops.check_cm_command_result(error_msg=f"Unable to take action on credential")
-def run_command(action_url, check_url, cdp_cred_json):
-    json_response = requests_ops.send_http_request(
-        srv_url=action_url,
-        req_type="post",
-        data=cdp_cred_json,
-        headers=generate_headers("POST", action_url),
-    )
-    # print(json_reponse["credentialName"])
-    # return requests_ops.fetch_cm_cmd_info(action_url, "{env_url}/deleteCredential"
+@requests_ops.sleep_wait
+def poll_for_status(poll_url, poll_http_req_json, poll_result_json_keys, expected_status):
+    """[summary]
 
-    #         return fetch_cm_cmd_info(self.cm_url, json_response.get("id"))
-    if "credential" in json_response:
-        click.echo(json_response["credential"]["credentialName"])
-    else:
-        print(json_response)
+    Args:
+        poll_url ([type]): [url to check the status of our command (e.g. if the provisioning of a component is finalized)]
+        poll_http_req_json ([type]): [data expected by the polling http request]
+        poll_result_json_keys ([type]): [ dict index of the value we expect json result returned by the check]
+        expected_status ([type]): [expected value]
+
+    Returns:
+        [type]: [description]
+    """
+    json_response = requests_ops.send_http_request(
+        srv_url=poll_url,
+        req_type="post",
+        data=poll_http_req_json,
+        headers=generate_headers("POST", poll_url),
+    )
+    current_poll_value = json_response
+    for k in poll_result_json_keys:
+        current_poll_value = current_poll_value[k]
+    return current_poll_value
 
 
 @click.command()
@@ -62,6 +69,8 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     if dryrun:
         show_progress("This is a dryrun")
 
+    requests_ops.dryrun = dryrun
+
     with open(json_skel) as json_file:
         cred_json_skel = json.load(json_file)
 
@@ -81,10 +90,24 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         click.echo(json.dumps(cdp_cred_json, indent=4, sort_keys=True))
 
         if not dryrun:
-            with open(f'{cred_info["credential_name"]}_cred.json', "w", encoding="utf-8") as f:
+            cred_name = cred_info["credential_name"]
+            with open(f"{cred_name}.json", "w", encoding="utf-8") as f:
                 json.dump(cdp_cred_json, f, ensure_ascii=False, indent=4)
-            check_url = f"{env_url}/listCredentials"
-            run_command(action_url, check_url, cdp_cred_json)
+            poll_url = f"{env_url}/listCredentials"
+            requests_ops.send_http_request(
+                srv_url=action_url,
+                req_type="post",
+                data=cdp_cred_json,
+                headers=generate_headers("POST", action_url),
+            )
+
+        if action == "create-cred":
+            poll_for_status(
+                poll_url=poll_url,
+                poll_http_req_json={cred_name},
+                poll_result_json_keys=["credential", "credentialName"],
+                expected_status=cred_name,
+            )
 
 
 if __name__ == "__main__":
