@@ -22,13 +22,13 @@ def dump_delete_cred_json(cred_info, json_skel):
 
 
 @requests_ops.sleep_wait
-def poll_for_status(poll_url, poll_http_req_json, poll_result_json_keys, expected_status):
+def poll_for_status(poll_url, poll_http_req_json, action, expected_status):
     """[summary]
 
     Args:
-        poll_url ([type]): [url to check the status of our command (e.g. if the provisioning of a component is finalized)]
+        poll_url ([type]): [url to check the status of our command (e.g. creating a credential)]
         poll_http_req_json ([type]): [data expected by the polling http request]
-        poll_result_json_keys ([type]): [ dict index of the value we expect json result returned by the check]
+        action ([type]): [ create/delete credential]
         expected_status ([type]): [expected value]
 
     Returns:
@@ -42,10 +42,10 @@ def poll_for_status(poll_url, poll_http_req_json, poll_result_json_keys, expecte
     )
     click.echo(json.dumps(json_response, indent=4, sort_keys=True))
 
-    current_poll_value = json_response
-    for k in poll_result_json_keys:
-        current_poll_value = current_poll_value[k]
-    return current_poll_value
+    if action == "create-cred":
+        return json_response["credential"][0]["credentialName"]
+    # elif action == "delete-cred":
+    #     return json_response
 
 
 @click.command()
@@ -103,11 +103,10 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 headers=generate_headers("POST", action_url),
             )
 
-        if action == "create-cred":
             poll_for_status(
                 poll_url=poll_url,
                 poll_http_req_json={"credentialName": cred_name},
-                poll_result_json_keys=["credential", "credentialName"],
+                action=action,
                 expected_status=cred_name,
             )
 
