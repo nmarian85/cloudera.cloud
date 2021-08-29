@@ -34,13 +34,16 @@ def poll_for_status(poll_url, poll_http_req_json, action, expected_status):
     Returns:
         [type]: [description]
     """
+    # try:
     json_response = requests_ops.send_http_request(
         srv_url=poll_url,
         req_type="post",
         data=poll_http_req_json,
         headers=generate_headers("POST", poll_url),
     )
-    # click.echo(json.dumps(json_response, indent=4, sort_keys=True))
+    # except requests.exceptions.HTTPError as e:
+    #     if json_response.status_code
+    click.echo(json.dumps(json_response, indent=4, sort_keys=True))
 
     if action == "create-cred":
         return json_response["credentials"][0]["credentialName"]
