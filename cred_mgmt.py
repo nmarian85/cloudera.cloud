@@ -34,7 +34,7 @@ def poll_for_status(poll_url, action, expected_value):
         [type]: [description]
     """
     json_response = requests_ops.send_http_request(
-        srv_url=poll_url, req_type="post", headers=generate_headers("POST", poll_url),
+        srv_url=poll_url, req_type="post", data={}, headers=generate_headers("POST", poll_url),
     )
     if action == "create-cred":
         found = False
