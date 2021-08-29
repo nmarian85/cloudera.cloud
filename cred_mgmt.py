@@ -97,6 +97,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
             action_url = f"{env_url}/deleteCredential"
 
         click.echo(json.dumps(cdp_cred_json, indent=4, sort_keys=True))
+        click.echo("--------------------------------------------------------------")
 
         if not dryrun:
             cred_name = cred_info["credential_name"]
