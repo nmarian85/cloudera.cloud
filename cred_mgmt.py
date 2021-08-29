@@ -5,6 +5,7 @@ import os
 from utils import show_progress, get_env_info
 from cdpv1sign import generate_headers
 import requests_ops
+import requests
 
 
 def dump_create_cred_json(cred_info, json_skel):
@@ -22,31 +23,33 @@ def dump_delete_cred_json(cred_info, json_skel):
 
 
 @requests_ops.sleep_wait
-def poll_for_status(poll_url, poll_http_req_json, action, expected_status):
+def poll_for_status(poll_url, poll_http_req_json, action, expected_value):
     """[summary]
 
     Args:
         poll_url ([type]): [url to check the status of our command (e.g. creating a credential)]
         poll_http_req_json ([type]): [data expected by the polling http request]
         action ([type]): [ create/delete credential]
-        expected_status ([type]): [expected value]
+        expected_value ([type]): [expected value in case of success]
 
     Returns:
         [type]: [description]
     """
-    # try:
-    json_response = requests_ops.send_http_request(
-        srv_url=poll_url,
-        req_type="post",
-        data=poll_http_req_json,
-        headers=generate_headers("POST", poll_url),
-    )
-    # except requests.exceptions.HTTPError as e:
-    #     if json_response.status_code
-    click.echo(json.dumps(json_response, indent=4, sort_keys=True))
-
-    if action == "create-cred":
-        return json_response["credentials"][0]["credentialName"]
+    click.echo(f"Waiting for credential {expected_value}")
+    try:
+        json_response = requests_ops.send_http_request(
+            srv_url=poll_url,
+            req_type="post",
+            data=poll_http_req_json,
+            headers=generate_headers("POST", poll_url),
+        )
+    except requests.exceptions.HTTPError as e:
+        if "Credential already exists" in json.dumps(json_response, indent=4, sort_keys=True):
+            click.echo(f"Credential already exists")
+            return
+    else:
+        if action == "create-cred":
+            return json_response["credentials"][0]["credentialName"]
     # elif action == "delete-cred":
     #     return json_response
 
