@@ -86,10 +86,14 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
 
     credentials = cdp_env_info["credentials"]
     for cred, cred_info in credentials.items():
+        cred_name = cred_info["credential_name"]
+
         if action == "create-cred":
+            click.echo(f"==============Creating credential {cred_name}==============")
             cdp_cred_json = dump_create_cred_json(cred_info, cred_json_skel)
             action_url = f"{env_url}/createAWSCredential"
         elif action == "delete-cred":
+            click.echo(f"==============Deleting credential {cred_name}==============")
             cdp_cred_json = dump_delete_cred_json(cred_info, cred_json_skel)
             action_url = f"{env_url}/deleteCredential"
 
@@ -98,7 +102,6 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         click.echo("--------------------------------------------------------------")
 
         if not dryrun:
-            cred_name = cred_info["credential_name"]
             try:
                 response = requests_ops.send_http_request(
                     srv_url=action_url,
