@@ -43,7 +43,7 @@ def poll_for_status(poll_url, poll_http_req_json, action, expected_status):
     click.echo(json.dumps(json_response, indent=4, sort_keys=True))
 
     if action == "create-cred":
-        return json_response["credential"][0]["credentialName"]
+        return json_response["credentials"][0]["credentialName"]
     # elif action == "delete-cred":
     #     return json_response
 
