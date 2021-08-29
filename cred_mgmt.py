@@ -23,7 +23,7 @@ def dump_delete_cred_json(cred_info, json_skel):
 
 
 @sleep_wait
-def poll_for_status(poll_url, expected_value):
+def poll_for_status(poll_url, action, expected_value):
     """[summary]
 
     Args:
@@ -36,10 +36,21 @@ def poll_for_status(poll_url, expected_value):
     json_response = requests_ops.send_http_request(
         srv_url=poll_url, req_type="post", headers=generate_headers("POST", poll_url),
     )
-    for cred in dict(json_response.get("credentials")):
-        if cred["credentialName"] == expected_value:
-            return True
-    return False
+    if action == "create-cred":
+        found = False
+    elif action == "delete-cred":
+        found = True
+
+    creds = json_response.get("credentials")
+    if isinstance(creds, list):
+        for cred in creds:
+            if cred["credentialName"] == expected_value:
+                # if we want to create the credential and we found it,
+                # the return value will be True since the creation was successful
+                # if we wanted to delete the credential and we found it,
+                # the return value will be False since it was not deleted yet
+                return not found
+    return found
 
 
 @click.command()
@@ -106,7 +117,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
             else:
                 click.echo(f"Waiting for {action} on credential {cred_name}")
                 poll_for_status(
-                    poll_url=f"{env_url}/listCredentials", expected_value=cred_name,
+                    poll_url=f"{env_url}/listCredentials", action=action, expected_value=cred_name,
                 )
                 # dumping file so that Gitlab will back it up
                 with open(f"{cred_name}.json", "w", encoding="utf-8") as f:
