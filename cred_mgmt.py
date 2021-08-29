@@ -5,6 +5,7 @@ import os
 from utils import show_progress, get_env_info, sleep_wait
 from cdpv1sign import generate_headers
 import requests_ops
+import requests
 
 
 def dump_create_cred_json(cred_info, json_skel):
@@ -74,7 +75,6 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
 
     credentials = cdp_env_info["credentials"]
     for cred, cred_info in credentials.items():
-        click.echo("-------------------Generated JSON-----------------------------")
         if action == "create-cred":
             cdp_cred_json = dump_create_cred_json(cred_info, cred_json_skel)
             action_url = f"{env_url}/createAWSCredential"
@@ -82,24 +82,35 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
             cdp_cred_json = dump_delete_cred_json(cred_info, cred_json_skel)
             action_url = f"{env_url}/deleteCredential"
 
+        click.echo("-------------------Generated JSON-----------------------------")
         click.echo(json.dumps(cdp_cred_json, indent=4, sort_keys=True))
         click.echo("--------------------------------------------------------------")
 
         if not dryrun:
             cred_name = cred_info["credential_name"]
-            requests_ops.send_http_request(
-                srv_url=action_url,
-                req_type="post",
-                data=cdp_cred_json,
-                headers=generate_headers("POST", action_url),
-            )
-            click.echo(f"Waiting for {action} on credential {cred_name}")
-            poll_for_status(
-                poll_url=f"{env_url}/listCredentials", expected_value=cred_name,
-            )
-            # dumping file so that Gitlab will back it up
-            with open(f"{cred_name}.json", "w", encoding="utf-8") as f:
-                json.dump(cdp_cred_json, f, ensure_ascii=False, indent=4)
+            try:
+                response = requests_ops.send_http_request(
+                    srv_url=action_url,
+                    req_type="post",
+                    data=cdp_cred_json,
+                    headers=generate_headers("POST", action_url),
+                )
+            except requests.exceptions.HTTPError:
+                if action == "create-cred":
+                    check_str = "Credential already exists"
+                # we want to ensure an idempotent execution hence
+                # we will not raise errors if the credentials already exist
+                # or where already deleted
+                if check_str not in json.dumps(response, indent=4, sort_keys=True):
+                    raise
+            else:
+                click.echo(f"Waiting for {action} on credential {cred_name}")
+                poll_for_status(
+                    poll_url=f"{env_url}/listCredentials", expected_value=cred_name,
+                )
+                # dumping file so that Gitlab will back it up
+                with open(f"{cred_name}.json", "w", encoding="utf-8") as f:
+                    json.dump(cdp_cred_json, f, ensure_ascii=False, indent=4)
 
 
 if __name__ == "__main__":
