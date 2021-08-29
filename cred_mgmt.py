@@ -40,6 +40,8 @@ def poll_for_status(poll_url, poll_http_req_json, poll_result_json_keys, expecte
         data=poll_http_req_json,
         headers=generate_headers("POST", poll_url),
     )
+    click.echo(json.dumps(json_response, indent=4, sort_keys=True))
+
     current_poll_value = json_response
     for k in poll_result_json_keys:
         current_poll_value = current_poll_value[k]
