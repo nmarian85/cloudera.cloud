@@ -55,7 +55,7 @@ def send_http_request(srv_url, req_type="get", params=None, data=None, auth=None
     if not res.ok:
         if res.text:
             echo(res.text)
-    res.raise_for_status()
+    # res.raise_for_status()
     try:
         out = res.json()
     except json.decoder.JSONDecodeError:
