@@ -44,6 +44,7 @@ def poll_for_status(poll_url, poll_http_req_json, action, expected_value):
             headers=generate_headers("POST", poll_url),
         )
     except requests.exceptions.HTTPError as e:
+        click.echo("dsajiosssssssssssssssss")
         if "Credential already exists" in json.dumps(json_response, indent=4, sort_keys=True):
             click.echo(f"Credential already exists")
             return
