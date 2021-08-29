@@ -114,7 +114,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 poll_url=poll_url,
                 poll_http_req_json={"credentialName": cred_name},
                 action=action,
-                expected_status=cred_name,
+                expected_value=cred_name,
             )
 
 
