@@ -40,7 +40,7 @@ def poll_for_status(poll_url, poll_http_req_json, action, expected_status):
         data=poll_http_req_json,
         headers=generate_headers("POST", poll_url),
     )
-    click.echo(json.dumps(json_response, indent=4, sort_keys=True))
+    # click.echo(json.dumps(json_response, indent=4, sort_keys=True))
 
     if action == "create-cred":
         return json_response["credentials"][0]["credentialName"]

@@ -69,9 +69,17 @@ def send_http_request(srv_url, req_type="get", params=None, data=None, auth=None
 
 
 def sleep_wait(func):
-    """
-    HTTP requests are async hence we will priodically poll the result 
-    of the job to check its success
+    """    HTTP requests are async hence we will priodically poll the
+    result of the job to check its success
+
+    Args:
+        func ([type]): [description]
+
+    Raises:
+        TimeoutError: [description]
+
+    Returns:
+        [type]: [description]
     """
 
     @wraps(func)
@@ -81,14 +89,14 @@ def sleep_wait(func):
 
         while time() < mustend:
             current_status = func(*args, **kwargs)
+            echo(f"Waiting for command to finish")
             if current_status == kwargs["expected_status"]:
                 return
             else:
-                echo(f"Waiting for command to finish")
                 sleep(new_period)
                 # increasing the wait time
                 new_period = new_period + DEFAULT_WAIT_PERIOD_INCREMENT
-                echo(f"checking again in {new_period}s")
+                echo(f"Checking again in {new_period}s")
         raise TimeoutError("Timeout reached while checking for status")
 
     return wrapper
