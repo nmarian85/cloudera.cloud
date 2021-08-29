@@ -90,14 +90,14 @@ def sleep_wait(func):
         while time() < mustend:
             current_status = func(*args, **kwargs)
             echo(f"Waiting for command to finish")
-            if current_status == kwargs["expected_status"]:
+            if current_status == kwargs["expected_value"]:
                 return
             else:
                 sleep(new_period)
                 # increasing the wait time
                 new_period = new_period + DEFAULT_WAIT_PERIOD_INCREMENT
                 echo(f"Checking again in {new_period}s")
-        raise TimeoutError("Timeout reached while checking for status")
+        raise TimeoutError("Timeout reached while checking for expected value")
 
     return wrapper
 
