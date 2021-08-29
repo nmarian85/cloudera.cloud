@@ -125,6 +125,8 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 # dumping file so that Gitlab will back it up
                 with open(f"{cred_name}.json", "w", encoding="utf-8") as f:
                     json.dump(cdp_cred_json, f, ensure_ascii=False, indent=4)
+        click.echo(f"===========================================================")
+        click.echo()
 
 
 if __name__ == "__main__":
