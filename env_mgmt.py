@@ -13,6 +13,7 @@ from utils import show_progress, get_env_info, poll_for_status
 from cdpv1sign import generate_headers
 import requests_ops
 import requests
+from time import sleep
 
 """ Dependencies
 Python: pip3 install --upgrade --user click cdpcli
@@ -143,6 +144,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 "present": True,
             }
             data = {"environmentName": cdp_env_name}
+            sleep(120)
             poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info, data=data)
 
         click.echo(f"Action {action} on environment {cdp_env_name} DONE")
