@@ -121,31 +121,16 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         if action == "install-env":
             elem_search_info = {
                 "root_index": "environments",
-                "search_elem_index": "environmentName",
-                "expected_value": cdp_env_name,
+                "expected_key_val": {"environmentName": cdp_env_name, "status": "AVAILABLE"},
                 "present": True,
             }
         elif action == "delete-env":
             elem_search_info = {
                 "root_index": "environments",
-                "search_elem_index": "environmentName",
-                "expected_value": cdp_env_name,
+                "expected_key_val": {"environmentName": cdp_env_name},
                 "present": False,
             }
         poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info)
-
-        if action == "install-env":
-            click.echo("Provisioning has started")
-            poll_url = f"{env_url}/describeEnvironment"
-            elem_search_info = {
-                "root_index": "environment",
-                "search_elem_index": "status",
-                "expected_value": "AVAILABLE",
-                "present": True,
-            }
-            data = {"environmentName": cdp_env_name}
-            sleep(120)
-            poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info, data=data)
 
         click.echo(f"Action {action} on environment {cdp_env_name} DONE")
 

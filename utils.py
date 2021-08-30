@@ -101,20 +101,10 @@ def poll_for_status(poll_url, elem_search_info, data={}):
     # e.g. for listCredentials: the response is a list and
     # we are going to loop through all the credentials and check if they were created
     if isinstance(response, list):
-        for elem in response:
-            if elem[elem_search_info["search_elem_index"]] == elem_search_info["expected_value"]:
-                # e.g. for credential mgmt:
-                # if we want to create the credential and we found it,
-                # the return value will be True since the creation was successful
-                # if we wanted to delete the credential and we found it,
-                # the return value will be False since it was not deleted yet
-                print(f'found {elem[elem_search_info["search_elem_index"]]}')
-                return elem_search_info["present"]
-    # e.g. for describeEnvironment: the response is a dict and
-    # we will check for a specific status, e.g. environment has finished installing
-    elif isinstance(response, dict):
-        print(response)
-        if response[elem_search_info["search_elem_index"]] == elem_search_info["expected_value"]:
-            return elem_search_info["present"]
-
-    return not elem_search_info["present"]
+        for dict_elem in response:
+            for expected_k, expected_v in elem_search_info["expected_key_val"].items():
+                if dict_elem[expected_k] != expected_v:
+                    return not elem_search_info["present"]
+        return elem_search_info["present"]
+    else:
+        raise ValueError(f"Response {response} is not a list")
