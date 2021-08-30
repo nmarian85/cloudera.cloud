@@ -102,6 +102,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 # we want to ensure an idempotent execution hence
                 # we will not raise errors if the credentials already exist
                 # or where already deleted
+                print("dasdasdsadas")
                 if check_str not in json.dumps(response, indent=4, sort_keys=True):
                     raise
             else:
