@@ -115,7 +115,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
             )
         except requests.exceptions.HTTPError:
             if action == "install-env":
-                check_str = "Environment already exists"
+                check_str = "already exists"
             elif action == "delete-env":
                 check_str = "Environment with name"
             # we want to ensure an idempotent execution hence
@@ -130,17 +130,19 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 poll_url = f"{env_url}/describeEnvironment"
                 root_index = "environment"
                 search_elem_index = "status"
+                expected_value = "AVAILABLE"
             elif action == "delete-env":
                 elem_present = False
                 poll_url = f"{env_url}/listEnvironments"
                 root_index = "environments"
                 search_elem_index = "environmentName"
+                expected_value = cdp_env_name
 
             elem_search_info = {
                 "root_index": root_index,
                 "search_elem_index": search_elem_index,
                 "present": elem_present,
-                "expected_value": cdp_env_name,
+                "expected_value": expected_value,
             }
 
             poll_for_status(
