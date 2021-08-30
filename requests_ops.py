@@ -44,13 +44,15 @@ def send_http_request(srv_url, req_type="get", params=None, data=None, auth=None
             params=params,
             headers=headers,
         )
-    except requests.exceptions.RequestException:
+        res.raise_for_status()
+    except requests.exceptions.ConnectionError:
         raise
+    except requests.exceptions.HTTPError as err:
+        pass
 
     if not res.ok:
         if res.text:
             echo(res.text)
-    res.raise_for_status()
     try:
         out = res.json()
     except json.decoder.JSONDecodeError:
