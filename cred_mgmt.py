@@ -118,6 +118,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                     "search_elem_index": "credentialName",
                     "present": elem_present,
                     "expected_value": cred_name,
+                    "data": {},
                 }
 
                 poll_for_status(

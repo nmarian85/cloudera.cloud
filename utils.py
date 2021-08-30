@@ -92,7 +92,10 @@ def poll_for_status(poll_url, elem_search_info):
         [type]: [description]
     """
     json_response = requests_ops.send_http_request(
-        srv_url=poll_url, req_type="post", data={}, headers=generate_headers("POST", poll_url),
+        srv_url=poll_url,
+        req_type="post",
+        data=elem_search_info["data"],
+        headers=generate_headers("POST", poll_url),
     )
 
     # getting the list of elements from the response json
@@ -112,8 +115,6 @@ def poll_for_status(poll_url, elem_search_info):
     # e.g. for describeEnvironment: the response is a dict and
     # we will check for a specific status, e.g. environment has finished installing
     elif isinstance(response, dict):
-        print(elem_search_info["search_elem_index"])
-        print(elem_search_info["expected_value"])
         if elem[elem_search_info["search_elem_index"]] == elem_search_info["expected_value"]:
             return elem_search_info["present"]
 
