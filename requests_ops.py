@@ -38,6 +38,8 @@ def send_http_request(srv_url, req_type="get", params=None, data=None, auth=None
     res = getattr(requests, req_type)(
         url=srv_url, json=data, timeout=DEFAULT_TIMEOUT, auth=auth, params=params, headers=headers,
     )
+    if res.text:
+        return res.text
     res.raise_for_status()
 
     try:
