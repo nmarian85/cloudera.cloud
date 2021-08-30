@@ -47,7 +47,7 @@ def send_http_request(srv_url, req_type="get", params=None, data=None, auth=None
         res.raise_for_status()
     except requests.exceptions.ConnectionError:
         raise
-    except requests.exceptions.HTTPError as err:
+    except requests.exceptions.HTTPError:
         pass
 
     if not res.ok:
