@@ -69,7 +69,7 @@ def sleep_wait(func):
                 echo(f"Checking again in {new_period}s")
                 sleep(new_period)
                 # increasing the wait time
-                new_period = new_period + DEFAULT_WAIT_PERIOD_INCREMENT
+                # new_period = new_period + DEFAULT_WAIT_PERIOD_INCREMENT
         raise TimeoutError("Timeout reached while checking for expected value")
 
     return wrapper
