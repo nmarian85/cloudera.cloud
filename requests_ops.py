@@ -5,7 +5,6 @@ the REST API using the python requests module.
 
 import requests
 import json
-from click import echo
 from os import getenv
 from abc import ABC, abstractmethod
 from time import strftime, gmtime, sleep, time
@@ -35,12 +34,6 @@ def send_http_request(srv_url, req_type="get", params=None, data=None, auth=None
     """
     if req_type not in "post put get delete".split():
         raise ValueError("Unknown request type")
-    # res = getattr(requests, req_type)(
-    #     url=srv_url, json=data, timeout=DEFAULT_TIMEOUT, auth=auth, params=params, headers=headers,
-    # )
-    # if res.text:
-    #     print(res.text)
-    # res.raise_for_status()
 
     try:
         res = getattr(requests, req_type)(
@@ -56,7 +49,7 @@ def send_http_request(srv_url, req_type="get", params=None, data=None, auth=None
         raise
     except requests.exceptions.HTTPError:
         if res.text:
-            echo(res.text)
+            print(res.text)
         # if res.status_code == 400:
         #         return res.text
         raise
@@ -64,9 +57,9 @@ def send_http_request(srv_url, req_type="get", params=None, data=None, auth=None
     try:
         out = res.json()
     except json.decoder.JSONDecodeError:
-        echo("Response received is not in JSON format.")
+        print("Response received is not in JSON format.")
         if "text" in res:
-            echo(res.text)
+            print(res.text)
         raise
     else:
         res.data = out

@@ -102,7 +102,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         action_url = f"{env_url}/deleteEnvironment"
 
     click.echo("-------------------Generated JSON-----------------------------")
-    click.echo(json.dumps(env_json, indent=4, sort_keys=True))
+    print(json.dumps(env_json, indent=4, sort_keys=True))
     click.echo("--------------------------------------------------------------")
 
     if not dryrun:
@@ -112,18 +112,6 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
             data=env_json,
             headers=generate_headers("POST", action_url),
         )
-        if not isinstance(response, dict):
-            if action == "install-env":
-                check_str = "already exists"
-            elif action == "delete-env":
-                check_str = "Environment with name"
-            # we want to ensure an idempotent execution hence
-            # we will not raise errors if the environment already exists
-            # or was already deleted
-            err_msg = json.dumps(response, indent=4, sort_keys=True)
-            click.echo(err_msg)
-            if check_str not in err_msg:
-                raise requests.exceptions.HTTPError
 
         click.echo(f"Waiting for {action} on environments {cdp_env_name}")
         if action == "install-env":
