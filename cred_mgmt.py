@@ -97,7 +97,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
             )
             if not isinstance(response, dict):
                 if action == "create-cred":
-                    check_str = "Credential1 already exists"
+                    check_str = "Credential already exists"
                 elif action == "delete-cred":
                     check_str = "Credential with name"
                 # we want to ensure an idempotent execution hence
