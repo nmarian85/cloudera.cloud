@@ -95,6 +95,23 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 data=cdp_cred_json,
                 headers=generate_headers("POST", action_url),
             )
+            if not isinstance(response, dict):
+                if action == "create-cred":
+                    check_str = "Credential already exists"
+                elif action == "delete-cred":
+                    check_str = "Credential with name"
+                # we want to ensure an idempotent execution hence
+                # we will not raise errors if the credentials already exist
+                # or where already deleted
+                if check_str not in json.dumps(response, indent=4, sort_keys=True):
+                    raise requests.exceptions.HTTPError
+
+            # we want to ensure an idempotent execution hence
+            # we will not raise errors if the credentials already exist
+            # or where already deleted
+            # if check_str not in json.dumps(response, indent=4, sort_keys=True):
+            #     raise
+
             # if action == "create-cred":
             #     check_str = "Credential already exists"
             # elif action == "delete-cred":
