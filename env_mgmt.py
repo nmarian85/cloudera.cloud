@@ -116,40 +116,35 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         click.echo(f"Waiting for {action} on environments {cdp_env_name}")
 
         poll_url = f"{env_url}/listEnvironments"
-        root_index = "environments"
-        search_elem_index = "environmentName"
-        expected_value = cdp_env_name
-        data = {}
 
         if action == "install-env":
-            elem_present = True
-
-            click.echo("Checking that the provisioning has started")
             elem_search_info = {
-                "root_index": root_index,
-                "search_elem_index": search_elem_index,
-                "present": elem_present,
-                "expected_value": expected_value,
+                "root_index": "environments",
+                "search_elem_index": "environmentName",
+                "expected_value": cdp_env_name,
+                "present": True,
             }
+        elif action == "delete-env":
+            elem_search_info = {
+                "root_index": "environments",
+                "search_elem_index": "environmentName",
+                "expected_value": cdp_env_name,
+                "present": False,
+            }
+        poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info)
+
+        if action == "install-env":
+            click.echo("Provisioning has started")
+            poll_url = f"{env_url}/describeEnvironment"
+            elem_search_info = {
+                "root_index": "environment",
+                "search_elem_index": "status",
+                "expected_value": "AVAILABLE",
+                "present": True,
+            }
+            data = {"environmentName": cdp_env_name}
             poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info, data=data)
 
-            click.echo("Checking that the provisioning has finished")
-            poll_url = f"{env_url}/describeEnvironment"
-            root_index = "environment"
-            search_elem_index = "status"
-            expected_value = "AVAILABLE"
-            data = {"environmentName": cdp_env_name}
-        elif action == "delete-env":
-            elem_present = False
-
-        elem_search_info = {
-            "root_index": root_index,
-            "search_elem_index": search_elem_index,
-            "present": elem_present,
-            "expected_value": expected_value,
-        }
-
-        # poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info, data=data)
         click.echo(f"Action {action} on environment {cdp_env_name} DONE")
 
         # dumping file so that Gitlab will back it up
