@@ -103,7 +103,9 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 # we want to ensure an idempotent execution hence
                 # we will not raise errors if the credentials already exist
                 # or where already deleted
-                if check_str not in json.dumps(response, indent=4, sort_keys=True):
+                err_msg = json.dumps(response, indent=4, sort_keys=True)
+                click.echo(err_msg)
+                if check_str not in err_msg:
                     raise requests.exceptions.HTTPError
 
             click.echo(f"Waiting for {action} on credential {cred_name}")
