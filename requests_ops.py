@@ -56,7 +56,7 @@ def send_http_request(srv_url, req_type="get", params=None, data=None, auth=None
         raise
     except requests.exceptions.HTTPError:
         if res.text:
-            click.echo(res.text)
+            echo(res.text)
         # if res.status_code == 400:
         #         return res.text
         raise
