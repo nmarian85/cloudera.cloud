@@ -2,13 +2,22 @@ import click
 import sys
 import json
 import os
-from utils import show_progress, get_env_info, sleep_wait
+from utils import show_progress, get_env_info, poll_for_status
 from cdpv1sign import generate_headers
 import requests_ops
 import requests
 
 
 def dump_create_cred_json(cred_info, json_skel):
+    """[summary]
+
+    Args:
+        cred_info ([type]): [description]
+        json_skel ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     cred_json = dict(json_skel)
     cred_json["credentialName"] = cred_info["credential_name"]
     cred_json["roleArn"] = cred_info["role_arn"]
@@ -17,40 +26,18 @@ def dump_create_cred_json(cred_info, json_skel):
 
 
 def dump_delete_cred_json(cred_info, json_skel):
-    cred_json = dict(json_skel)
-    cred_json["credentialName"] = cred_info["credential_name"]
-    return cred_json
-
-
-@sleep_wait
-def poll_for_status(poll_url, action, expected_value):
     """[summary]
 
     Args:
-        poll_url ([type]): [url to check the status of our command (e.g. creating a credential)]
-        expected_value ([type]): [expected value in case of success]
+        cred_info ([type]): [description]
+        json_skel ([type]): [description]
 
     Returns:
         [type]: [description]
     """
-    json_response = requests_ops.send_http_request(
-        srv_url=poll_url, req_type="post", data={}, headers=generate_headers("POST", poll_url),
-    )
-    if action == "create-cred":
-        found = False
-    elif action == "delete-cred":
-        found = True
-
-    creds = json_response.get("credentials")
-    if isinstance(creds, list):
-        for cred in creds:
-            if cred["credentialName"] == expected_value:
-                # if we want to create the credential and we found it,
-                # the return value will be True since the creation was successful
-                # if we wanted to delete the credential and we found it,
-                # the return value will be False since it was not deleted yet
-                return not found
-    return found
+    cred_json = dict(json_skel)
+    cred_json["credentialName"] = cred_info["credential_name"]
+    return cred_json
 
 
 @click.command()
@@ -119,8 +106,20 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                     raise
             else:
                 click.echo(f"Waiting for {action} on credential {cred_name}")
+                if action == "create-cred":
+                    elem_present = True
+                elif action == "delete-cred":
+                    elem_present = False
+
+                elem_search_info = {
+                    "root_index": "credentials",
+                    "search_elem_index": "credentialName",
+                    "present": elem_present,
+                    "expected_value": cred_name,
+                }
+
                 poll_for_status(
-                    poll_url=f"{env_url}/listCredentials", action=action, expected_value=cred_name,
+                    poll_url=f"{env_url}/listCredentials", elem_search_info=elem_search_info
                 )
                 # dumping file so that Gitlab will back it up
                 with open(f"{cred_name}.json", "w", encoding="utf-8") as f:
