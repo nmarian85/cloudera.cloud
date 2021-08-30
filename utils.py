@@ -106,5 +106,5 @@ def poll_for_status(poll_url, elem_search_info):
                 # the return value will be True since the creation was successful
                 # if we wanted to delete the credential and we found it,
                 # the return value will be False since it was not deleted yet
-                return not elem_search_info["present"]
-    return elem_search_info["present"]
+                return elem_search_info["present"]
+    return not elem_search_info["present"]
