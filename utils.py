@@ -76,7 +76,7 @@ def sleep_wait(func):
 
 
 @sleep_wait
-def poll_for_status(poll_url, elem_search_info):
+def poll_for_status(poll_url, elem_search_info, data={}):
     """Since the http request we send is async we will need to poll
     to check that the action we submitted in the http request was
     successful
@@ -92,10 +92,7 @@ def poll_for_status(poll_url, elem_search_info):
         [type]: [description]
     """
     json_response = requests_ops.send_http_request(
-        srv_url=poll_url,
-        req_type="post",
-        data=elem_search_info["data"],
-        headers=generate_headers("POST", poll_url),
+        srv_url=poll_url, req_type="post", data=data, headers=generate_headers("POST", poll_url),
     )
 
     # getting the list of elements from the response json
