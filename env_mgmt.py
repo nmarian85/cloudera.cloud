@@ -114,8 +114,26 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         )
 
         click.echo(f"Waiting for {action} on environments {cdp_env_name}")
+
+        poll_url = f"{env_url}/listEnvironments"
+        root_index = "environments"
+        search_elem_index = "environmentName"
+        expected_value = cdp_env_name
+        data = {}
+
         if action == "install-env":
             elem_present = True
+
+            # checking that the provisioning has started
+            elem_search_info = {
+                "root_index": root_index,
+                "search_elem_index": search_elem_index,
+                "present": elem_present,
+                "expected_value": expected_value,
+            }
+            poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info, data=data)
+
+            # then we check that the provisioning has finished
             poll_url = f"{env_url}/describeEnvironment"
             root_index = "environment"
             search_elem_index = "status"
@@ -123,11 +141,6 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
             data = {"environmentName": cdp_env_name}
         elif action == "delete-env":
             elem_present = False
-            poll_url = f"{env_url}/listEnvironments"
-            root_index = "environments"
-            search_elem_index = "environmentName"
-            expected_value = cdp_env_name
-            data = {}
 
         elem_search_info = {
             "root_index": root_index,
