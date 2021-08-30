@@ -76,7 +76,12 @@ def main(dryrun, env, cdp_env_name, action, cred_name, json_skel):
     cdp_env_info = get_env_info(env, cdp_env_name)
     env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
 
-    cred_info = cdp_env_info["credentials"][cred_name]
+    cred_info = None
+    for cred, cred_details in cdp_env_info["credentials"]:
+        if cred_details["credential_name"] == cred_name:
+            cred_info = cred_details
+    if cred_info is None:
+        raise ValueError(f"Unable to find credential with name {cred_name}")
 
     if action == "create-cred":
         click.echo(f"==============Creating credential {cred_name}==============")
