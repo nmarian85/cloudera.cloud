@@ -48,7 +48,7 @@ def send_http_request(srv_url, req_type="get", params=None, data=None, auth=None
     except requests.exceptions.ConnectionError:
         raise
     except requests.exceptions.HTTPError:
-        pass
+        raise
 
     if not res.ok:
         if res.text:
