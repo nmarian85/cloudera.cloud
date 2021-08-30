@@ -145,9 +145,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 "expected_value": expected_value,
             }
 
-            poll_for_status(
-                poll_url=f"{env_url}/listEnvironments", elem_search_info=elem_search_info
-            )
+            poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info)
             # dumping file so that Gitlab will back it up
             with open(f"{cdp_env_name}.json", "w", encoding="utf-8") as f:
                 json.dump(env_json, f, ensure_ascii=False, indent=4)
