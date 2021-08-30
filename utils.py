@@ -96,11 +96,14 @@ def poll_for_status(poll_url, elem_search_info):
     )
 
     # getting the list of elements from the response json
-    response = json_response.get(elem_search_info.root_index)
+    response = json_response.get(elem_search_info["root_index"])
 
     if isinstance(response, list):
         for elem in response:
-            if response[elem_search_info.search_elem_index] == elem_search_info.expected_value:
+            if (
+                response[elem_search_info["search_elem_index"]]
+                == elem_search_info["expected_value"]
+            ):
                 # e.g. for credential mgmt:
                 # if we want to create the credential and we found it,
                 # the return value will be True since the creation was successful
