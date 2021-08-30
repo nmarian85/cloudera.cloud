@@ -108,6 +108,7 @@ def poll_for_status(poll_url, elem_search_info, data={}):
                 # the return value will be True since the creation was successful
                 # if we wanted to delete the credential and we found it,
                 # the return value will be False since it was not deleted yet
+                print(f'found {elem[elem_search_info["search_elem_index"]]}')
                 return elem_search_info["present"]
     # e.g. for describeEnvironment: the response is a dict and
     # we will check for a specific status, e.g. environment has finished installing
