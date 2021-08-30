@@ -98,6 +98,8 @@ def poll_for_status(poll_url, elem_search_info):
     # getting the list of elements from the response json
     response = json_response.get(elem_search_info["root_index"])
 
+    # e.g. for listCredentials: the response is a list and
+    # we are going to loop through all the credentials and check if they were created
     if isinstance(response, list):
         for elem in response:
             if elem[elem_search_info["search_elem_index"]] == elem_search_info["expected_value"]:
@@ -107,4 +109,10 @@ def poll_for_status(poll_url, elem_search_info):
                 # if we wanted to delete the credential and we found it,
                 # the return value will be False since it was not deleted yet
                 return elem_search_info["present"]
+    # e.g. for describeEnvironment: the response is a dict and
+    # we will check for a specific status, e.g. environment has finished installing
+    elif isinstance(response, dict):
+        if elem[elem_search_info["search_elem_index"]] == elem_search_info["expected_value"]:
+            return elem_search_info["present"]
+
     return not elem_search_info["present"]

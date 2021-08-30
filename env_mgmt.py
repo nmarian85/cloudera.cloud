@@ -127,12 +127,18 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
             click.echo(f"Waiting for {action} on environments {cdp_env_name}")
             if action == "install-env":
                 elem_present = True
+                poll_url = f"{env_url}/describeEnvironment"
+                root_index = "environment"
+                search_elem_index = "status"
             elif action == "delete-env":
                 elem_present = False
+                poll_url = f"{env_url}/listEnvironments"
+                root_index = "environments"
+                search_elem_index = "environmentName"
 
             elem_search_info = {
-                "root_index": "environments",
-                "search_elem_index": "environmentName",
+                "root_index": root_index,
+                "search_elem_index": search_elem_index,
                 "present": elem_present,
                 "expected_value": cdp_env_name,
             }
