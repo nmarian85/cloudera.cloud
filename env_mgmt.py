@@ -106,14 +106,13 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     click.echo("--------------------------------------------------------------")
 
     if not dryrun:
-        try:
-            response = requests_ops.send_http_request(
-                srv_url=action_url,
-                req_type="post",
-                data=env_json,
-                headers=generate_headers("POST", action_url),
-            )
-        except requests.exceptions.HTTPError:
+        response = requests_ops.send_http_request(
+            srv_url=action_url,
+            req_type="post",
+            data=env_json,
+            headers=generate_headers("POST", action_url),
+        )
+        if not isinstance(response, dict):
             if action == "install-env":
                 check_str = "already exists"
             elif action == "delete-env":
@@ -122,37 +121,37 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
             # we will not raise errors if the environment already exists
             # or was already deleted
             if check_str not in json.dumps(response, indent=4, sort_keys=True):
-                raise
-        else:
-            click.echo(f"Waiting for {action} on environments {cdp_env_name}")
-            if action == "install-env":
-                elem_present = True
-                poll_url = f"{env_url}/describeEnvironment"
-                root_index = "environment"
-                search_elem_index = "status"
-                expected_value = "AVAILABLE"
-                data = {"environmentName": cdp_env_name}
-            elif action == "delete-env":
-                elem_present = False
-                poll_url = f"{env_url}/listEnvironments"
-                root_index = "environments"
-                search_elem_index = "environmentName"
-                expected_value = cdp_env_name
-                data = {}
+                raise requests.exceptions.HTTPError
 
-            elem_search_info = {
-                "root_index": root_index,
-                "search_elem_index": search_elem_index,
-                "present": elem_present,
-                "expected_value": expected_value,
-            }
+        click.echo(f"Waiting for {action} on environments {cdp_env_name}")
+        if action == "install-env":
+            elem_present = True
+            poll_url = f"{env_url}/describeEnvironment"
+            root_index = "environment"
+            search_elem_index = "status"
+            expected_value = "AVAILABLE"
+            data = {"environmentName": cdp_env_name}
+        elif action == "delete-env":
+            elem_present = False
+            poll_url = f"{env_url}/listEnvironments"
+            root_index = "environments"
+            search_elem_index = "environmentName"
+            expected_value = cdp_env_name
+            data = {}
 
-            poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info, data=data)
-            click.echo(f"Action {action} on environment {cdp_env_name} DONE")
+        elem_search_info = {
+            "root_index": root_index,
+            "search_elem_index": search_elem_index,
+            "present": elem_present,
+            "expected_value": expected_value,
+        }
 
-            # dumping file so that Gitlab will back it up
-            with open(f"{cdp_env_name}.json", "w", encoding="utf-8") as f:
-                json.dump(env_json, f, ensure_ascii=False, indent=4)
+        poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info, data=data)
+        click.echo(f"Action {action} on environment {cdp_env_name} DONE")
+
+        # dumping file so that Gitlab will back it up
+        with open(f"{cdp_env_name}.json", "w", encoding="utf-8") as f:
+            json.dump(env_json, f, ensure_ascii=False, indent=4)
     click.echo(f"===========================================================")
     click.echo()
 

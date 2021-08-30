@@ -106,23 +106,6 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 if check_str not in json.dumps(response, indent=4, sort_keys=True):
                     raise requests.exceptions.HTTPError
 
-            # we want to ensure an idempotent execution hence
-            # we will not raise errors if the credentials already exist
-            # or where already deleted
-            # if check_str not in json.dumps(response, indent=4, sort_keys=True):
-            #     raise
-
-            # if action == "create-cred":
-            #     check_str = "Credential already exists"
-            # elif action == "delete-cred":
-            #     check_str = "Credential with name"
-            # # we want to ensure an idempotent execution hence
-            # # we will not raise errors if the credentials already exist
-            # # or where already deleted
-            # # if check_str not in json.dumps(response, indent=4, sort_keys=True):
-            # #     raise
-            # raise
-            # else:
             click.echo(f"Waiting for {action} on credential {cred_name}")
             if action == "create-cred":
                 elem_present = True
