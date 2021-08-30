@@ -98,7 +98,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         action_url = f"{env_url}/createAWSEnvironment"
     elif action == "delete-env":
         click.echo(f"==============Deleting environment {cdp_env_name}==============")
-        # env_json = dump_env_delete_json(cdp_env_name, cdp_env_info, env_json_skel)
+        env_json = dump_env_delete_json(cdp_env_name, cdp_env_info, env_json_skel)
         action_url = f"{env_url}/deleteEnvironment"
 
     click.echo("-------------------Generated JSON-----------------------------")
