@@ -48,11 +48,11 @@ def send_http_request(srv_url, req_type="get", params=None, data=None, auth=None
     except requests.exceptions.ConnectionError:
         raise
     except requests.exceptions.HTTPError:
+        if res.status_code == 400:
+            if res.text:
+                return res.text
         raise
 
-    if not res.ok:
-        if res.text:
-            echo(res.text)
     try:
         out = res.json()
     except json.decoder.JSONDecodeError:

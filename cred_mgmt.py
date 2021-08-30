@@ -89,45 +89,43 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         click.echo("--------------------------------------------------------------")
 
         if not dryrun:
-            try:
-                response = requests_ops.send_http_request(
-                    srv_url=action_url,
-                    req_type="post",
-                    data=cdp_cred_json,
-                    headers=generate_headers("POST", action_url),
-                )
-            except requests.exceptions.HTTPError:
-                if action == "create-cred":
-                    check_str = "Credential already exists"
-                elif action == "delete-cred":
-                    check_str = "Credential with name"
-                # we want to ensure an idempotent execution hence
-                # we will not raise errors if the credentials already exist
-                # or where already deleted
-                # if check_str not in json.dumps(response, indent=4, sort_keys=True):
-                #     raise
-                raise
-            else:
-                click.echo(f"Waiting for {action} on credential {cred_name}")
-                if action == "create-cred":
-                    elem_present = True
-                elif action == "delete-cred":
-                    elem_present = False
+            response = requests_ops.send_http_request(
+                srv_url=action_url,
+                req_type="post",
+                data=cdp_cred_json,
+                headers=generate_headers("POST", action_url),
+            )
+            # if action == "create-cred":
+            #     check_str = "Credential already exists"
+            # elif action == "delete-cred":
+            #     check_str = "Credential with name"
+            # # we want to ensure an idempotent execution hence
+            # # we will not raise errors if the credentials already exist
+            # # or where already deleted
+            # # if check_str not in json.dumps(response, indent=4, sort_keys=True):
+            # #     raise
+            # raise
+            # else:
+            click.echo(f"Waiting for {action} on credential {cred_name}")
+            if action == "create-cred":
+                elem_present = True
+            elif action == "delete-cred":
+                elem_present = False
 
-                elem_search_info = {
-                    "root_index": "credentials",
-                    "search_elem_index": "credentialName",
-                    "present": elem_present,
-                    "expected_value": cred_name,
-                }
+            elem_search_info = {
+                "root_index": "credentials",
+                "search_elem_index": "credentialName",
+                "present": elem_present,
+                "expected_value": cred_name,
+            }
 
-                poll_for_status(
-                    poll_url=f"{env_url}/listCredentials", elem_search_info=elem_search_info
-                )
-                click.echo(f"Action {action} on credential {cred_name} DONE")
-                # dumping file so that Gitlab will back it up
-                with open(f"{cred_name}.json", "w", encoding="utf-8") as f:
-                    json.dump(cdp_cred_json, f, ensure_ascii=False, indent=4)
+            poll_for_status(
+                poll_url=f"{env_url}/listCredentials", elem_search_info=elem_search_info
+            )
+            click.echo(f"Action {action} on credential {cred_name} DONE")
+            # dumping file so that Gitlab will back it up
+            with open(f"{cred_name}.json", "w", encoding="utf-8") as f:
+                json.dump(cdp_cred_json, f, ensure_ascii=False, indent=4)
         click.echo(f"===========================================================")
         click.echo()
 
