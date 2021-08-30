@@ -106,6 +106,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 # or where already deleted
                 # if check_str not in json.dumps(response, indent=4, sort_keys=True):
                 #     raise
+                raise
             else:
                 click.echo(f"Waiting for {action} on credential {cred_name}")
                 if action == "create-cred":
