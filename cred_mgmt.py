@@ -99,7 +99,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 if action == "create-cred":
                     check_str = "Credential already exists"
                 elif action == "delete-cred":
-                    check_str = "Credential with name"
+                    check_str = "not found"
                 # we want to ensure an idempotent execution hence
                 # we will not raise errors if the credentials already exist
                 # or where already deleted
