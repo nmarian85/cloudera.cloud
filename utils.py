@@ -9,7 +9,7 @@ from cdpv1sign import generate_headers
 
 # polling interval when checking the status of a submitted command
 DEFAULT_WAIT_PERIOD = 60  # seconds
-DEFAULT_WAIT_PERIOD_INCREMENT = 120  # seconds
+DEFAULT_WAIT_PERIOD_INCREMENT = 60  # seconds
 # how much to wait until timing out when checking
 # for the success status of a submitted command to the management console
 DEFAULT_TIMEOUT_COMMAND = 3600  # seconds
@@ -66,10 +66,10 @@ def sleep_wait(func):
             if value_found:
                 return
             else:
+                echo(f"Checking again in {new_period}s")
                 sleep(new_period)
                 # increasing the wait time
                 new_period = new_period + DEFAULT_WAIT_PERIOD_INCREMENT
-                echo(f"Checking again in {new_period}s")
         raise TimeoutError("Timeout reached while checking for expected value")
 
     return wrapper

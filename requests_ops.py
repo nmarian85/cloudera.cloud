@@ -35,12 +35,18 @@ def send_http_request(srv_url, req_type="get", params=None, data=None, auth=None
     """
     if req_type not in "post put get delete".split():
         raise ValueError("Unknown request type")
+    try:
+        res = getattr(requests, req_type)(
+            url=srv_url,
+            json=data,
+            timeout=DEFAULT_TIMEOUT,
+            auth=auth,
+            params=params,
+            headers=headers,
+        )
+    except requests.exceptions.RequestException:
+        raise
 
-    res = getattr(requests, req_type)(
-        url=srv_url, json=data, timeout=DEFAULT_TIMEOUT, auth=auth, params=params, headers=headers,
-    )
-
-    # Check if the response HTTP status code is not a 4xx or a 5xx
     if not res.ok:
         if res.text:
             echo(res.text)
@@ -55,46 +61,3 @@ def send_http_request(srv_url, req_type="get", params=None, data=None, auth=None
     else:
         res.data = out
         return res.data
-
-
-# class FrozenJSON:
-#     """Class for navigating a JSON-like object
-#        using attribute notation
-#     """
-
-#     """Build a dict from the mapping argument. This serves two purposes:
-#     ensures we got a dict (or something that can be converted to one)
-#     and makes a copy for safety."""
-
-#     def __init__(self, mapping):
-#         self.__data = dict(mapping)
-
-#     """__getattr__ is called only when there’s no attribute with that name."""
-
-#     def __getattr__(self, name):
-#         if hasattr(self.__data, name):
-#             """If name matches an attribute of the instance __data,
-#             return that. This is how calls to methods like keys are handled."""
-#             return getattr(self.__data, name)
-#         else:
-#             """Otherwise, fetch the item with the key name from self.__data,
-#             and return the result of calling FrozenJSON.build() on that."""
-#             return FrozenJSON.build(self.__data[name])
-
-#     """This is an alternate constructor"""
-
-#     @classmethod
-#     def build(cls, obj):
-#         """If obj is a mapping, build a FrozenJSON with it."""
-#         if isinstance(obj, abc.Mapping):
-#             return cls(obj)
-#         elif isinstance(obj, abc.MutableSequence):
-#             """If it is a MutableSequence, it must be a list,
-#             so we build a list by passing every item in obj recursively to .build()."""
-#             return [cls.build(item) for item in obj]
-#         else:
-#             """If it’s not a dict or a list, return the item as it is."""
-#             return obj
-
-#     def __repr__(self):
-#         return json.dumps(self.__data, indent=4, sort_keys=True)
