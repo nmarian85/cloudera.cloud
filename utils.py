@@ -112,7 +112,7 @@ def poll_for_status(poll_url, elem_search_info, data={}):
     # e.g. for describeEnvironment: the response is a dict and
     # we will check for a specific status, e.g. environment has finished installing
     elif isinstance(response, dict):
-        if elem[elem_search_info["search_elem_index"]] == elem_search_info["expected_value"]:
+        if response[elem_search_info["search_elem_index"]] == elem_search_info["expected_value"]:
             return elem_search_info["present"]
 
     return not elem_search_info["present"]
