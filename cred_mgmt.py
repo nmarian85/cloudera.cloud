@@ -77,7 +77,7 @@ def main(dryrun, env, cdp_env_name, action, cred_name, json_skel):
     env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
 
     cred_info = None
-    for cred, cred_details in cdp_env_info["credentials"]:
+    for cred, cred_details in cdp_env_info["credentials"].items():
         if cred_details["credential_name"] == cred_name:
             cred_info = cred_details
     if cred_info is None:
