@@ -50,14 +50,10 @@ def dump_cdl_install_json(cdp_env_name, cdl_cluster_name, cdp_dl_info, account_i
     return cdp_dl_json
 
 
-# def dump_cde_delete_json(cdp_env_name, cdp_env_info, cdl_json_skel):
-#     # {
-#     #     "clusterId": "",
-#     #     "force": true
-#     # }
-#     cdp_env_json = dict(cdl_json_skel)
-#     cdp_env_json["environmentName"] = cdp_env_name
-#     return cdp_env_json
+def dump_cdl_delete_json(cdl_cluster_name, cdl_json_skel):
+    cdp_dl_json = dict(cdl_json_skel)
+    cdp_dl_json["datalakeName"] = cdl_cluster_name
+    return cdp_dl_json
 
 
 @click.command()
@@ -106,7 +102,7 @@ def main(dryrun, env, cdp_env_name, cdl_cluster_name, action, json_skel):
         action_url = f"{env_url}/createAWSDatalake"
     elif action == "delete-cdl":
         click.echo(f"==============Deleting environment {cdp_env_name}==============")
-        # env_json = dump_cde_delete_json(cdp_env_name, cdl_cluster_name, cdp_dl_info, cdl_json_skel)
+        env_json = dump_cdl_delete_json(cdl_cluster_name, cdl_json_skel)
         action_url = f"{env_url}/deleteDatalake"
 
     click.echo("-------------------Generated JSON-----------------------------")
@@ -128,13 +124,13 @@ def main(dryrun, env, cdp_env_name, cdl_cluster_name, action, json_skel):
         if action == "install-cdl":
             elem_search_info = {
                 "root_index": "datalakes",
-                "expected_key_val": {"name": cdl_cluster_name, "status": "RUNNING"},
+                "expected_key_val": {"datalakeName": cdl_cluster_name, "status": "RUNNING"},
                 "present": True,
             }
         elif action == "delete-cdl":
             elem_search_info = {
                 "root_index": "datalakes",
-                "expected_key_val": {"name": cdl_cluster_name},
+                "expected_key_val": {"datalakeName": cdl_cluster_name},
                 "present": False,
             }
         poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info)
