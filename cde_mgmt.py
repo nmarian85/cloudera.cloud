@@ -41,10 +41,10 @@ def dump_cde_install_json(cdp_env_name, cde_cluster_name, cde_cluster_info, cde_
     cde_json["chartValueOverrides"] = []
     cde_json["rootVolumeSize"] = cde_cluster_info["root_vol_size"]
     cde_json["enablePublicEndpoint"] = False
-    cde_json["enableWorkloadAnalytics"] = True
+    cde_json["enableWorkloadAnalytics"] = False
     # we are using an internal load balancer
     cde_json["whitelistIps"] = []
-    cde_json["tags"] = [{f"{k}": f"{v}"} for k, v in cde_cluster_info["tags"].items()]
+    cde_json["tags"] = cde_cluster_info["tags"]
     return cde_json
 
 
