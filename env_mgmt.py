@@ -143,4 +143,3 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
 
 if __name__ == "__main__":
     main()
-
