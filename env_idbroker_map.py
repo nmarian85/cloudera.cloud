@@ -68,7 +68,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
 
     if action == "set-id-broker-mappings":
-        click.echo(f"==============Creating credential {cred_name}==============")
+        click.echo(f"==============Setting idbroker mappings for ranger and datalake roles on {cdp_env_name}==============")
         cdp_mapping_json = dump_create_mapping_json(
             cdp_env_name, data_role_arn, ranger_role_arn, [], json_skel
         )
