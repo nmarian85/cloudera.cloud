@@ -71,7 +71,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
             f"========Setting idbroker mappings for ranger and datalake roles on {cdp_env_name}===="
         )
         cdp_mapping_json = dump_create_mapping_json(
-            cdp_env_name, data_role_arn, ranger_role_arn, [{}], json_skel
+            cdp_env_name, data_role_arn, ranger_role_arn, [], mapping_json_skel
         )
         action_url = f"{env_url}/setIdBrokerMappings"
 
