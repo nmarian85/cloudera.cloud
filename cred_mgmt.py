@@ -124,9 +124,8 @@ def main(dryrun, env, cdp_env_name, action, cred_name, json_skel):
 
         elem_search_info = {
             "root_index": "credentials",
-            "search_elem_index": "credentialName",
+            "expected_key_val": {"credentialName": cred_name},
             "present": elem_present,
-            "expected_value": cred_name,
         }
 
         poll_for_status(poll_url=f"{env_url}/listCredentials", elem_search_info=elem_search_info)

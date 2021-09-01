@@ -5,6 +5,8 @@
         "log_bucket": "devo-cdp-adm-logs-ffppyd8q",
         "log_role": "devo-cdp-log-role",
         "idbroker_role": "devo-cdp-idbroker-role",
+        "data_role": "devo-cdp-datalake-admin-role",
+        "ranger_role": "devo-cdp-ranger-audit-role",
         "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbeW5dvQZdyLWnjbuFmmP+j1Q9c6tcNaaQwmuZ9gzn7Pbm+aXytEdCj2R6s6EhrO0Ip87Z2UOPM979vfe7fO9uWa/WjQ24A7KgltYWAVBRIdhIxbFCzXAIQVvnMyo0dnODLIFupNw0RpoM/Cn+aMNqv+xmhhbNUJJS8i7t1Nsv/RT30dkIW1WMpVR2suDDzySEezYOAED5TXErAl7ruericcUKAw/l8SHfphY7Rw+j4dveMeKCNLNGLdEahPNDLdxLr6rmDgX6rxF2nWNlSZse9fW6xelhcF8Lu2D1oxxqI+ZNq0G/Q5u50RVDTSqkujVVoUPeEYO1rwUWW2cEDhRT",
         "account_id": "303413094647",
         "subnets": [
@@ -31,8 +33,6 @@
         "datalake": {
             "name": "devo-cdp-lab-env01-dl",
             "data_bucket": "devo-cdp-adm-data-i7ijrnh8",
-            "data_role": "devo-cdp-datalake-admin-role",
-            "ranger_role": "devo-cdp-ranger-audit-role",
             "idbroker_role_instance_profile": "devo-cdp-idbroker-role-instance-profile",
             "tags": [],
             "scale": "LIGHT_DUTY"
@@ -123,6 +123,8 @@
         "log_bucket": "devo-cdp-env02-lab-adm-logs-ffppyd8q",
         "log_role": "devo-cdp-env02-lab-log-role",
         "idbroker_role": "devo-cdp-env02-lab-idbroker-role",
+        "data_role": "devo-cdp-env02-lab-datalake-admin-role",
+        "ranger_role": "devo-cdp-env02-lab-ranger-audit-role",
         "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbeW5dvQZdyLWnjbuFmmP+j1Q9c6tcNaaQwmuZ9gzn7Pbm+aXytEdCj2R6s6EhrO0Ip87Z2UOPM979vfe7fO9uWa/WjQ24A7KgltYWAVBRIdhIxbFCzXAIQVvnMyo0dnODLIFupNw0RpoM/Cn+aMNqv+xmhhbNUJJS8i7t1Nsv/RT30dkIW1WMpVR2suDDzySEezYOAED5TXErAl7ruericcUKAw/l8SHfphY7Rw+j4dveMeKCNLNGLdEahPNDLdxLr6rmDgX6rxF2nWNlSZse9fW6xelhcF8Lu2D1oxxqI+ZNq0G/Q5u50RVDTSqkujVVoUPeEYO1rwUWW2cEDhRT",
         "account_id": "405945523162",
         "subnets": [
@@ -147,10 +149,8 @@
         },
         "tags": [],
         "datalake": {
-            "name": "devo-cdp-lab-env02-dl",
+            "name": "devo-cdp-env02-lab-dl",
             "data_bucket": "devo-cdp-env02-lab-adm-data-i7ijrnh8",
-            "data_role": "devo-cdp-env02-lab-datalake-admin-role",
-            "ranger_role": "devo-cdp-env02-lab-ranger-audit-role",
             "idbroker_role_instance_profile": "devo-cdp-env02-lab-idbroker-role-instance-profile",
             "tags": [],
             "scale": "LIGHT_DUTY"
