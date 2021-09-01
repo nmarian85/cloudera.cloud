@@ -46,12 +46,13 @@ def dump_create_mapping_json(cdp_env_name, data_role_arn, ranger_role_arn, mappi
     help="Please see {env}.json file where you defined the CDP env name",
     required=True,
 )
+
 @click.option(
     "--json-skel",
     help="JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
     required=True,
 )
-def main(dryrun, env, cdp_env_name, action, cred_name, json_skel):
+def main(dryrun, env, cdp_env_name, action, json_skel):
     if dryrun:
         show_progress("This is a dryrun")
 
