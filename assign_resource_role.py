@@ -64,38 +64,21 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     for group, roles in cdp_env_info["cdp_igam_groups"].items():
         for role in roles:
             if action == "assign-role-to-group":
-                click.echo(f"==============Assigning role {role} to group {group}==============")
+                click.echo(
+                    f"==============Assigning role {role} to group {group} on environment {cdp_env_name}=============="
+                )
                 cdp_assign_group_role_json = dump_assign_group_resource_role_json(
                     cdp_env_crn, role, group, assign_group_role_json_skel
                 )
                 action_url = f"{env_url}/assignGroupResourceRole"
             elif action == "unassign-role-from-group":
                 click.echo(
-                    f"==============Unassigning role {role} from group {group}=============="
+                    f"==============Unassigning role {role} from group {group} on environment {cdp_env_name}=============="
                 )
                 cdp_assign_group_role_json = dump_unassign_group_resource_role_json(
                     group, cdp_env_crn, role, assign_group_role_json_skel
                 )
                 action_url = f"{env_url}/unassignGroupResourceRole"
-
-            if action == "assign-role-to-group":
-                elem_present = True
-            elif action == "unassign-role-from-group":
-                elem_present = False
-
-            elem_search_info = {
-                "root_index": "resourceAssignments",
-                "expected_key_val": {
-                    "resourceRoleCrn": "{requests_ops.DEFAULT_IAM_CRN}:altus:resourceRole:{role}"
-                },
-                "present": elem_present,
-            }
-
-            poll_for_status(
-                poll_url=f"{env_url}/listGroupAssignedResourceRoles",
-                data={"groupName": group},
-                elem_search_info=elem_search_info,
-            )
 
             click.echo("-------------------Generated JSON-----------------------------")
             print(json.dumps(cdp_assign_group_role_json, indent=4, sort_keys=True))
@@ -109,8 +92,29 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                     headers=generate_headers("POST", action_url),
                 )
 
+                if action == "assign-role-to-group":
+                    elem_present = True
+                elif action == "unassign-role-from-group":
+                    elem_present = False
+
+                elem_search_info = {
+                    "root_index": "resourceAssignments",
+                    "expected_key_val": {
+                        "resourceRoleCrn": f"{requests_ops.DEFAULT_IAM_CRN}:resourceRole:{role}"
+                    },
+                    "present": elem_present,
+                }
+
+                poll_for_status(
+                    poll_url=f"{env_url}/listGroupAssignedResourceRoles",
+                    data={"groupName": group},
+                    elem_search_info=elem_search_info,
+                )
+
                 click.echo(f"Waiting for {action} on role {role}")
-                click.echo(f"Action {action} on cdp group {group} assigning role {role} DONE")
+                click.echo(
+                    f"Action {action} on cdp group {group} on environment {cdp_env_name} assigning role {role} DONE"
+                )
                 # dumping file so that Gitlab will back it up
                 with open(f"{group}_{role}.json", "w", encoding="utf-8") as f:
                     json.dump(cdp_assign_group_role_json, f, ensure_ascii=False, indent=4)
