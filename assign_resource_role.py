@@ -69,9 +69,9 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     for group, roles in cdp_env_info["cdp_igam_groups"].items():
         for role in roles:
             if action == "assign-role-to-group":
-                click.echo(f"==============Assigning role to {role} to group {group}==============")
+                click.echo(f"==============Assigning role {role} to group {group}==============")
                 cdp_assign_group_role_json = dump_assign_group_resource_role_json(
-                    cdp_env_crn, role, group, json_skel
+                    cdp_env_crn, role, group, assign_group_role_json_skel
                 )
                 action_url = f"{env_url}/assignGroupResourceRole"
             # elif action == "delete-cred":
