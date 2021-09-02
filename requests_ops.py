@@ -25,7 +25,7 @@ DEFAULT_TIMEOUT = 120  # seconds
 
 
 DEFAULT_REGION = "us-west-1"
-DEFAULT_IAM_CRN = "crn:altus:iam:{DEFAULT_REGION}:altus"
+DEFAULT_IAM_CRN = f"crn:altus:iam:{DEFAULT_REGION}:altus"
 CDP_API_VERSION = "1"
 CDP_IAM_ENDPOINT = f"https://iamapi.{DEFAULT_REGION}.altus.cloudera.com"
 CDP_SERVICES_ENDPOINT = f"https://api.{DEFAULT_REGION}.cdp.cloudera.com/api/v{CDP_API_VERSION}"
