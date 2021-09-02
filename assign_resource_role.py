@@ -97,25 +97,25 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 elem_search_info=elem_search_info,
             )
 
-        click.echo("-------------------Generated JSON-----------------------------")
-        print(json.dumps(cdp_assign_group_role_json, indent=4, sort_keys=True))
-        click.echo("--------------------------------------------------------------")
+            click.echo("-------------------Generated JSON-----------------------------")
+            print(json.dumps(cdp_assign_group_role_json, indent=4, sort_keys=True))
+            click.echo("--------------------------------------------------------------")
 
-        if not dryrun:
-            response = requests_ops.send_http_request(
-                srv_url=action_url,
-                req_type="post",
-                data=cdp_assign_group_role_json,
-                headers=generate_headers("POST", action_url),
-            )
+            if not dryrun:
+                response = requests_ops.send_http_request(
+                    srv_url=action_url,
+                    req_type="post",
+                    data=cdp_assign_group_role_json,
+                    headers=generate_headers("POST", action_url),
+                )
 
-            click.echo(f"Waiting for {action} on role {role}")
-            click.echo(f"Action {action} on cdp group {group} assigning role {role} DONE")
-            # dumping file so that Gitlab will back it up
-            with open(f"{group}_{role}.json", "w", encoding="utf-8") as f:
-                json.dump(cdp_assign_group_role_json, f, ensure_ascii=False, indent=4)
-        click.echo(f"===========================================================")
-        click.echo()
+                click.echo(f"Waiting for {action} on role {role}")
+                click.echo(f"Action {action} on cdp group {group} assigning role {role} DONE")
+                # dumping file so that Gitlab will back it up
+                with open(f"{group}_{role}.json", "w", encoding="utf-8") as f:
+                    json.dump(cdp_assign_group_role_json, f, ensure_ascii=False, indent=4)
+            click.echo(f"===========================================================")
+            click.echo()
 
 
 if __name__ == "__main__":
