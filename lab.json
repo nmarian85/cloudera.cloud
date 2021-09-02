@@ -161,7 +161,6 @@
             ],
             "ecbt1-igamfs-app-cdp-expert": [
                 "DEUser",
-                "DFUser",
                 "DFFlowUser",
                 "DWUser",
                 "DataSteward",
@@ -171,7 +170,6 @@
             ],
             "ecbt1-igamfs-app-cdp-user": [
                 "DEUser",
-                "DFUser",
                 "DFFlowUser",
                 "DWUser",
                 "DataSteward",
