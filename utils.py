@@ -32,6 +32,10 @@ def get_cdp_env_crn(cdp_env_name):
     return response["environment"]["crn"]
 
 
+def get_resource_crn():
+    pass
+
+
 def get_env_info(env, cdp_env_name):
     """[summary]
 
