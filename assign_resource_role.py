@@ -59,7 +59,7 @@ def dump_assign_group_resource_role_json(cdp_env_crn, cdp_role, group_name, json
     help="JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
     required=True,
 )
-def main(dryrun, env, cdp_env_name, action, cred_name, json_skel):
+def main(dryrun, env, cdp_env_name, action, json_skel):
     if dryrun:
         show_progress("This is a dryrun")
 
@@ -119,7 +119,7 @@ def main(dryrun, env, cdp_env_name, action, cred_name, json_skel):
             )
             click.echo(f"Action {action} on cdp group {group} assigning role {role} DONE")
             # dumping file so that Gitlab will back it up
-            with open(f"{cred_name}.json", "w", encoding="utf-8") as f:
+            with open(f"{group}_{role}.json", "w", encoding="utf-8") as f:
                 json.dump(cdp_assign_group_role_json, f, ensure_ascii=False, indent=4)
         click.echo(f"===========================================================")
         click.echo()
