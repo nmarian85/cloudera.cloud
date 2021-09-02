@@ -7,13 +7,10 @@ from cdpv1sign import generate_headers
 import requests_ops
 import requests
 
-DEFAULT_REGION = "us-west-1"
-DEFAULT_IAM_CRN = "crn:altus:iam:${DEFAULT_REGION}:altus"
-
 
 def dump_assign_group_resource_role_json(cdp_env_crn, cdp_role, group_name, json_skel):
     assign_group_role_json = dict(json_skel)
-    resource_role_crn = f"{DEFAULT_IAM_CRN}:resourceRole:{cdp_role}"
+    resource_role_crn = f"{requests_ops.DEFAULT_IAM_CRN}:resourceRole:{cdp_role}"
     assign_group_role_json["groupName"] = group_name
     assign_group_role_json["resourceRoleCrn"] = resource_role_crn
     assign_group_role_json["resourceCrn"] = cdp_env_crn
@@ -22,7 +19,7 @@ def dump_assign_group_resource_role_json(cdp_env_crn, cdp_role, group_name, json
 
 # def dump_assign_user_resource_role_json(cdp_env_crn, cdp_role, user, json_skel):
 #     assign_group_role_json = dict(json_skel)
-#     resource_role_crn = f"{DEFAULT_IAM_CRN}:resourceRole:{cdp_role}"
+#     resource_role_crn = f"{requests_ops.DEFAULT_IAM_CRN}:resourceRole:{cdp_role}"
 #     assign_group_role_json["groupName"] = user
 #     assign_group_role_json["resourceRoleCrn"] = resource_role_crn
 #     assign_group_role_json["resourceCrn"] = cdp_env_crn
@@ -102,7 +99,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
             elem_search_info = {
                 "root_index": "resourceAssignments",
                 "expected_key_val": {
-                    "resourceRoleCrn": "{DEFAULT_IAM_CRN}:altus:resourceRole:{role}"
+                    "resourceRoleCrn": "{requests_ops.DEFAULT_IAM_CRN}:altus:resourceRole:{role}"
                 },
                 "present": elem_present,
             }
