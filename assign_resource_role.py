@@ -50,11 +50,6 @@ def dump_assign_group_resource_role_json(cdp_env_crn, cdp_role, group_name, json
     required=True,
 )
 @click.option(
-    "--cred-name",
-    help="Please see {env}.json file where you defined the CDP env name",
-    required=True,
-)
-@click.option(
     "--json-skel",
     help="JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
     required=True,
