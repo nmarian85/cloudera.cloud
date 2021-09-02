@@ -1,10 +1,3 @@
-# 1. Create credential for the environment
-# 2. Create environment
-# 3. Create data lake
-# 4. Add user CDP idbroker mappings
-# 5. Create CML/CDE/CDW
-# 6. Add user CDP idbroker mappings
-
 import click
 import sys
 import json
@@ -15,16 +8,8 @@ import requests_ops
 import requests
 from time import sleep
 
-""" Dependencies
-Python: pip3 install --upgrade --user click cdpcli
-Env variables: 
-    - REQUESTS_CA_BUNDLE=
-        - /etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt for RHEL/Amazon Linux
-        - /etc/ssl/certs/ca-certificates.crt for Ubuntu/Alpine
-    - CDP_ACCESS_KEY_ID
-    - CDP_PRIVATE_KEY
-"""
 
+#TODO: add code to add jump server role access to EKS control plane
 
 def dump_cde_install_json(cdp_env_name, cde_cluster_name, cde_cluster_info, cde_json_skel):
     cde_json = dict(cde_json_skel)
@@ -49,10 +34,6 @@ def dump_cde_install_json(cdp_env_name, cde_cluster_name, cde_cluster_info, cde_
 
 
 def dump_cde_delete_json(cdp_env_name, cdp_env_info, cde_json_skel):
-    # {
-    #     "clusterId": "",
-    #     "force": true
-    # }
     cdp_env_json = dict(cde_json_skel)
     cdp_env_json["environmentName"] = cdp_env_name
     return cdp_env_json
@@ -150,8 +131,6 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, action, json_skel):
             json.dump(env_json, f, ensure_ascii=False, indent=4)
     click.echo(f"===========================================================")
     click.echo()
-
-    # TODO: add code to add jumpserver role access to EKS control plane
 
 
 if __name__ == "__main__":

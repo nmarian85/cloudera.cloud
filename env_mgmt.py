@@ -1,10 +1,3 @@
-# 1. Create credential for the environment
-# 2. Create environment
-# 3. Create data lake
-# 4. Add user CDP idbroker mappings
-# 5. Create CML/CDE/CDW
-# 6. Add user CDP idbroker mappings
-
 import click
 import sys
 import json
@@ -14,17 +7,6 @@ from cdpv1sign import generate_headers
 import requests_ops
 import requests
 from time import sleep
-
-""" Dependencies
-Python: pip3 install --upgrade --user click cdpcli
-Env variables: 
-    - REQUESTS_CA_BUNDLE=
-        - /etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt for RHEL/Amazon Linux
-        - /etc/ssl/certs/ca-certificates.crt for Ubuntu/Alpine
-    - CDP_ACCESS_KEY_ID
-    - CDP_PRIVATE_KEY
-"""
-
 
 def dump_env_install_json(cdp_env_name, cdp_env_info, env_json_skel):
     cdp_env_json = dict(env_json_skel)

@@ -63,3 +63,22 @@ Most of the actions are manual in order to allow the user to confirm the action 
 * Commit the code and run the pipeline
 
 # TODO: Add section with documentation for each cluster type and talk about idempotency and scripts
+
+
+""" Dependencies
+Python: pip3 install --upgrade --user click
+Env variables: 
+    - REQUESTS_CA_BUNDLE=
+        - /etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt for RHEL/Amazon Linux
+        - /etc/ssl/certs/ca-certificates.crt for Ubuntu/Alpine
+    - CDP_ACCESS_KEY_ID
+    - CDP_PRIVATE_KEY
+"""
+
+# 1. Create credential for the environment
+# 2. Create environment
+# 3. Create ranger and idbroker mappings
+# 4. Create data lake
+# 5. Create CML/CDE/CDW
+# 6. Add user CDP idbroker mappings
+# 7. Sync idbroker mappings

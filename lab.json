@@ -148,6 +148,38 @@
             }
         },
         "tags": [],
+        "cdp_igam_groups": {
+            "ecbt1-igamfs-app-cdp-admin": [
+                "DEAdmin",
+                "DFAdmin",
+                "DFFlowAdmin",
+                "DWAdmin",
+                "DataSteward",
+                "EnvironmentAdmin",
+                "MLAdmin",
+                "ODAdmin"
+            ],
+            "expert": [
+                "DEUser",
+                "DFUser",
+                "DFFlowUser",
+                "DWUser",
+                "DataSteward",
+                "EnvironmentUser",
+                "MLUser",
+                "ODUser"
+            ],
+            "ecbt1-igamfs-app-cdp-user": [
+                "DEUser",
+                "DFUser",
+                "DFFlowUser",
+                "DWUser",
+                "DataSteward",
+                "EnvironmentUser",
+                "MLUser",
+                "ODUser"
+            ]
+        },
         "datalake": {
             "name": "devo-cdp-env02-lab-dl",
             "data_bucket": "devo-cdp-env02-lab-adm-data-i7ijrnh8",
@@ -157,25 +189,6 @@
         },
         "cml_clusters": {
             "devo-cdp-lab-env02-cml01": {
-                "ml_infra_info": {
-                    "instance_type": "m5.2xlarge",
-                    "instance_count": 2,
-                    "name": "mlinfra",
-                    "min_instances": 2,
-                    "max_instances": 3,
-                    "root_volume": 100
-                },
-                "ml_worker_info": {
-                    "instance_type": "c4.4xlarge",
-                    "instance_count": 1,
-                    "name": "mlcpu0",
-                    "min_instances": 1,
-                    "max_instances": 3,
-                    "root_volume": 100
-                },
-                "tags": {}
-            },
-            "devo-cdp-lab-env02-cml02": {
                 "ml_infra_info": {
                     "instance_type": "m5.2xlarge",
                     "instance_count": 2,

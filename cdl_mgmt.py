@@ -1,10 +1,3 @@
-# 1. Create credential for the environment
-# 2. Create environment
-# 3. Create data lake
-# 4. Add user CDP idbroker mappings
-# 5. Create CML/CDE/CDW
-# 6. Add user CDP idbroker mappings
-
 import click
 import sys
 import json
@@ -142,8 +135,6 @@ def main(dryrun, env, cdp_env_name, cdl_cluster_name, action, json_skel):
             json.dump(env_json, f, ensure_ascii=False, indent=4)
     click.echo(f"===========================================================")
     click.echo()
-
-    # TODO: add code to add jumpserver role access to EKS control plane
 
 
 if __name__ == "__main__":

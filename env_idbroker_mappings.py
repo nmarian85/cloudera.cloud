@@ -98,7 +98,6 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 "present": True,
             }
 
-        # poll_for_status(poll_url=f"{env_url}/listCredentials", elem_search_info=elem_search_info)
         click.echo(f"Action {action} on environment {cdp_env_name} DONE")
         # dumping file so that Gitlab will back it up
         with open(f"{cdp_env_name}_idbroker_mapping.json", "w", encoding="utf-8") as f:
