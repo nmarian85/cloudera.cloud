@@ -100,10 +100,13 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 elem_search_info = {
                     "root_index": "resourceAssignments",
                     "expected_key_val": {
-                        "resourceRoleCrn": f"{requests_ops.DEFAULT_IAM_CRN}:resourceRole:{role}"
+                        "resourceRoleCrn": f"{requests_ops.DEFAULT_IAM_CRN}:resourceRole:{role}",
+                        "resourceCrn": cdp_env_crn,
                     },
                     "present": elem_present,
                 }
+
+                click.echo(f"Waiting for {action} on role {role} for group {group}")
 
                 poll_for_status(
                     poll_url=f"{env_url}/listGroupAssignedResourceRoles",
@@ -111,7 +114,6 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                     elem_search_info=elem_search_info,
                 )
 
-                click.echo(f"Waiting for {action} on role {role}")
                 click.echo(
                     f"Action {action} on cdp group {group} on environment {cdp_env_name} assigning role {role} DONE"
                 )
