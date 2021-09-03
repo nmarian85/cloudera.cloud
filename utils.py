@@ -35,7 +35,10 @@ def get_cdp_env_crn(cdp_env_name):
 def get_user_id(user_name):
     action_url = f"{requests_ops.CDP_IAM_ENDPOINT}/listUsers"
     response = requests_ops.send_http_request(
-        srv_url=action_url, req_type="post", headers=generate_headers("POST", action_url), data={}
+        srv_url=action_url,
+        req_type="post",
+        headers=generate_headers("POST", action_url),
+        data={"pageSize": 500},
     )
     for user_info in response["users"]:
         print(user_info["workloadUsername"])
