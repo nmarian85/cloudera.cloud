@@ -64,7 +64,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 action_url = f"{env_url}/unassignGroupResourceRole"
 
             cdp_assign_group_role_json = dump_assign_group_resource_role_json(
-                cdp_env_crn, role, group, json_skel
+                cdp_env_crn, role, group, assign_group_role_json_skel
             )
             click.echo("-------------------Generated JSON-----------------------------")
             print(json.dumps(cdp_assign_group_role_json, indent=4, sort_keys=True))
