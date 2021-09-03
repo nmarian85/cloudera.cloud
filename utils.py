@@ -147,7 +147,7 @@ def poll_for_status(poll_url, elem_search_info, data={}):
     else:
         response = json_response
         if isinstance(response, dict):
-            for k, v in response:
+            for k, v in response.items():
                 found = True
                 for expected_k, expected_v in elem_search_info["expected_key_val"].items():
                     if dict_elem[expected_k] != expected_v:
