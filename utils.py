@@ -38,7 +38,7 @@ def get_user_id(user_name, next_token=""):
         srv_url=action_url,
         req_type="post",
         headers=generate_headers("POST", action_url),
-        data={"startToken": next_token},
+        data={"startingToken": next_token},
     )
     for user_info in response["users"]:
         # print(user_info["workloadUsername"])
