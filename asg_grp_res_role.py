@@ -50,7 +50,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         assign_group_role_json_skel = json.load(json_file)
 
     cdp_env_info = get_env_info(env, cdp_env_name)
-    env_url = f"{requests_ops.CDP_IAM_ENDPOINT}/iam"
+    env_url = f"{requests_ops.CDP_IAM_ENDPOINT}"
     cdp_env_crn = get_cdp_env_crn(cdp_env_name)
     for group, roles in cdp_env_info["cdp_igam_groups"].items():
         for role in roles:

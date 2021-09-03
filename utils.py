@@ -32,8 +32,14 @@ def get_cdp_env_crn(cdp_env_name):
     return response["environment"]["crn"]
 
 
-def get_resource_crn():
-    pass
+def get_user_id(cdp_env_name, user_name):
+    action_url = f"{requests_ops.CDP_IAM_ENDPOINT}/listUsers"
+    response = requests_ops.send_http_request(
+        srv_url=action_url, req_type="post", headers=generate_headers("POST", action_url),
+    )
+    for user_info in response["users"]:
+        if user_info["workloadUsername"] == user_name:
+            return user_info["userId"]
 
 
 def get_env_info(env, cdp_env_name):
