@@ -34,10 +34,20 @@ def dump_cde_install_json(cdp_env_name, cde_cluster_name, cde_cluster_info, cde_
     return cde_json
 
 
-def dump_cde_delete_json(cdp_env_name, cdp_env_info, cde_json_skel):
-    cdp_env_json = dict(cde_json_skel)
-    cdp_env_json["environmentName"] = cdp_env_name
-    return cdp_env_json
+def dump_cde_delete_json(cluster_id, cde_json_skel):
+    cdp_cde_cluster_json = dict(cde_json_skel)
+    cdp_cde_cluster_json["clusterId"] = cluster_id
+    return cdp_cde_cluster_json
+
+
+def get_cde_cluster_id(cluster_name):
+    action_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/de/listServices"
+    response = requests_ops.send_http_request(
+        srv_url=action_url, req_type="post", headers=generate_headers("POST", action_url), data={},
+    )
+    for cde_cluster_info in response["services"]:
+        if cde_cluster_info["name"] == cluster_name:
+            return cde_cluster_info["clusterId"]
 
 
 @click.command()
@@ -81,26 +91,24 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, action, json_skel):
 
     if action == "install-cde":
         click.echo(f"==============Creating environment {cdp_env_name}==============")
-        env_json = dump_cde_install_json(
+        cde_cluster_json = dump_cde_install_json(
             cdp_env_name, cde_cluster_name, cde_cluster_info, cde_json_skel
         )
         action_url = f"{env_url}/enableService"
     elif action == "delete-cde":
         click.echo(f"==============Deleting environment {cdp_env_name}==============")
-        env_json = dump_cde_delete_json(
-            cdp_env_name, cde_cluster_name, cde_cluster_info, cde_json_skel
-        )
+        cde_cluster_json = dump_cde_delete_json(get_cde_cluster_id(cde_cluster_name), cde_json_skel)
         action_url = f"{env_url}/disableService"
 
     click.echo("-------------------Generated JSON-----------------------------")
-    print(json.dumps(env_json, indent=4, sort_keys=True))
+    print(json.dumps(cde_cluster_json, indent=4, sort_keys=True))
     click.echo("--------------------------------------------------------------")
 
     if not dryrun:
         response = requests_ops.send_http_request(
             srv_url=action_url,
             req_type="post",
-            data=env_json,
+            data=cde_cluster_json,
             headers=generate_headers("POST", action_url),
         )
 
@@ -120,8 +128,11 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, action, json_skel):
         elif action == "delete-cde":
             elem_search_info = {
                 "root_index": "services",
-                "expected_key_val": {"name": cde_cluster_name},
-                "present": False,
+                "expected_key_val": {
+                    "name": cde_cluster_name,
+                    "status": "ClusterDeletionCompleted",
+                },
+                "present": True,
             }
         poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info)
 
@@ -129,7 +140,7 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, action, json_skel):
 
         # dumping file so that Gitlab will back it up
         with open(f"{cde_cluster_name}.json", "w", encoding="utf-8") as f:
-            json.dump(env_json, f, ensure_ascii=False, indent=4)
+            json.dump(cde_cluster_json, f, ensure_ascii=False, indent=4)
     click.echo(f"===========================================================")
     click.echo()
 
