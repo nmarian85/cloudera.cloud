@@ -12,6 +12,8 @@ def dump_sync_all_users_json(json_skel, cdp_env_name=None):
     sync_json = dict(json_skel)
     if cdp_env_name:
         sync_json["environmentNames"] = [cdp_env_name]
+    else:
+        del sync_json["environmentNames"]
     return sync_json
 
 
