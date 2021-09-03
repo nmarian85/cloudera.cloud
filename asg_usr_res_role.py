@@ -7,7 +7,6 @@ from utils import (
     get_env_info,
     poll_for_status,
     get_cdp_env_crn,
-    get_resource_crn,
     get_user_id,
 )
 from cdpv1sign import generate_headers
