@@ -126,35 +126,33 @@ def poll_for_status(poll_url, elem_search_info, data={}):
     if len(root_index) > 0:
         # getting the list of elements from the response json
         response = json_response.get(elem_search_info["root_index"])
+        # e.g. for listCredentials: the response is a list and
+        # we are going to loop through all the credentials and check if they were created
+        if isinstance(response, list):
+            # finding the element we were looking for has different meanings
+            # based on the action that we submitted: if the action was create then
+            # we are done and we can stop polling; if the action was delete and the element
+            # is still there, then we need to wait more. This is why we need the
+            # elem_search_info["present"]
+            for dict_elem in response:
+                found = True
+                for expected_k, expected_v in elem_search_info["expected_key_val"].items():
+                    if dict_elem[expected_k] != expected_v:
+                        found = False
+                if found:
+                    return elem_search_info["present"]
+            return not elem_search_info["present"]
+        else:
+            raise ValueError(f"Response {response} is not a list")
     else:
         response = json_response
-
-    # e.g. for listCredentials: the response is a list and
-    # we are going to loop through all the credentials and check if they were created
-    if isinstance(response, list):
-        # finding the element we were looking for has different meanings
-        # based on the action that we submitted: if the action was create then
-        # we are done and we can stop polling; if the action was delete and the element
-        # is still there, then we need to wait more. This is why we need the
-        # elem_search_info["present"]
-        for dict_elem in response:
-            found = True
-            for expected_k, expected_v in elem_search_info["expected_key_val"].items():
-                if dict_elem[expected_k] != expected_v:
-                    found = False
-            if found:
-                return elem_search_info["present"]
-        return not elem_search_info["present"]
-    else:
-        raise ValueError(f"Response {response} is not a list")
-
-    if isinstance(response, dict):
-        for k, v in response:
-            found = True
-            for expected_k, expected_v in elem_search_info["expected_key_val"].items():
-                if dict_elem[expected_k] != expected_v:
-                    found = False
-            if found:
-                return elem_search_info["present"]
-    else:
-        raise ValueError(f"Response {response} is not a dict")
+        if isinstance(response, dict):
+            for k, v in response:
+                found = True
+                for expected_k, expected_v in elem_search_info["expected_key_val"].items():
+                    if dict_elem[expected_k] != expected_v:
+                        found = False
+                if found:
+                    return elem_search_info["present"]
+        else:
+            raise ValueError(f"Response {response} is not a dict")
