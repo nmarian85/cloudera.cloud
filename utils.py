@@ -41,7 +41,6 @@ def get_user_id(user_name, next_token=""):
         data={"startingToken": next_token},
     )
     for user_info in response["users"]:
-        print(user_info["workloadUsername"])
         if user_info["workloadUsername"] == user_name:
             return user_info["userId"]
     if "nextToken" in response:
