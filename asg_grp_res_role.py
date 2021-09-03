@@ -96,7 +96,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
 
                 poll_for_status(
                     poll_url=f"{env_url}/listGroupAssignedResourceRoles",
-                    data={"groupName": group, "pageSize": 500},
+                    data={"groupName": group, "pageSize": 100},
                     elem_search_info=elem_search_info,
                 )
 
