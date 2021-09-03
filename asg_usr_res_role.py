@@ -17,7 +17,7 @@ import requests
 def dump_assign_user_resource_role_json(cdp_env_crn, cdp_role, user_name, json_skel):
     assign_user_role_json = dict(json_skel)
     resource_role_crn = f"{requests_ops.DEFAULT_IAM_CRN}:resourceRole:{cdp_role}"
-    assign_user_role_json["userName"] = user_name
+    assign_user_role_json["user"] = user_name
     assign_user_role_json["resourceRoleCrn"] = resource_role_crn
     assign_user_role_json["resourceCrn"] = cdp_env_crn
     return assign_user_role_json
