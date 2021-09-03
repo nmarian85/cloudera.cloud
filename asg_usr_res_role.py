@@ -67,6 +67,7 @@ def main(dryrun, env, cdp_env_name, action, user, roles, json_skel):
     cdp_env_info = get_env_info(env, cdp_env_name)
     env_url = f"{requests_ops.CDP_IAM_ENDPOINT}"
     cdp_env_crn = get_cdp_env_crn(cdp_env_name)
+    user_id = get_user_id(cdp_env_name, user)
     for role in roles:
         if action == "assign-role-to-user":
             click.echo(f"===Assigning role {role} to user {user} on env {cdp_env_name}===")
@@ -76,7 +77,7 @@ def main(dryrun, env, cdp_env_name, action, user, roles, json_skel):
             action_url = f"{env_url}/unassignUserResourceRole"
 
         cdp_assign_user_role_json = dump_assign_user_resource_role_json(
-            cdp_env_crn, role, user, assign_user_role_json_skel
+            cdp_env_crn, role, user_id, assign_user_role_json_skel
         )
         click.echo("-------------------Generated JSON-----------------------------")
         print(json.dumps(cdp_assign_user_role_json, indent=4, sort_keys=True))
@@ -108,7 +109,7 @@ def main(dryrun, env, cdp_env_name, action, user, roles, json_skel):
 
             poll_for_status(
                 poll_url=f"{env_url}/listUserAssignedResourceRoles",
-                data={"userName": get_user_id(cdp_env_name, user)},
+                data={"user": user_id},
                 elem_search_info=elem_search_info,
             )
 
