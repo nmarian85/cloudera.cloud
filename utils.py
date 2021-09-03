@@ -38,7 +38,7 @@ def get_user_id(user_name):
         srv_url=action_url, req_type="post", headers=generate_headers("POST", action_url), data={}
     )
     for user_info in response["users"]:
-        print(user_info)
+        print(user_info["userId"])
         if user_info["workloadUsername"] == user_name:
             return user_info["userId"]
 
