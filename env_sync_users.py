@@ -73,11 +73,15 @@ def main(dryrun, env, cdp_env_name, json_skel):
 
         elem_search_info = {
             "root_index": "",
-            "expected_key_val": {"operationId": response["operationId"], "status": "COMPLETED"},
+            "expected_key_val": {"status": "COMPLETED"},
             "present": True,
         }
 
-        poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info)
+        poll_for_status(
+            poll_url=poll_url,
+            elem_search_info=elem_search_info,
+            data={"operationId": response["operationId"]},
+        )
 
         click.echo(f"Action DONE")
         # dumping file so that Gitlab will back it up
