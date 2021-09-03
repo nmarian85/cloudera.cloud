@@ -1,5 +1,4 @@
 {
-    "cdp-devo-lab-env01": {},
     "devo-cdp-lab-env01": {
         "vpc_id": "vpc-020623901c07da0ac",
         "sg": "sg-0fa5162218bb5ef17",

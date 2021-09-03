@@ -17,15 +17,6 @@ def dump_assign_group_resource_role_json(cdp_env_crn, cdp_role, group_name, json
     return assign_group_role_json
 
 
-def dump_unassign_group_resource_role_json(group, cdp_env_crn, cdp_role, json_skel):
-    resource_role_crn = f"{requests_ops.DEFAULT_IAM_CRN}:resourceRole:{cdp_role}"
-    assign_group_role_json = dict(json_skel)
-    assign_group_role_json["resourceRoleCrn"] = resource_role_crn
-    assign_group_role_json["resourceCrn"] = cdp_env_crn
-    assign_group_role_json["groupName"] = group
-    return assign_group_role_json
-
-
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
 @click.option(
@@ -64,22 +55,17 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     for group, roles in cdp_env_info["cdp_igam_groups"].items():
         for role in roles:
             if action == "assign-role-to-group":
-                click.echo(
-                    f"==============Assigning role {role} to group {group} on environment {cdp_env_name}=============="
-                )
-                cdp_assign_group_role_json = dump_assign_group_resource_role_json(
-                    cdp_env_crn, role, group, assign_group_role_json_skel
-                )
+                click.echo(f"===Assigning role {role} to group {group} on env {cdp_env_name}===")
                 action_url = f"{env_url}/assignGroupResourceRole"
             elif action == "unassign-role-from-group":
                 click.echo(
-                    f"==============Unassigning role {role} from group {group} on environment {cdp_env_name}=============="
-                )
-                cdp_assign_group_role_json = dump_unassign_group_resource_role_json(
-                    group, cdp_env_crn, role, assign_group_role_json_skel
+                    f"===Unassigning role {role} from group {group} on env {cdp_env_name}==="
                 )
                 action_url = f"{env_url}/unassignGroupResourceRole"
 
+            cdp_assign_group_role_json = dump_assign_group_resource_role_json(
+                cdp_env_crn, role, group, json_skel
+            )
             click.echo("-------------------Generated JSON-----------------------------")
             print(json.dumps(cdp_assign_group_role_json, indent=4, sort_keys=True))
             click.echo("--------------------------------------------------------------")
@@ -115,7 +101,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 )
 
                 click.echo(
-                    f"Action {action} on cdp group {group} on environment {cdp_env_name} assigning role {role} DONE"
+                    f"{action} on cdp group {group} on env {cdp_env_name} assign role {role} DONE"
                 )
                 # dumping file so that Gitlab will back it up
                 with open(f"{group}_{role}.json", "w", encoding="utf-8") as f:
