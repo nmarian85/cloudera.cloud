@@ -1,4 +1,9 @@
 {
+    "cdp-devo-lab-env01": {
+        "cde_clusters": {
+            "cdp-devo-lab-env01-cde02": {}
+        }
+    },
     "devo-cdp-lab-env01": {
         "vpc_id": "vpc-020623901c07da0ac",
         "sg": "sg-0fa5162218bb5ef17",
