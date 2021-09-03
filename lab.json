@@ -191,7 +191,7 @@
             "scale": "LIGHT_DUTY"
         },
         "cml_clusters": {
-            "devo-cdp-lab-env02-cml01": {
+            "devo-cdp-env02-lab-cml01": {
                 "ml_infra_info": {
                     "instance_type": "m5.2xlarge",
                     "instance_count": 2,
@@ -212,7 +212,7 @@
             }
         },
         "cde_clusters": {
-            "devo-cdp-lab-env02-cde01": {
+            "devo-cdp-env02-lab-cde01": {
                 "instance_type": "c5.2xlarge",
                 "min_instances": 1,
                 "max_instances": 5,
@@ -224,7 +224,7 @@
                 "use_ssd": true,
                 "tags": {},
                 "vcs": {
-                    "devo-cdp-lab-env02-cde01-vc01": {
+                    "devo-cdp-env02-lab-cde01-vc01": {
                         "cpu_requests": "70",
                         "memory_requests": "15Gi",
                         "chart_value_overrides": [
