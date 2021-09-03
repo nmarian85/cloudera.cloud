@@ -109,7 +109,7 @@ def main(dryrun, env, cdp_env_name, action, user, roles, json_skel):
 
             poll_for_status(
                 poll_url=f"{env_url}/listUserAssignedResourceRoles",
-                data={"user": user_id},
+                data={"user": user_id, "pageSize": 500},
                 elem_search_info=elem_search_info,
             )
 
