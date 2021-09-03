@@ -40,6 +40,7 @@ def get_user_id(user_name, next_token=""):
         headers=generate_headers("POST", action_url),
         data={"startingToken": next_token},
     )
+    print(response["nextToken"])
     for user_info in response["users"]:
         print(user_info["workloadUsername"])
         if user_info["workloadUsername"] == user_name:
