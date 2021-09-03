@@ -45,7 +45,7 @@ def get_user_id(user_name, next_token=""):
         if user_info["workloadUsername"] == user_name:
             return user_info["userId"]
     if "nextToken" in response:
-        get_user_id(user_name, response["nextToken"])
+        return get_user_id(user_name, response["nextToken"])
 
 
 def get_env_info(env, cdp_env_name):
