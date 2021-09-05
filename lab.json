@@ -151,13 +151,20 @@
         "cdp_igam_groups": {
             "ecbt1-igamfs-app-cdp-admin": [
                 "DEAdmin",
+                "DEUser",
                 "DFAdmin",
                 "DFFlowAdmin",
+                "DFFlowUser",
                 "DWAdmin",
+                "DWUser",
                 "DataSteward",
                 "EnvironmentAdmin",
+                "EnvironmentUser",
                 "MLAdmin",
-                "ODAdmin"
+                "MLUser",
+                "MLBusinessUser",
+                "ODAdmin",
+                "ODUser"
             ],
             "ecbt1-igamfs-app-cdp-expert": [
                 "DEUser",
@@ -219,7 +226,6 @@
                 "use_ssd": true,
                 "tags": {},
                 "vcs": {
-                    "test-1234": {},
                     "devo-cdp-env02-lab-cde01-vc01": {
                         "cpu_requests": "40",
                         "memory_requests": "80Gi",
