@@ -12,7 +12,7 @@ DEFAULT_WAIT_PERIOD = 60  # seconds
 DEFAULT_WAIT_PERIOD_INCREMENT = 60  # seconds
 # how much to wait until timing out when checking
 # for the success status of a submitted command to the management console
-DEFAULT_TIMEOUT_COMMAND = 3600  # seconds
+DEFAULT_TIMEOUT_COMMAND = 7200  # seconds
 # CDP_TENANT_ID = "0e62c9c8-e9cd-483b-81b3-651fe7a22deb"
 
 

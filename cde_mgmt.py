@@ -6,7 +6,6 @@ from utils import show_progress, get_env_info, poll_for_status
 from cdpv1sign import generate_headers
 import requests_ops
 import requests
-from time import sleep
 
 
 # TODO: add code to add jump server role access to EKS control plane
@@ -90,13 +89,13 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, action, json_skel):
     env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/de"
 
     if action == "install-cde":
-        click.echo(f"==============Creating environment {cdp_env_name}==============")
+        click.echo(f"==============Installing CDE cluster {cde_cluster_name}==============")
         cde_cluster_json = dump_cde_install_json(
             cdp_env_name, cde_cluster_name, cde_cluster_info, cde_json_skel
         )
         action_url = f"{env_url}/enableService"
     elif action == "delete-cde":
-        click.echo(f"==============Deleting environment {cdp_env_name}==============")
+        click.echo(f"==============Deleting CDE cluster {cde_cluster_name}==============")
         cde_cluster_json = dump_cde_delete_json(get_cde_cluster_id(cde_cluster_name), cde_json_skel)
         action_url = f"{env_url}/disableService"
 
@@ -128,13 +127,12 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, action, json_skel):
         elif action == "delete-cde":
             elem_search_info = {
                 "root_index": "services",
-                "expected_key_val": {
-                    "name": cde_cluster_name,
-                    "status": "ClusterDeletionCompleted",
-                },
-                "present": True,
+                "expected_key_val": {"name": cde_cluster_name},
+                "present": False,
             }
-        poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info)
+        poll_for_status(
+            poll_url=poll_url, elem_search_info=elem_search_info, data={"removeDeleted": True}
+        )
 
         click.echo(f"Action {action} on cluster {cde_cluster_name} DONE")
 
