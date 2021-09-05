@@ -82,7 +82,7 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, vc_cde_cluster_name, actio
 
     cdp_env_info = get_env_info(env, cdp_env_name)
 
-    vc_cde_info = cdp_env_info["cde_clusters"][cde_cluster_name][vc_cde_cluster_name]
+    vc_cde_info = cdp_env_info["cde_clusters"][cde_cluster_name]["vcs"][vc_cde_cluster_name]
 
     cde_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/de"
 
