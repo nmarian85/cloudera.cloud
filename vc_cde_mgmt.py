@@ -134,7 +134,9 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, vc_cde_cluster_name, actio
                 "expected_key_val": {"vcName": vc_cde_cluster_name},
                 "present": False,
             }
-        poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info)
+        poll_for_status(
+            poll_url=poll_url, elem_search_info=elem_search_info, data={"clusterId": cde_cluster_id}
+        )
 
         click.echo(f"Action {action} on virtual cluster {vc_cde_cluster_name} DONE")
 
