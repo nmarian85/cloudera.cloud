@@ -9,22 +9,22 @@ import requests
 from cde_mgmt import get_cde_cluster_id
 
 
-def get_vc_id(cde_cluster_name, vc_name):
+def get_vc_id(cde_cluster_id, vc_name):
     action_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/de/listVcs"
     response = requests_ops.send_http_request(
         srv_url=action_url,
         req_type="post",
         headers=generate_headers("POST", action_url),
-        data={"clusterId": get_cde_cluster_id(cde_cluster_name)},
+        data={"clusterId": cde_cluster_id},
     )
     for vc_cde_cluster_info in response["vcs"]:
         if vc_cde_cluster_info["vcName"] == vc_name:
             return vc_cde_cluster_info["vcId"]
 
 
-def dump_vc_cde_install_json(vc_name, vc_cde_info, cde_cluster_name, vc_cde_json_skel):
+def dump_vc_cde_install_json(vc_name, vc_cde_info, cde_cluster_id, vc_cde_json_skel):
     cde_vc_json = dict(vc_cde_json_skel)
-    cde_vc_json["clusterId"] = get_cde_cluster_id(cde_cluster_name)
+    cde_vc_json["clusterId"] = cde_cluster_id
     cde_vc_json["name"] = vc_name
     cde_vc_json["cpuRequests"] = vc_cde_info["cpu_requests"]
     cde_vc_json["memoryRequests"] = vc_cde_info["memory_requests"]
@@ -35,10 +35,11 @@ def dump_vc_cde_install_json(vc_name, vc_cde_info, cde_cluster_name, vc_cde_json
     return cde_vc_json
 
 
-def dump_vc_cde_delete_json(cde_cluster_name, vc_name, vc_cde_json_skel):
+def dump_vc_cde_delete_json(cde_cluster_id, vc_name, vc_cde_json_skel):
     cde_vc_json = dict(vc_cde_json_skel)
-    vc_id = get_vc_id(cde_cluster_name, vc_name)
+    vc_id = get_vc_id(cde_cluster_id, vc_name)
     cde_vc_json["vcId"] = vc_id
+    cde_vc_json["clusterId"] = cde_cluster_id
     return cde_vc_json
 
 
@@ -83,6 +84,7 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, vc_cde_cluster_name, actio
     cdp_env_info = get_env_info(env, cdp_env_name)
 
     vc_cde_info = cdp_env_info["cde_clusters"][cde_cluster_name]["vcs"][vc_cde_cluster_name]
+    cde_cluster_id = get_cde_cluster_id(cde_cluster_name)
 
     cde_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/de"
 
@@ -91,7 +93,7 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, vc_cde_cluster_name, actio
             f"==============Installing virtual CDE cluster {vc_cde_cluster_name}=============="
         )
         vc_cde_cluster_json = dump_vc_cde_install_json(
-            vc_cde_cluster_name, vc_cde_info, cde_cluster_name, vc_cde_json_skel
+            vc_cde_cluster_name, vc_cde_info, cde_cluster_id, vc_cde_json_skel
         )
         action_url = f"{cde_url}/createVc"
     elif action == "delete-vc-cde":
@@ -99,7 +101,7 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, vc_cde_cluster_name, actio
             f"==============Deleting virtual CDE cluster {vc_cde_cluster_name}=============="
         )
         vc_cde_cluster_json = dump_vc_cde_delete_json(
-            cde_cluster_name, vc_cde_cluster_name, vc_cde_json_skel
+            cde_cluster_id, vc_cde_cluster_name, vc_cde_json_skel
         )
 
         action_url = f"{cde_url}/deleteVc"
