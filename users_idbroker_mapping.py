@@ -8,7 +8,9 @@ import requests_ops
 import requests
 
 
-def dump_create_mapping_json(cdp_env_name, data_role_arn, user_crn, aws_role, json_skel):
+def dump_create_mapping_json(
+    cdp_env_name, ranger_role_arn, data_role_arn, user_crn, aws_role, json_skel
+):
     """[summary]
 
     Args:
@@ -19,7 +21,7 @@ def dump_create_mapping_json(cdp_env_name, data_role_arn, user_crn, aws_role, js
         [type]: [description]
     """
     mapping_json = dict(json_skel)
-    del mapping_json["rangerAuditRole"]
+    mapping_json["rangerAuditRole"] = ranger_role_arn
     mapping_json["environmentName"] = cdp_env_name
     mapping_json["dataAccessRole"] = data_role_arn
     mapping_json["mappings"] = [{"accessorCrn": user_crn, "role": aws_role}]
@@ -62,6 +64,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
     cdp_env_info = get_env_info(env, cdp_env_name)
     role_iam_arn = f'arn:aws:iam::{cdp_env_info["account_id"]}'
     data_role_arn = f'{role_iam_arn}:role/{cdp_env_info["data_role"]}'
+    ranger_role_arn = f'{role_iam_arn}:role/{cdp_env_info["ranger_role"]}'
     env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
 
     with open(f"{env}_users.json") as json_file:
