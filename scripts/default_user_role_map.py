@@ -147,7 +147,7 @@ def main(dryrun, env, cdp_env_name, action, user, roles, json_skel):
     with open(json_skel) as json_file:
         assign_user_role_json_skel = json.load(json_file)
 
-    with open(f"{env}_users.json") as json_file:
+    with open(f"conf/{env}_users.json") as json_file:
         users = json.load(json_file)
 
     cdp_env_info = get_env_info(env, cdp_env_name)

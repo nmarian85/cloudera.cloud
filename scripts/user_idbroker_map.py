@@ -64,7 +64,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
     ranger_role_arn = f'{role_iam_arn}:role/{cdp_env_info["ranger_role"]}'
     env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
 
-    with open(f"{env}_users.json") as json_file:
+    with open(f"conf/{env}_users.json") as json_file:
         users = json.load(json_file)
 
     user_roles = {
