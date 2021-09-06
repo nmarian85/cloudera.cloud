@@ -113,7 +113,6 @@ def main(dryrun, env, cdp_env_name, json_skel):
         click.echo()
 
 
-# syncIdBrokerMappings
 
 if __name__ == "__main__":
     main()
