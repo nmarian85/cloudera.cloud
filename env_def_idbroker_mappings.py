@@ -96,7 +96,11 @@ def main(dryrun, env, cdp_env_name, json_skel):
         }
 
         poll_url = f"{env_url}/getIdBrokerMappings"
-        poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info)
+        poll_for_status(
+            poll_url=poll_url,
+            elem_search_info=elem_search_info,
+            data={"environmentName": cdp_env_name},
+        )
 
         click.echo(f"idbroker mapping on environment {cdp_env_name} DONE")
         # dumping file so that Gitlab will back it up
