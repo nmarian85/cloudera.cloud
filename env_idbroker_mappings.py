@@ -34,7 +34,6 @@ def dump_create_mapping_json(cdp_env_name, data_role_arn, ranger_role_arn, mappi
 
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
-@click.option("--action", type=click.Choice(["set-id-broker-mappings"]), required=True)
 @click.option(
     "--env",
     type=click.Choice(["lab", "test", "dev", "acc", "prod"]),
@@ -66,14 +65,13 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     ranger_role_arn = f'{role_iam_arn}:role/{cdp_env_info["ranger_role"]}'
     env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
 
-    if action == "set-id-broker-mappings":
-        click.echo(
-            f"========Setting idbroker mappings for ranger and datalake roles on {cdp_env_name}===="
-        )
-        cdp_mapping_json = dump_create_mapping_json(
-            cdp_env_name, data_role_arn, ranger_role_arn, [], mapping_json_skel
-        )
-        action_url = f"{env_url}/setIdBrokerMappings"
+    click.echo(
+        f"========Setting idbroker mappings for ranger and datalake roles on {cdp_env_name}===="
+    )
+    cdp_mapping_json = dump_create_mapping_json(
+        cdp_env_name, data_role_arn, ranger_role_arn, [], mapping_json_skel
+    )
+    action_url = f"{env_url}/setIdBrokerMappings"
 
     click.echo("-------------------Generated JSON-----------------------------")
     print(json.dumps(cdp_mapping_json, indent=4, sort_keys=True))
@@ -88,7 +86,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         )
 
         click.echo(f"Waiting for {action} on environment {cdp_env_name}")
-        if action == "set-id-broker-mappings":
+        if action == "set-def-id-broker-mappings":
             elem_search_info = {
                 "root_index": "",
                 "expected_key_val": {
@@ -98,6 +96,9 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 "present": True,
             }
 
+        poll_url = f"{env_url}/getIdBrokerMappings"
+        poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info)
+
         click.echo(f"Action {action} on environment {cdp_env_name} DONE")
         # dumping file so that Gitlab will back it up
         with open(f"{cdp_env_name}_idbroker_mapping.json", "w", encoding="utf-8") as f:
@@ -105,8 +106,6 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     click.echo(f"===========================================================")
     click.echo()
 
-
-# syncIdBrokerMappings
 
 if __name__ == "__main__":
     main()

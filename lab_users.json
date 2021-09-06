@@ -1,0 +1,14 @@
+{
+    "devo-cdp-env02-lab": {
+        "abelead": [
+            "DEUser",
+            "DFFlowUser",
+            "DWUser",
+            "DataSteward",
+            "EnvironmentUser",
+            "MLUser",
+            "MLBusinessUser"
+        ],
+        "mariann": []
+    }
+}

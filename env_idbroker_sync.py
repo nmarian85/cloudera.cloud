@@ -60,6 +60,19 @@ def main(dryrun, env, cdp_env_name, json_skel):
             headers=generate_headers("POST", action_url),
         )
 
+        elem_search_info = {
+            "root_index": "",
+            "expected_key_val": {"globalStatus": "COMPLETED"},
+            "present": True,
+        }
+
+        poll_url = f"{env_url}/getIdBrokerMappingsSyncStatus"
+        poll_for_status(
+            poll_url=poll_url,
+            elem_search_info=elem_search_info,
+            data={"environmentName": cdp_env_name},
+        )
+
         click.echo(f"Action on environment {cdp_env_name} DONE")
         # dumping file so that Gitlab will back it up
         with open(f"{cdp_env_name}_idbroker_sync.json", "w", encoding="utf-8") as f:
