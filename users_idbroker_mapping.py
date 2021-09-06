@@ -76,7 +76,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
         aws_role = f"{role_iam_arn}:role/devo-discdata-s3-access-{user}-iam-role"
 
         cdp_mapping_json = dump_create_mapping_json(
-            cdp_env_name, data_role_arn, user_crn, aws_role, mapping_json_skel
+            cdp_env_name, ranger_role_arn, data_role_arn, user_crn, aws_role, mapping_json_skel
         )
         action_url = f"{env_url}/setIdBrokerMappings"
 
