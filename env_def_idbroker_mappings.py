@@ -50,7 +50,7 @@ def dump_create_mapping_json(cdp_env_name, data_role_arn, ranger_role_arn, mappi
     help="JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
     required=True,
 )
-def main(dryrun, env, cdp_env_name, action, json_skel):
+def main(dryrun, env, cdp_env_name, json_skel):
     if dryrun:
         show_progress("This is a dryrun")
 
@@ -85,21 +85,20 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
             headers=generate_headers("POST", action_url),
         )
 
-        click.echo(f"Waiting for {action} on environment {cdp_env_name}")
-        if action == "set-def-id-broker-mappings":
-            elem_search_info = {
-                "root_index": "",
-                "expected_key_val": {
-                    "dataAccessRole": data_role_arn,
-                    "rangerAuditRole": ranger_role_arn,
-                },
-                "present": True,
-            }
+        click.echo(f"Waiting for idbroker mapping on environment {cdp_env_name}")
+        elem_search_info = {
+            "root_index": "",
+            "expected_key_val": {
+                "dataAccessRole": data_role_arn,
+                "rangerAuditRole": ranger_role_arn,
+            },
+            "present": True,
+        }
 
         poll_url = f"{env_url}/getIdBrokerMappings"
         poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info)
 
-        click.echo(f"Action {action} on environment {cdp_env_name} DONE")
+        click.echo(f"idbroker mapping on environment {cdp_env_name} DONE")
         # dumping file so that Gitlab will back it up
         with open(f"{cdp_env_name}_idbroker_mapping.json", "w", encoding="utf-8") as f:
             json.dump(cdp_mapping_json, f, ensure_ascii=False, indent=4)

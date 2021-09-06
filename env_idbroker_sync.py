@@ -73,7 +73,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
             data={"environmentName": cdp_env_name},
         )
 
-        click.echo(f"Action on environment {cdp_env_name} DONE")
+        click.echo(f"Sync on environment {cdp_env_name} DONE")
         # dumping file so that Gitlab will back it up
         with open(f"{cdp_env_name}_idbroker_sync.json", "w", encoding="utf-8") as f:
             json.dump(cdp_sync_json, f, ensure_ascii=False, indent=4)
