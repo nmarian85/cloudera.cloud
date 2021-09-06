@@ -60,6 +60,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
             headers=generate_headers("POST", action_url),
         )
 
+        click.echo(f"Waiting for idbroker mapping sync on environment {cdp_env_name}")
         elem_search_info = {
             "root_index": "",
             "expected_key_val": {"globalStatus": "COMPLETED"},
