@@ -9,7 +9,7 @@ import requests
 
 
 def dump_create_mapping_json(
-    cdp_env_name, ranger_role_arn, data_role_arn, user_crn, aws_role, json_skel
+    cdp_env_name, ranger_role_arn, data_role_arn, user_crns, user_roles, json_skel
 ):
     """[summary]
 
@@ -24,12 +24,9 @@ def dump_create_mapping_json(
     mapping_json["rangerAuditRole"] = ranger_role_arn
     mapping_json["environmentName"] = cdp_env_name
     mapping_json["dataAccessRole"] = data_role_arn
-    mapping_json["mappings"] = [{"accessorCrn": user_crn, "role": aws_role}]
-
-    # Whether to install an empty set of individual mappings, deleting any existing mappings.
-    # The --set-empty-mappings option is required if --mappings is omitted or if its value is
-    # an empty list,
-    # and disallowed otherwise.
+    mapping_json["mappings"] = [
+        {"accessorCrn": user_crn, "role": user_roles[user]} for user, user_crn in user_crns.items()
+    ]
     mapping_json["setEmptyMappings"] = False
     return mapping_json
 
@@ -70,32 +67,37 @@ def main(dryrun, env, cdp_env_name, json_skel):
     with open(f"{env}_users.json") as json_file:
         users = json.load(json_file)
 
-    for user in users[cdp_env_name].keys():
-        click.echo(f"========Setting idbroker mapping for user {user} on {cdp_env_name}====")
-        user_crn = get_user_attr(user, "crn")
-        aws_role = f"{role_iam_arn}:role/devo-discdata-s3-access-{user}-iam-role"
+    user_roles = {
+        user: f"{role_iam_arn}:role/devo-discdata-s3-access-{user}-iam-role"
+        for user in users[cdp_env_name].keys()
+    }
+    user_crns = {user: get_user_attr(user, "crn") for user in users[cdp_env_name].keys()}
 
-        cdp_mapping_json = dump_create_mapping_json(
-            cdp_env_name, ranger_role_arn, data_role_arn, user_crn, aws_role, mapping_json_skel
+    cdp_mapping_json = dump_create_mapping_json(
+        cdp_env_name, ranger_role_arn, data_role_arn, user_crns, user_roles, mapping_json_skel
+    )
+
+    click.echo(f"========Setting idbroker mapping for users on {cdp_env_name}====")
+    click.echo("-------------------Generated JSON-----------------------------")
+    print(json.dumps(cdp_mapping_json, indent=4, sort_keys=True))
+    click.echo("--------------------------------------------------------------")
+
+    action_url = f"{env_url}/setIdBrokerMappings"
+
+    if not dryrun:
+        response = requests_ops.send_http_request(
+            srv_url=action_url,
+            req_type="post",
+            data=cdp_mapping_json,
+            headers=generate_headers("POST", action_url),
         )
-        action_url = f"{env_url}/setIdBrokerMappings"
 
-        click.echo("-------------------Generated JSON-----------------------------")
-        print(json.dumps(cdp_mapping_json, indent=4, sort_keys=True))
-        click.echo("--------------------------------------------------------------")
+        click.echo(f"Waiting for idbroker mapping on environment {cdp_env_name}")
 
-        if not dryrun:
-            response = requests_ops.send_http_request(
-                srv_url=action_url,
-                req_type="post",
-                data=cdp_mapping_json,
-                headers=generate_headers("POST", action_url),
-            )
-
-            click.echo(f"Waiting for idbroker mapping on environment {cdp_env_name}")
+        for user, user_crn in user_crns.items():
             elem_search_info = {
                 "root_index": "mappings",
-                "expected_key_val": {"accessorCrn": user_crn, "role": aws_role},
+                "expected_key_val": {"accessorCrn": user_crn, "role": user_roles[user]},
                 "present": True,
             }
 
@@ -111,7 +113,6 @@ def main(dryrun, env, cdp_env_name, json_skel):
                 json.dump(cdp_mapping_json, f, ensure_ascii=False, indent=4)
         click.echo(f"===========================================================")
         click.echo()
-
 
 
 if __name__ == "__main__":
