@@ -19,6 +19,7 @@ def dump_create_mapping_json(cdp_env_name, data_role_arn, user_crn, aws_role, js
         [type]: [description]
     """
     mapping_json = dict(json_skel)
+    del mapping_json["rangerAuditRole"]
     mapping_json["environmentName"] = cdp_env_name
     mapping_json["dataAccessRole"] = data_role_arn
     mapping_json["mappings"] = {"accessorCrn": user_crn, "role": aws_role}
