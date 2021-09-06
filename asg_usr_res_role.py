@@ -7,7 +7,7 @@ from utils import (
     get_env_info,
     poll_for_status,
     get_cdp_env_crn,
-    get_user_id,
+    get_user_attr,
 )
 from cdpv1sign import generate_headers
 import requests_ops
@@ -159,7 +159,7 @@ def main(dryrun, env, cdp_env_name, action, user, roles, json_skel):
     cdp_env_info = get_env_info(env, cdp_env_name)
     env_url = f"{requests_ops.CDP_IAM_ENDPOINT}"
     cdp_env_crn = get_cdp_env_crn(cdp_env_name)
-    user_id = get_user_id(user)
+    user_id = get_user_attr(user_name, "userId")
     for role in roles:
         if action == "assign-role-to-user":
             click.echo(f"===Assigning role {role} to user {user} on env {cdp_env_name}===")

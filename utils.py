@@ -32,7 +32,7 @@ def get_cdp_env_crn(cdp_env_name):
     return response["environment"]["crn"]
 
 
-def get_user_id(user_name, next_token=""):
+def get_user_attr(user_name, attr, next_token=""):
     action_url = f"{requests_ops.CDP_IAM_ENDPOINT}/listUsers"
     response = requests_ops.send_http_request(
         srv_url=action_url,
@@ -42,9 +42,9 @@ def get_user_id(user_name, next_token=""):
     )
     for user_info in response["users"]:
         if user_info["workloadUsername"] == user_name:
-            return user_info["userId"]
+            return user_info[attr]
     if "nextToken" in response:
-        return get_user_id(user_name, response["nextToken"])
+        return get_user_attr(user_name, attr, response["nextToken"])
 
 
 def get_env_info(env, cdp_env_name):
@@ -123,9 +123,11 @@ def poll_for_status(poll_url, elem_search_info, data={}):
     )
 
     root_index = elem_search_info["root_index"]
-    if len(root_index) > 0:
-        # getting the list of elements from the response json
-        response = json_response.get(elem_search_info["root_index"])
+    if isinstance(json_response, dict):
+        if len(root_index) > 0:
+            response = json_response[root_index]
+        else:
+            response = json_response
         # e.g. for listCredentials: the response is a list and
         # we are going to loop through all the credentials and check if they were created
         if isinstance(response, list):
@@ -142,11 +144,7 @@ def poll_for_status(poll_url, elem_search_info, data={}):
                 if found:
                     return elem_search_info["present"]
             return not elem_search_info["present"]
-        else:
-            raise ValueError(f"Response {response} is not a list")
-    else:
-        response = json_response
-        if isinstance(response, dict):
+        elif isinstance(response, dict):
             found = True
             for expected_k, expected_v in elem_search_info["expected_key_val"].items():
                 if response[expected_k] != expected_v:
@@ -154,4 +152,4 @@ def poll_for_status(poll_url, elem_search_info, data={}):
             if found:
                 return elem_search_info["present"]
         else:
-            raise ValueError(f"Response {response} is not a dict")
+            raise ValueError(f"Response {response} is not a dict or list")

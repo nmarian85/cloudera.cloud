@@ -2,17 +2,13 @@ import click
 import sys
 import json
 import os
-from utils import show_progress, get_env_info, poll_for_status
+from utils import show_progress, get_env_info, poll_for_status, get_user_attr
 from cdpv1sign import generate_headers
 import requests_ops
 import requests
 
 
-def get_user_crn(user):
-    pass
-
-
-def dump_create_mapping_json(cdp_env_name, data_role_arn, user, aws_role, json_skel):
+def dump_create_mapping_json(cdp_env_name, data_role_arn, user_crn, aws_role, json_skel):
     """[summary]
 
     Args:
@@ -25,7 +21,7 @@ def dump_create_mapping_json(cdp_env_name, data_role_arn, user, aws_role, json_s
     mapping_json = dict(json_skel)
     mapping_json["environmentName"] = cdp_env_name
     mapping_json["dataAccessRole"] = data_role_arn
-    mapping_json["mappings"] = {"accessorCrn": get_user_crn(user), "role": aws_role}
+    mapping_json["mappings"] = {"accessorCrn": user_crn, "role": aws_role}
 
     # Whether to install an empty set of individual mappings, deleting any existing mappings.
     # The --set-empty-mappings option is required if --mappings is omitted or if its value is
@@ -53,7 +49,7 @@ def dump_create_mapping_json(cdp_env_name, data_role_arn, user, aws_role, json_s
     help="JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
     required=True,
 )
-def main(dryrun, env, cdp_env_name, action, json_skel):
+def main(dryrun, env, cdp_env_name, json_skel):
     if dryrun:
         show_progress("This is a dryrun")
 
@@ -71,11 +67,12 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         users = json.load(json_file)
 
     for user in users["cdp_env_name"].items():
-        click.echo(
-            f"========Setting idbroker mapping for user {user} on {cdp_env_name}===="
-        )
+        click.echo(f"========Setting idbroker mapping for user {user} on {cdp_env_name}====")
+        user_crn = get_user_attr(user, "crn")
+        aws_role = f"{role_iam_arn}:role/devo-discdata-s3-access-{user}-iam-role"
+
         cdp_mapping_json = dump_create_mapping_json(
-            cdp_env_name, data_role_arn, ranger_role_arn, [], mapping_json_skel
+            cdp_env_name, data_role_arn, user_crn, aws_role, mapping_json_skel
         )
         action_url = f"{env_url}/setIdBrokerMappings"
 
@@ -91,20 +88,22 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 headers=generate_headers("POST", action_url),
             )
 
-            click.echo(f"Waiting for {action} on environment {cdp_env_name}")
-            if action == "set-id-broker-mappings":
-                elem_search_info = {
-                    "root_index": "",
-                    "expected_key_val": {
-                        "dataAccessRole": data_role_arn,
-                        "rangerAuditRole": ranger_role_arn,
-                    },
-                    "present": True,
-                }
+            click.echo(f"Waiting for idbroker mapping on environment {cdp_env_name}")
+            elem_search_info = {
+                "root_index": "mappings",
+                "expected_key_val": {"accessorCrn": user_crn, "role": aws_role},
+                "present": True,
+            }
 
-            click.echo(f"Action {action} on environment {cdp_env_name} DONE")
+            poll_url = f"{env_url}/getIdBrokerMappings"
+            poll_for_status(
+                poll_url=poll_url,
+                elem_search_info=elem_search_info,
+                data={"environmentName": cdp_env_name},
+            )
+            click.echo(f"idbroker mapping for user {user} on environment {cdp_env_name} DONE")
             # dumping file so that Gitlab will back it up
-            with open(f"{cdp_env_name}_idbroker_mapping.json", "w", encoding="utf-8") as f:
+            with open(f"{user}_idbroker_mapping.json", "w", encoding="utf-8") as f:
                 json.dump(cdp_mapping_json, f, ensure_ascii=False, indent=4)
         click.echo(f"===========================================================")
         click.echo()
