@@ -66,7 +66,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
     with open(f"{env}_users.json") as json_file:
         users = json.load(json_file)
 
-    for user in users[cdp_env_name].items():
+    for user in users[cdp_env_name].keys():
         click.echo(f"========Setting idbroker mapping for user {user} on {cdp_env_name}====")
         user_crn = get_user_attr(user, "crn")
         aws_role = f"{role_iam_arn}:role/devo-discdata-s3-access-{user}-iam-role"
