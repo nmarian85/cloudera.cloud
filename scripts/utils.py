@@ -60,7 +60,7 @@ def get_env_info(env, cdp_env_name):
     Returns:
         [type]: [description]
     """
-    with open(f"conf/{env}.json", "r") as read_file:
+    with open(f"conf/{env}_{cdp_env_name}.json", "r") as read_file:
         envs = json.load(read_file)
 
     cdp_env_info = envs.get(cdp_env_name)
