@@ -2,11 +2,12 @@ import click
 import sys
 import json
 import os
-from utils import show_progress, get_env_info, poll_for_status
+from utils import show_progress, get_env_info, poll_for_status, dump_json_dict
 from cdpv1sign import generate_headers
 import requests_ops
 import requests
 from time import sleep
+
 
 def dump_env_install_json(cdp_env_name, cdp_env_info, env_json_skel):
     cdp_env_json = dict(env_json_skel)
@@ -55,7 +56,7 @@ def dump_env_delete_json(cdp_env_name, cdp_env_info, env_json_skel):
 )
 @click.option(
     "--cdp-env-name",
-    help="Please see {env}.json file where you defined the CDP env name",
+    help="Please see the env.json for details regarding the CDP env",
     required=True,
 )
 @click.option(
@@ -84,9 +85,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         env_json = dump_env_delete_json(cdp_env_name, cdp_env_info, env_json_skel)
         action_url = f"{env_url}/deleteEnvironment"
 
-    click.echo("-------------------Generated JSON-----------------------------")
-    print(json.dumps(env_json, indent=4, sort_keys=True))
-    click.echo("--------------------------------------------------------------")
+    dump_json_dict(env_json)
 
     if not dryrun:
         response = requests_ops.send_http_request(

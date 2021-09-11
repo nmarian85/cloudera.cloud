@@ -2,7 +2,7 @@ import click
 import sys
 import json
 import os
-from utils import show_progress, get_env_info, poll_for_status
+from utils import show_progress, get_env_info, poll_for_status, dump_json_dict
 from cdpv1sign import generate_headers
 import requests_ops
 import requests
@@ -51,13 +51,11 @@ def dump_delete_cred_json(cred_info, json_skel):
 )
 @click.option(
     "--cdp-env-name",
-    help="Please see {env}.json file where you defined the CDP env name",
+    help="Please see the env.json for details regarding the CDP env",
     required=True,
 )
 @click.option(
-    "--cred-name",
-    help="Please see {env}.json file where you defined the CDP env name",
-    required=True,
+    "--cred-name", help="Please see the env.json for details regarding the CDP env", required=True,
 )
 @click.option(
     "--json-skel",
@@ -92,9 +90,7 @@ def main(dryrun, env, cdp_env_name, action, cred_name, json_skel):
         cdp_cred_json = dump_delete_cred_json(cred_info, cred_json_skel)
         action_url = f"{env_url}/deleteCredential"
 
-    click.echo("-------------------Generated JSON-----------------------------")
-    print(json.dumps(cdp_cred_json, indent=4, sort_keys=True))
-    click.echo("--------------------------------------------------------------")
+    dump_json_dict(cdp_cred_json)
 
     if not dryrun:
         response = requests_ops.send_http_request(
@@ -103,18 +99,6 @@ def main(dryrun, env, cdp_env_name, action, cred_name, json_skel):
             data=cdp_cred_json,
             headers=generate_headers("POST", action_url),
         )
-        # if not isinstance(response, dict):
-        #     if action == "create-cred":
-        #         check_str = "Credential already exists"
-        #     elif action == "delete-cred":
-        #         check_str = "not found"
-        #     # we want to ensure an idempotent execution hence
-        #     # we will not raise errors if the credentials already exist
-        #     # or where already deleted
-        #     err_msg = json.dumps(response, indent=4, sort_keys=True)
-        #     click.echo(err_msg)
-        #     if check_str not in err_msg:
-        #         raise requests.exceptions.HTTPError
 
         click.echo(f"Waiting for {action} on credential {cred_name}")
         if action == "create-cred":

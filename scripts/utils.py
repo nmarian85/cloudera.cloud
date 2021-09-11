@@ -16,6 +16,12 @@ DEFAULT_TIMEOUT_COMMAND = 7200  # seconds
 # CDP_TENANT_ID = "0e62c9c8-e9cd-483b-81b3-651fe7a22deb"
 
 
+def dump_json_dict(dict_json):
+    echo("-------------------Generated JSON-----------------------------")
+    print(json.dumps(dict_json, indent=4, sort_keys=True))
+    echo("--------------------------------------------------------------")
+
+
 def show_progress(msg):
     sep = "=" * 10
     echo("\n" + sep + "> " + msg.upper() + " <" + sep)
@@ -60,14 +66,8 @@ def get_env_info(env, cdp_env_name):
     Returns:
         [type]: [description]
     """
-    with open(f"conf/{env}_{cdp_env_name}.json", "r") as read_file:
-        envs = json.load(read_file)
-
-    cdp_env_info = envs.get(cdp_env_name)
-    if cdp_env_info is None:
-        raise ValueError(f"Unable to find {cdp_env_name} in env.json")
-    else:
-        return cdp_env_info
+    with open(f"conf/{env}/{cdp_env_name}/env.json", "r") as read_file:
+        return json.load(read_file)
 
 
 def sleep_wait(func):

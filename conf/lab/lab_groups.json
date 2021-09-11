@@ -1,0 +1,37 @@
+{
+    "ecbt1-igamfs-app-cdp-admin": [
+        "DEAdmin",
+        "DEUser",
+        "DFAdmin",
+        "DFFlowAdmin",
+        "DFFlowUser",
+        "DWAdmin",
+        "DWUser",
+        "DataSteward",
+        "EnvironmentAdmin",
+        "EnvironmentUser",
+        "MLAdmin",
+        "MLUser",
+        "MLBusinessUser",
+        "ODAdmin",
+        "ODUser"
+    ],
+    "ecbt1-igamfs-app-cdp-expert": [
+        "DEUser",
+        "DFFlowUser",
+        "DWUser",
+        "DataSteward",
+        "EnvironmentUser",
+        "MLUser",
+        "ODUser"
+    ],
+    "ecbt1-igamfs-app-cdp-user": [
+        "DEUser",
+        "DFFlowUser",
+        "DWUser",
+        "DataSteward",
+        "EnvironmentUser",
+        "MLUser",
+        "ODUser"
+    ]
+}
