@@ -63,14 +63,14 @@ def main(dryrun, env, cdp_env_name, json_skel):
     role_iam_arn = f'arn:aws:iam::{cdp_env_info["account_id"]}'
     data_role_arn = f'{role_iam_arn}:role/{cdp_env_info["data_role"]}'
     ranger_role_arn = f'{role_iam_arn}:role/{cdp_env_info["ranger_role"]}'
-    env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
+    idbroker_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
 
     with open(f"conf/{env}/{cdp_env_name}/users.json") as json_file:
         users = json.load(json_file)
 
     user_roles = {
         user: f"{role_iam_arn}:role/devo-discdata-s3-access-{user}-iam-role"
-        for user in users[cdp_env_name].keys()
+        for user in users.keys()
     }
     user_crns = {user: get_user_attr(user, "crn") for user in users[cdp_env_name].keys()}
 
@@ -81,7 +81,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
     click.echo(f"========Setting idbroker mapping for users on {cdp_env_name}====")
     dump_json_dict(cdp_mapping_json)
 
-    action_url = f"{env_url}/setIdBrokerMappings"
+    action_url = f"{idbroker_url}/setIdBrokerMappings"
 
     if not dryrun:
         response = requests_ops.send_http_request(
@@ -100,7 +100,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
                 "present": True,
             }
 
-            poll_url = f"{env_url}/getIdBrokerMappings"
+            poll_url = f"{idbroker_url}/getIdBrokerMappings"
             poll_for_status(
                 poll_url=poll_url,
                 elem_search_info=elem_search_info,
