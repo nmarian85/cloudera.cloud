@@ -71,7 +71,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
 
     cdp_env_info = get_env_info(env, cdp_env_name)
 
-    with open("conf/{env}/{cdp_env_name}/cdl.json") as json_file:
+    with open(f"conf/{env}/{cdp_env_name}/cdl.json") as json_file:
         cdl_cluster_info = json.load(json_file)
 
     cdl_cluster_name = cdl_cluster_info["name"]

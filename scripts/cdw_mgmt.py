@@ -70,7 +70,7 @@ def main(dryrun, env, cdp_env_name, cdw_cluster_name, action, json_skel):
     with open(json_skel) as json_file:
         cdw_json_skel = json.load(json_file)
 
-    with open("conf/{env}/{cdp_env_name}/cdw.json") as json_file:
+    with open(f"conf/{env}/{cdp_env_name}/cdw.json") as json_file:
         cdw_clusters = json.load(json_file)
 
     cdw_cluster_info = cdw_clusters[cdw_cluster_name]
