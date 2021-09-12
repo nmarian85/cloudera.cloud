@@ -2,7 +2,7 @@ import click
 import sys
 import json
 import os
-from utils import show_progress, get_env_info, poll_for_status
+from utils import show_progress, get_env_info, poll_for_status, dump_json_dict
 from cdpv1sign import generate_headers
 import requests_ops
 import requests
@@ -42,15 +42,13 @@ def main(dryrun, env, cdp_env_name, json_skel):
         sync_json_skel = json.load(json_file)
 
     cdp_env_info = get_env_info(env, cdp_env_name)
-    env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
+    sync_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
 
     click.echo(f"========Syncing idbroker mappings on {cdp_env_name}====")
     cdp_sync_json = dump_sync_idbroker_sync_json(cdp_env_name, sync_json_skel)
-    action_url = f"{env_url}/syncIdBrokerMappings"
+    action_url = f"{sync_url}/syncIdBrokerMappings"
 
-    click.echo("-------------------Generated JSON-----------------------------")
-    print(json.dumps(cdp_sync_json, indent=4, sort_keys=True))
-    click.echo("--------------------------------------------------------------")
+    dump_json_dict(cdp_sync_json)
 
     if not dryrun:
         response = requests_ops.send_http_request(
@@ -67,7 +65,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
             "present": True,
         }
 
-        poll_url = f"{env_url}/getIdBrokerMappingsSyncStatus"
+        poll_url = f"{sync_url}/getIdBrokerMappingsSyncStatus"
         poll_for_status(
             poll_url=poll_url,
             elem_search_info=elem_search_info,
