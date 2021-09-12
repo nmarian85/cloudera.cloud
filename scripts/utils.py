@@ -27,21 +27,6 @@ def show_progress(msg):
     echo("\n" + sep + "> " + msg.upper() + " <" + sep)
 
 
-def get_user_attr(user_name, attr, next_token=""):
-    action_url = f"{requests_ops.CDP_IAM_ENDPOINT}/listUsers"
-    response = requests_ops.send_http_request(
-        srv_url=action_url,
-        req_type="post",
-        headers=generate_headers("POST", action_url),
-        data={"startingToken": next_token},
-    )
-    for user_info in response["users"]:
-        if user_info["workloadUsername"] == user_name:
-            return user_info[attr]
-    if "nextToken" in response:
-        return get_user_attr(user_name, attr, response["nextToken"])
-
-
 def get_env_info(env, cdp_env_name):
     """[summary]
 

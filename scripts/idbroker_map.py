@@ -2,7 +2,8 @@ import click
 import sys
 import json
 import os
-from utils import show_progress, get_env_info, poll_for_status, get_user_attr
+from utils import show_progress, get_env_info, poll_for_status, dump_json_dict
+from role_map import get_user_attr
 from cdpv1sign import generate_headers
 import requests_ops
 import requests
@@ -64,7 +65,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
     ranger_role_arn = f'{role_iam_arn}:role/{cdp_env_info["ranger_role"]}'
     env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
 
-    with open(f"conf/{env}_users.json") as json_file:
+    with open(f"conf/{env}/{cdp_env_name}/users.json") as json_file:
         users = json.load(json_file)
 
     user_roles = {
@@ -78,9 +79,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
     )
 
     click.echo(f"========Setting idbroker mapping for users on {cdp_env_name}====")
-    click.echo("-------------------Generated JSON-----------------------------")
-    print(json.dumps(cdp_mapping_json, indent=4, sort_keys=True))
-    click.echo("--------------------------------------------------------------")
+    dump_json_dict(cdp_mapping_json)
 
     action_url = f"{env_url}/setIdBrokerMappings"
 

@@ -63,7 +63,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
     role_iam_arn = f'arn:aws:iam::{cdp_env_info["account_id"]}'
     data_role_arn = f'{role_iam_arn}:role/{cdp_env_info["data_role"]}'
     ranger_role_arn = f'{role_iam_arn}:role/{cdp_env_info["ranger_role"]}'
-    env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
+    idbroker_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
 
     click.echo(
         f"========Setting idbroker mappings for ranger and datalake roles on {cdp_env_name}===="
@@ -71,7 +71,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
     cdp_mapping_json = dump_create_mapping_json(
         cdp_env_name, data_role_arn, ranger_role_arn, [], mapping_json_skel
     )
-    action_url = f"{env_url}/setIdBrokerMappings"
+    action_url = f"{idbroker_url}/setIdBrokerMappings"
 
     click.echo("-------------------Generated JSON-----------------------------")
     print(json.dumps(cdp_mapping_json, indent=4, sort_keys=True))
@@ -95,7 +95,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
             "present": True,
         }
 
-        poll_url = f"{env_url}/getIdBrokerMappings"
+        poll_url = f"{idbroker_url}/getIdBrokerMappings"
         poll_for_status(
             poll_url=poll_url,
             elem_search_info=elem_search_info,
