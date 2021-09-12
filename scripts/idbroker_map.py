@@ -72,7 +72,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
         user: f"{role_iam_arn}:role/devo-discdata-s3-access-{user}-iam-role"
         for user in users.keys()
     }
-    user_crns = {user: get_user_attr(user, "crn") for user in users[cdp_env_name].keys()}
+    user_crns = {user: get_user_attr(user, "crn") for user in users.keys()}
 
     cdp_mapping_json = dump_create_mapping_json(
         cdp_env_name, ranger_role_arn, data_role_arn, user_crns, user_roles, mapping_json_skel
