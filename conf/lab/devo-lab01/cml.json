@@ -17,7 +17,8 @@
             "root_volume": 100
         },
         "tags": {
-            "env": "lab"
+            "env": "lab",
+            "origin": "cdp"
         }
     }
 }
