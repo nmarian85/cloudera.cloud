@@ -19,6 +19,7 @@
         "tags": {
             "env": "lab",
             "origin": "cdp"
-        }
+        },
+        "workload_analytics": "false"
     }
 }

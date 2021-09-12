@@ -15,6 +15,7 @@ def dump_env_install_json(cdp_env_name, cdp_env_info, env_json_skel):
     del cdp_env_json["image"]
 
     cdp_env_json["environmentName"] = cdp_env_name
+    cdp_env_json["workloadAnalytics"] = cdp_env_info["workload_analytics"]
     cdp_env_json["credentialName"] = cdp_env_info["credentials"]["cross_account_all_perm"][
         "credential_name"
     ]
