@@ -56,16 +56,11 @@ def dump_cdl_delete_json(cdl_cluster_name, cdl_json_skel):
     required=True,
 )
 @click.option(
-    "--cdl-cluster-name",
-    help="Please see the cdl.json for details regarding the CDP datalake",
-    required=True,
-)
-@click.option(
     "--json-skel",
     help="JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
     required=True,
 )
-def main(dryrun, env, cdp_env_name, cdl_cluster_name, action, json_skel):
+def main(dryrun, env, cdp_env_name, action, json_skel):
     if dryrun:
         show_progress("This is a dryrun")
 
@@ -79,7 +74,8 @@ def main(dryrun, env, cdp_env_name, cdl_cluster_name, action, json_skel):
     with open("conf/{env}/{cdp_env_name}/cdl.json") as json_file:
         cdl_cluster_info = json.load(json_file)
 
-    env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/datalake"
+    cdl_cluster_name = cdl_cluster_info["name"]
+    cdl_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/datalake"
 
     if action == "install-cdl":
         click.echo(f"==============Creating environment {cdp_env_name}==============")
@@ -90,11 +86,11 @@ def main(dryrun, env, cdp_env_name, cdl_cluster_name, action, json_skel):
             cdp_env_info["account_id"],
             cdl_json_skel,
         )
-        action_url = f"{env_url}/createAWSDatalake"
+        action_url = f"{cdl_url}/createAWSDatalake"
     elif action == "delete-cdl":
         click.echo(f"==============Deleting environment {cdp_env_name}==============")
         cdl_json = dump_cdl_delete_json(cdl_cluster_name, cdl_json_skel)
-        action_url = f"{env_url}/deleteDatalake"
+        action_url = f"{cdl_url}/deleteDatalake"
 
     dump_json_dict(cdl_json)
 
@@ -108,7 +104,7 @@ def main(dryrun, env, cdp_env_name, cdl_cluster_name, action, json_skel):
 
         click.echo(f"Waiting for {action} on cluster {cdl_cluster_name}")
 
-        poll_url = f"{env_url}/listDatalakes"
+        poll_url = f"{cdl_url}/listDatalakes"
 
         if action == "install-cdl":
             elem_search_info = {

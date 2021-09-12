@@ -9,6 +9,17 @@ import requests
 from time import sleep
 
 
+def get_cdp_env_crn(cdp_env_name):
+    action_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2/describeEnvironment"
+    response = requests_ops.send_http_request(
+        srv_url=action_url,
+        req_type="post",
+        data={"environmentName": cdp_env_name},
+        headers=generate_headers("POST", action_url),
+    )
+    return response["environment"]["crn"]
+
+
 def dump_env_install_json(cdp_env_name, cdp_env_info, env_json_skel):
     cdp_env_json = dict(env_json_skel)
     del cdp_env_json["networkCidr"]

@@ -2,7 +2,8 @@ import click
 import sys
 import json
 import os
-from utils import show_progress, get_env_info, poll_for_status, get_cdp_env_crn
+from utils import show_progress, get_env_info, poll_for_status
+from env_mgmt import get_cdp_env_crn
 from cdpv1sign import generate_headers
 import requests_ops
 import requests
