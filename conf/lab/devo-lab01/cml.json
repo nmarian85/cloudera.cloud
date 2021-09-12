@@ -16,10 +16,13 @@
             "max_instances": 3,
             "root_volume": 100
         },
-        "tags": {
-            "env": "lab",
-            "origin": "cdp"
-        },
-        "workload_analytics": "false"
+        "tags": [
+            {
+                "env": "lab"
+            },
+            {
+                "origin": "cdp"
+            }
+        ]
     }
 }

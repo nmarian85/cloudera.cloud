@@ -14,9 +14,14 @@
             "subnet-012c688e22929b604",
             "subnet-02cda3e72e4840aef"
         ],
-        "tags": {
-            "env": "lab"
-        },
+        "tags": [
+            {
+                "env": "lab"
+            },
+            {
+                "origin": "cdp"
+            }
+        ],
         "vcs": {
             "devo-lab01-cde01-c01": {
                 "cpu_requests": "40",
