@@ -95,7 +95,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
             headers=generate_headers("POST", action_url),
         )
 
-        click.echo(f"Waiting for {action} on environments {cdp_env_name}")
+        click.echo(f"Waiting for {action} on env {cdp_env_name}")
 
         poll_url = f"{env_url}/listEnvironments"
 
@@ -113,7 +113,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
             }
         poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info)
 
-        click.echo(f"Action {action} on environment {cdp_env_name} DONE")
+        click.echo(f"Action {action} on {cdp_env_name} DONE")
 
         # dumping file so that Gitlab will back it up
         with open(f"{cdp_env_name}.json", "w", encoding="utf-8") as f:

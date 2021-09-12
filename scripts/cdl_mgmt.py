@@ -2,43 +2,35 @@ import click
 import sys
 import json
 import os
-from utils import show_progress, get_env_info, poll_for_status
+from utils import show_progress, get_env_info, poll_for_status, dump_json_dict
 from cdpv1sign import generate_headers
 import requests_ops
 import requests
 from time import sleep
 
-""" Dependencies
-Python: pip3 install --upgrade --user click cdpcli
-Env variables: 
-    - REQUESTS_CA_BUNDLE=
-        - /etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt for RHEL/Amazon Linux
-        - /etc/ssl/certs/ca-certificates.crt for Ubuntu/Alpine
-    - CDP_ACCESS_KEY_ID
-    - CDP_PRIVATE_KEY
-"""
 
-
-def dump_cdl_install_json(cdp_env_name, cdl_cluster_name, cdp_dl_info, account_id, cdl_json_skel):
+def dump_cdl_install_json(
+    cdp_env_name, cdl_cluster_name, cdl_cluster_info, account_id, cdl_json_skel
+):
     cdp_dl_json = dict(cdl_json_skel)
 
     del cdp_dl_json["runtime"]
     del cdp_dl_json["image"]
 
     cdp_dl_json["environmentName"] = cdp_env_name
-    cdp_dl_json["tags"] = cdp_dl_info["tags"]
-    cdp_dl_json["scale"] = cdp_dl_info["scale"]
+    cdp_dl_json["tags"] = cdl_cluster_info["tags"]
+    cdp_dl_json["scale"] = cdl_cluster_info["scale"]
 
-    cdl_cluster_name = cdp_dl_info["name"]
+    cdl_cluster_name = cdl_cluster_info["name"]
     cdp_dl_json["datalakeName"] = cdl_cluster_name
 
     cdp_dl_json["cloudProviderConfiguration"][
         "storageBucketLocation"
-    ] = f's3a://{cdp_dl_info["data_bucket"]}/{cdp_env_name}'
+    ] = f's3a://{cdl_cluster_info["data_bucket"]}/{cdp_env_name}'
     role_iam_arn = f"arn:aws:iam::{account_id}"
     cdp_dl_json["cloudProviderConfiguration"][
         "instanceProfile"
-    ] = f'{role_iam_arn}:instance-profile/{cdp_dl_info["idbroker_role_instance_profile"]}'
+    ] = f'{role_iam_arn}:instance-profile/{cdl_cluster_info["idbroker_role_instance_profile"]}'
 
     return cdp_dl_json
 
@@ -60,12 +52,12 @@ def dump_cdl_delete_json(cdl_cluster_name, cdl_json_skel):
 )
 @click.option(
     "--cdp-env-name",
-    help="Please see {env}.json file where you defined the CDP env name",
+    help="Please see the env.json for details regarding the CDP env",
     required=True,
 )
 @click.option(
     "--cdl-cluster-name",
-    help="Please see {env}.json file where you defined the CDE cluster name",
+    help="Please see the cdl.json for details regarding the CDP datalake",
     required=True,
 )
 @click.option(
@@ -83,30 +75,34 @@ def main(dryrun, env, cdp_env_name, cdl_cluster_name, action, json_skel):
         cdl_json_skel = json.load(json_file)
 
     cdp_env_info = get_env_info(env, cdp_env_name)
-    cdp_dl_info = cdp_env_info["datalake"]
+
+    with open("conf/{env}/{cdp_env_name}/cdl.json") as json_file:
+        cdl_cluster_info = json.load(json_file)
 
     env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/datalake"
 
     if action == "install-cdl":
         click.echo(f"==============Creating environment {cdp_env_name}==============")
-        env_json = dump_cdl_install_json(
-            cdp_env_name, cdl_cluster_name, cdp_dl_info, cdp_env_info["account_id"], cdl_json_skel
+        cdl_json = dump_cdl_install_json(
+            cdp_env_name,
+            cdl_cluster_name,
+            cdl_cluster_info,
+            cdp_env_info["account_id"],
+            cdl_json_skel,
         )
         action_url = f"{env_url}/createAWSDatalake"
     elif action == "delete-cdl":
         click.echo(f"==============Deleting environment {cdp_env_name}==============")
-        env_json = dump_cdl_delete_json(cdl_cluster_name, cdl_json_skel)
+        cdl_json = dump_cdl_delete_json(cdl_cluster_name, cdl_json_skel)
         action_url = f"{env_url}/deleteDatalake"
 
-    click.echo("-------------------Generated JSON-----------------------------")
-    print(json.dumps(env_json, indent=4, sort_keys=True))
-    click.echo("--------------------------------------------------------------")
+    dump_json_dict(cdl_json)
 
     if not dryrun:
         response = requests_ops.send_http_request(
             srv_url=action_url,
             req_type="post",
-            data=env_json,
+            data=cdl_json,
             headers=generate_headers("POST", action_url),
         )
 
@@ -132,7 +128,7 @@ def main(dryrun, env, cdp_env_name, cdl_cluster_name, action, json_skel):
 
         # dumping file so that Gitlab will back it up
         with open(f"{cdl_cluster_name}.json", "w", encoding="utf-8") as f:
-            json.dump(env_json, f, ensure_ascii=False, indent=4)
+            json.dump(cdl_json, f, ensure_ascii=False, indent=4)
     click.echo(f"===========================================================")
     click.echo()
 

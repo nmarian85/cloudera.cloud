@@ -2,7 +2,7 @@ import click
 import sys
 import json
 import os
-from utils import show_progress, get_env_info, poll_for_status
+from utils import show_progress, get_env_info, poll_for_status, dump_json_dict
 from cdpv1sign import generate_headers
 import requests_ops
 import requests
@@ -54,17 +54,17 @@ def dump_vc_cde_delete_json(cde_cluster_id, vc_name, vc_cde_json_skel):
 )
 @click.option(
     "--cdp-env-name",
-    help="Please see {env}.json file where you defined the CDP env name",
+    help="Please see the env.json for details regarding the CDP env",
     required=True,
 )
 @click.option(
     "--cde-cluster-name",
-    help="Please see {env}.json file where you defined the CDE cluster name",
+    help="Please see cde.json for details regarding the CDE cluster",
     required=True,
 )
 @click.option(
     "--vc-cde-cluster-name",
-    help="Please see {env}.json file where you defined the CDE virtual cluster name",
+    help="Please see cde.json for details regarding the CDE virtual cluster",
     required=True,
 )
 @click.option(
@@ -81,9 +81,12 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, vc_cde_cluster_name, actio
     with open(json_skel) as json_file:
         vc_cde_json_skel = json.load(json_file)
 
-    cdp_env_info = get_env_info(env, cdp_env_name)
+    with open("conf/{env}/{cdp_env_name}/cde.json") as json_file:
+        cde_clusters = json.load(json_file)
 
-    vc_cde_info = cdp_env_info["cde_clusters"][cde_cluster_name]["vcs"][vc_cde_cluster_name]
+    cde_cluster_info = cde_clusters[cde_cluster_name]
+
+    vc_cde_info = cde_cluster_info[cde_cluster_name]["vcs"][vc_cde_cluster_name]
     cde_cluster_id = get_cde_cluster_id(cde_cluster_name)
 
     cde_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/de"
@@ -106,9 +109,7 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, vc_cde_cluster_name, actio
 
         action_url = f"{cde_url}/deleteVc"
 
-    click.echo("-------------------Generated JSON-----------------------------")
-    print(json.dumps(vc_cde_cluster_json, indent=4, sort_keys=True))
-    click.echo("--------------------------------------------------------------")
+    dump_json_dict(vc_cde_cluster_json)
 
     if not dryrun:
         response = requests_ops.send_http_request(
