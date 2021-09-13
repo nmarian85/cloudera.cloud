@@ -75,7 +75,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
 
             elem_search_info = {
                 "root_index": "",
-                "expected_key_val": {"state": "COMPLETED"},
+                "expected_key_val": {"state": "UP_TO_DATE"},
                 "present": True,
             }
 
