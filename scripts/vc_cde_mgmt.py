@@ -81,7 +81,7 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, vc_cde_cluster_name, actio
     with open(json_skel) as json_file:
         vc_cde_json_skel = json.load(json_file)
 
-    with open("conf/{env}/{cdp_env_name}/cde.json") as json_file:
+    with open(f"conf/{env}/{cdp_env_name}/cde.json") as json_file:
         cde_clusters = json.load(json_file)
 
     cde_cluster_info = cde_clusters[cde_cluster_name]
