@@ -85,7 +85,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
                 data={"operationId": response["operationId"]},
             )
 
-        click.echo(f"Action DONE")
+            click.echo(f"Action DONE")
         # dumping file so that Gitlab will back it up
         with open("sync_users.json", "w", encoding="utf-8") as f:
             json.dump(cdp_sync_json, f, ensure_ascii=False, indent=4)
