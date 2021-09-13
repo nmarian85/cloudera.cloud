@@ -71,18 +71,18 @@ def main(dryrun, env, cdp_env_name, json_skel):
         for cdp_env in cdp_envs:
             click.echo(f"Waiting for sync on env {cdp_env}")
 
-            poll_url = f"{sync_url}/syncStatus"
+            poll_url = f"{sync_url}/getEnvironmentUserSyncState"
 
             elem_search_info = {
                 "root_index": "",
-                "expected_key_val": {"status": "COMPLETED"},
+                "expected_key_val": {"state": "COMPLETED"},
                 "present": True,
             }
 
             poll_for_status(
                 poll_url=poll_url,
                 elem_search_info=elem_search_info,
-                data={"operationId": response["operationId"]},
+                data={"environmentName": cdp_env},
             )
 
             click.echo(f"Action DONE")
