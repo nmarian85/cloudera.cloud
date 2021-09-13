@@ -2,7 +2,7 @@ import click
 import sys
 import json
 import os
-from utils import show_progress, poll_for_status
+from utils import show_progress, poll_for_status, dump_json_dict
 from env_mgmt import get_env_info
 from cdpv1sign import generate_headers
 import requests_ops
@@ -46,21 +46,17 @@ def main(dryrun, env, cdp_env_name, json_skel):
     with open(json_skel) as json_file:
         sync_json_skel = json.load(json_file)
 
-    env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
-    action_url = f"{env_url}/syncAllUsers"
+    sync_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
+    action_url = f"{sync_url}/syncAllUsers"
 
     if cdp_env_name:
         click.echo(f"========Syncing all users on {cdp_env_name}====")
-        cdp_env_info = get_env_info(env, cdp_env_name)
         cdp_sync_json = dump_sync_all_users_json(sync_json_skel, cdp_env_name)
     else:
         click.echo(f"========Syncing all users on all envs====")
         cdp_sync_json = dump_sync_all_users_json(sync_json_skel)
 
-    env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
-    click.echo("-------------------Generated JSON-----------------------------")
-    print(json.dumps(cdp_sync_json, indent=4, sort_keys=True))
-    click.echo("--------------------------------------------------------------")
+    dump_json_dict(cdp_sync_json)
 
     if not dryrun:
         response = requests_ops.send_http_request(
@@ -72,7 +68,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
 
         click.echo(f"Waiting for sync")
 
-        poll_url = f"{env_url}/syncStatus"
+        poll_url = f"{sync_url}/syncStatus"
 
         elem_search_info = {
             "root_index": "",
