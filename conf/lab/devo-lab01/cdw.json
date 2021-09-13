@@ -4,14 +4,8 @@
         "subnet-012c688e22929b604",
         "subnet-02cda3e72e4840aef"
     ],
-    "tags": [
-        {
-            "key": "env",
-            "value": "lab"
-        },
-        {
-            "key": "origin",
-            "value": "cdp"
-        }
-    ]
+    "tags": {
+        "env": "lab",
+        "origin": "cdp"
+    }
 }

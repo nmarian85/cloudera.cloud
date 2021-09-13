@@ -2,7 +2,7 @@ import click
 import sys
 import json
 import os
-from utils import show_progress, get_env_info, poll_for_status, dump_json_dict
+from utils import show_progress, poll_for_status, dump_json_dict
 from cdpv1sign import generate_headers
 import requests_ops
 import requests
@@ -87,18 +87,18 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, action, json_skel):
 
     cde_cluster_info = cde_clusters[cde_cluster_name]
 
-    env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/de"
+    cde_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/de"
 
     if action == "install-cde":
         click.echo(f"==============Installing CDE cluster {cde_cluster_name}==============")
         cde_cluster_json = dump_cde_install_json(
             cdp_env_name, cde_cluster_name, cde_cluster_info, cde_json_skel
         )
-        action_url = f"{env_url}/enableService"
+        action_url = f"{cde_url}/enableService"
     elif action == "delete-cde":
         click.echo(f"==============Deleting CDE cluster {cde_cluster_name}==============")
         cde_cluster_json = dump_cde_delete_json(get_cde_cluster_id(cde_cluster_name), cde_json_skel)
-        action_url = f"{env_url}/disableService"
+        action_url = f"{cde_url}/disableService"
 
     dump_json_dict(cde_cluster_json)
 
@@ -112,7 +112,7 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, action, json_skel):
 
         click.echo(f"Waiting for {action} on cluster {cde_cluster_name}")
 
-        poll_url = f"{env_url}/listServices"
+        poll_url = f"{cde_url}/listServices"
 
         if action == "install-cde":
             elem_search_info = {

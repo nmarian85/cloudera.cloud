@@ -2,7 +2,7 @@ import click
 import sys
 import json
 import os
-from utils import show_progress, get_env_info, poll_for_status, dump_json_dict
+from utils import show_progress, poll_for_status, dump_json_dict
 from cdpv1sign import generate_headers
 import requests_ops
 import requests

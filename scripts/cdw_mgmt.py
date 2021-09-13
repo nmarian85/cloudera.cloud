@@ -2,14 +2,11 @@ import click
 import sys
 import json
 import os
-from utils import show_progress, get_env_info, poll_for_status, dump_json_dict
+from utils import show_progress, poll_for_status, dump_json_dict
 from cdpv1sign import generate_headers
 import requests_ops
 import requests
 from env_mgmt import get_cdp_env_crn
-
-
-# TODO: add code to add jump server role access to EKS control plane
 
 
 def dump_cdw_install_json(cdp_env_name, cdw_cluster_name, cdw_cluster_info, cdw_json_skel):
@@ -27,14 +24,14 @@ def dump_cdw_delete_json(cluster_id, cdw_json_skel):
     return cdp_cdw_cluster_json
 
 
-def get_cdw_cluster_id(cluster_name):
-    action_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/de/listServices"
+def get_cdw_cluster_id(env_crn):
+    action_url = f"{requests_ops.CDP_clusters_ENDPOINT}/dw/listClusters"
     response = requests_ops.send_http_request(
         srv_url=action_url, req_type="post", headers=generate_headers("POST", action_url), data={},
     )
-    for cdw_cluster_info in response["services"]:
-        if cdw_cluster_info["name"] == cluster_name:
-            return cdw_cluster_info["clusterId"]
+    for cdw_cluster_info in response["clusters"]:
+        if cdw_cluster_info["environmentCrn"] == env_crn:
+            return cdw_cluster_info["id"]
 
 
 @click.command()
@@ -75,7 +72,9 @@ def main(dryrun, env, cdp_env_name, cdw_cluster_name, action, json_skel):
 
     cdw_cluster_info = cdw_clusters[cdw_cluster_name]
 
-    cdw_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/dw"
+    cdw_url = f"{requests_ops.CDP_clusters_ENDPOINT}/dw"
+
+    env_crn = get_cdp_env_crn(cdp_env_name)
 
     if action == "install-cdw":
         click.echo(f"==============Installing cdw cluster {cdw_cluster_name}==============")
@@ -85,7 +84,7 @@ def main(dryrun, env, cdp_env_name, cdw_cluster_name, action, json_skel):
         action_url = f"{cdw_url}/createCluster"
     elif action == "delete-cdw":
         click.echo(f"==============Deleting cdw cluster {cdw_cluster_name}==============")
-        cdw_cluster_json = dump_cdw_delete_json(get_cdw_cluster_id(cdw_cluster_name), cdw_json_skel)
+        cdw_cluster_json = dump_cdw_delete_json(get_cdw_cluster_id(env_crn), cdw_json_skel)
         action_url = f"{cdw_url}/deleteCluster"
 
     dump_json_dict(cdw_cluster_json)
@@ -100,26 +99,21 @@ def main(dryrun, env, cdp_env_name, cdw_cluster_name, action, json_skel):
 
         click.echo(f"Waiting for {action} on cluster {cdw_cluster_name}")
 
-        poll_url = f"{cdw_url}/listServices"
+        poll_url = f"{cdw_url}/listClusters"
 
         if action == "install-cdw":
             elem_search_info = {
-                "root_index": "services",
-                "expected_key_val": {
-                    "name": cdw_cluster_name,
-                    "status": "ClusterCreationCompleted",
-                },
+                "root_index": "clusters",
+                "expected_key_val": {"id": cdw_cluster_name, "status": "Running"},
                 "present": True,
             }
         elif action == "delete-cdw":
             elem_search_info = {
-                "root_index": "services",
-                "expected_key_val": {"name": cdw_cluster_name},
+                "root_index": "clusters",
+                "expected_key_val": {"environmentCrn": env_crn},
                 "present": False,
             }
-        poll_for_status(
-            poll_url=poll_url, elem_search_info=elem_search_info, data={"removeDeleted": True}
-        )
+        poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info)
 
         click.echo(f"Action {action} on cluster {cdw_cluster_name} DONE")
 

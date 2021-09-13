@@ -16,15 +16,9 @@
             "max_instances": 3,
             "root_volume": 100
         },
-        "tags": [
-            {
-                "key": "env",
-                "value": "lab"
-            },
-            {
-                "key": "origin",
-                "value": "cdp"
-            }
-        ]
+        "tags": {
+            "env": "lab",
+            "origin": "cdp"
+        }
     }
 }

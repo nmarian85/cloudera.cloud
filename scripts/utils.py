@@ -27,23 +27,6 @@ def show_progress(msg):
     echo("\n" + sep + "> " + msg.upper() + " <" + sep)
 
 
-def get_env_info(env, cdp_env_name):
-    """[summary]
-
-    Args:
-        env ([type]): [description]
-        cdp_env_name ([type]): [description]
-
-    Raises:
-        ValueError: [description]
-
-    Returns:
-        [type]: [description]
-    """
-    with open(f"conf/{env}/{cdp_env_name}/env.json", "r") as read_file:
-        return json.load(read_file)
-
-
 def sleep_wait(func):
     """    HTTP requests are async hence we will priodically poll the
     result of the job to check its success

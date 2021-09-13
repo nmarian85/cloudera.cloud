@@ -89,9 +89,15 @@ Env variables:
 ```bash 
 export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt && git pull && python3 scripts/cred_mgmt.py --no-dryrun --action create-cred --env lab --cdp-env-name devo-lab01 --json-skel cred_create.json
 
-export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt && git pull && python3 scripts/cdl_mgmt.py --no-dryrun --action install-cdl --env lab --cdp-env-name devo-lab01 --json-skel create_dlake.json
-
 export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt && git pull && python3 scripts/env_mgmt.py --no-dryrun --env lab --cdp-env-name devo-lab01 --action install-env --json-skel create_env.json
 
+export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt && git pull && python3 scripts/idbroker_map.py  --no-dryrun --env lab --cdp-env-name devo-lab01 --json-skel create_idbroker_mapping.json
+
+export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt && git pull && python3 scripts/cdl_mgmt.py --no-dryrun --action install-cdl --env lab --cdp-env-name devo-lab01 --json-skel create_dlake.json
+
+
+export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt && git pull && python3 scripts/idbroker_sync.py --no-dryrun --env lab --cdp-env-name devo-lab01 --json-skel sync_idbroker_mapping.json
+
+export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt && git pull && python3 cde_mgmt.py --no-dryrun --action install-cde --env lab --cdp-env-name devo-lab01 --cde-cluster-name devo-lab01 --json-skel create_cde.json
 
 ```
