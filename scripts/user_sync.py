@@ -3,7 +3,7 @@ import sys
 import json
 import os
 from utils import show_progress, poll_for_status, dump_json_dict
-from env_mgmt import get_env_info
+from env_mgmt import get_env_info, get_all_cdp_envs
 from cdpv1sign import generate_headers
 import requests_ops
 import requests
@@ -52,9 +52,11 @@ def main(dryrun, env, cdp_env_name, json_skel):
     if cdp_env_name:
         click.echo(f"========Syncing all users on {cdp_env_name}====")
         cdp_sync_json = dump_sync_all_users_json(sync_json_skel, cdp_env_name)
+        cdp_envs = [cdp_env_name]
     else:
         click.echo(f"========Syncing all users on all envs====")
         cdp_sync_json = dump_sync_all_users_json(sync_json_skel)
+        cdp_envs = [env["environmentName"] for env in get_all_cdp_envs()]
 
     dump_json_dict(cdp_sync_json)
 
@@ -68,19 +70,20 @@ def main(dryrun, env, cdp_env_name, json_skel):
 
         click.echo(f"Waiting for sync")
 
-        poll_url = f"{sync_url}/syncStatus"
+        for cdp_env in cdp_envs:
+            poll_url = f"{sync_url}/syncStatus"
 
-        elem_search_info = {
-            "root_index": "",
-            "expected_key_val": {"status": "COMPLETED"},
-            "present": True,
-        }
+            elem_search_info = {
+                "root_index": "",
+                "expected_key_val": {"status": "COMPLETED"},
+                "present": True,
+            }
 
-        poll_for_status(
-            poll_url=poll_url,
-            elem_search_info=elem_search_info,
-            data={"operationId": response["operationId"]},
-        )
+            poll_for_status(
+                poll_url=poll_url,
+                elem_search_info=elem_search_info,
+                data={"operationId": response["operationId"]},
+            )
 
         click.echo(f"Action DONE")
         # dumping file so that Gitlab will back it up

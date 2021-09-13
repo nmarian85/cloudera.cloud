@@ -26,6 +26,14 @@ def get_env_info(env, cdp_env_name):
         return json.load(read_file)
 
 
+def get_all_cdp_envs():
+    action_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2/listEnvironments"
+    response = requests_ops.send_http_request(
+        srv_url=action_url, req_type="post", headers=generate_headers("POST", action_url),
+    )
+    return response["environments"]
+
+
 def get_cdp_env_crn(cdp_env_name):
     action_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2/describeEnvironment"
     response = requests_ops.send_http_request(

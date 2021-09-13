@@ -95,13 +95,11 @@ export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.cr
 
 export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt && git pull && python3 scripts/cdl_mgmt.py --no-dryrun --action install-cdl --env lab --cdp-env-name devo-lab01 --json-skel create_dlake.json
 
-
 export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt && git pull && python3 scripts/idbroker_sync.py --no-dryrun --env lab --cdp-env-name devo-lab01 --json-skel sync_idbroker_mapping.json
-
 
 export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt && git pull && python3 scripts/group_cdprole_map.py --no-dryrun --env lab --cdp-env-name devo-lab01 --action assign-cdproles-to-groups --json-skel asg_user_res_role.json
 
-
+export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt && git pull && python3 scripts/user_sync.py --no-dryrun --env lab --json-skel sync_all_users.json
 
 export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt && git pull && python3 cde_mgmt.py --no-dryrun --action install-cde --env lab --cdp-env-name devo-lab01 --cde-cluster-name devo-lab01 --json-skel create_cde.json
 
