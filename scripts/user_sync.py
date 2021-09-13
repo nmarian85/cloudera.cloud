@@ -68,9 +68,9 @@ def main(dryrun, env, cdp_env_name, json_skel):
             headers=generate_headers("POST", action_url),
         )
 
-        click.echo(f"Waiting for sync")
-
         for cdp_env in cdp_envs:
+            click.echo(f"Waiting for sync on env {cdp_env}")
+
             poll_url = f"{sync_url}/syncStatus"
 
             elem_search_info = {
