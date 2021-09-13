@@ -169,58 +169,63 @@ def main(dryrun, env, cdp_env_name, action, user, roles, json_skel):
     cdp_env_info = get_env_info(env, cdp_env_name)
     iam_user_url = f"{requests_ops.CDP_IAM_ENDPOINT}"
     cdp_env_crn = get_cdp_env_crn(cdp_env_name)
-    user_id = get_user_attr(user_name, "userId")
-    for role in roles:
-        if action == "assign-role-to-user":
-            click.echo(f"===Assigning role {role} to user {user} on env {cdp_env_name}===")
-            action_url = f"{iam_user_url}/assignUserResourceRole"
-        elif action == "unassign-role-from-user":
-            click.echo(f"===Unassigning role {role} from user {user} on env {cdp_env_name}===")
-            action_url = f"{iam_user_url}/unassignUserResourceRole"
 
-        cdp_assign_user_role_json = dump_assign_user_resource_role_json(
-            cdp_env_crn, role, user_id, assign_user_role_json_skel
-        )
-        click.echo("-------------------Generated JSON-----------------------------")
-        print(json.dumps(cdp_assign_user_role_json, indent=4, sort_keys=True))
-        click.echo("--------------------------------------------------------------")
+    with open(f"conf/{env}/{cdp_env_name}/users.json") as json_file:
+        users = json.load(json_file)
 
-        if not dryrun:
-            response = requests_ops.send_http_request(
-                srv_url=action_url,
-                req_type="post",
-                data=cdp_assign_user_role_json,
-                headers=generate_headers("POST", action_url),
-            )
-
+    for user in users.keys():
+        user_id = get_user_attr(user, "userId")
+        for role in roles:
             if action == "assign-role-to-user":
-                elem_present = True
+                click.echo(f"===Assigning role {role} to user {user} on env {cdp_env_name}===")
+                action_url = f"{iam_user_url}/assignUserResourceRole"
             elif action == "unassign-role-from-user":
-                elem_present = False
+                click.echo(f"===Unassigning role {role} from user {user} on env {cdp_env_name}===")
+                action_url = f"{iam_user_url}/unassignUserResourceRole"
 
-            elem_search_info = {
-                "root_index": "resourceAssignments",
-                "expected_key_val": {
-                    "resourceRoleCrn": f"{requests_ops.DEFAULT_IAM_CRN}:resourceRole:{role}",
-                    "resourceCrn": cdp_env_crn,
-                },
-                "present": elem_present,
-            }
-
-            click.echo(f"Waiting for {action} on role {role} for user {user}")
-
-            poll_for_status(
-                poll_url=f"{iam_user_url}/listUserAssignedResourceRoles",
-                data={"user": user_id, "pageSize": 100},
-                elem_search_info=elem_search_info,
+            cdp_assign_user_role_json = dump_assign_user_resource_role_json(
+                cdp_env_crn, role, user_id, assign_user_role_json_skel
             )
+            dump_json_dict(cdp_assign_user_role_json)
 
-            click.echo(f"{action} on cdp user {user} on env {cdp_env_name} assign role {role} DONE")
-            # dumping file so that Gitlab will back it up
-            with open(f"{user}_{role}.json", "w", encoding="utf-8") as f:
-                json.dump(cdp_assign_user_role_json, f, ensure_ascii=False, indent=4)
-        click.echo(f"===========================================================")
-        click.echo()
+            if not dryrun:
+                response = requests_ops.send_http_request(
+                    srv_url=action_url,
+                    req_type="post",
+                    data=cdp_assign_user_role_json,
+                    headers=generate_headers("POST", action_url),
+                )
+
+                if action == "assign-role-to-user":
+                    elem_present = True
+                elif action == "unassign-role-from-user":
+                    elem_present = False
+
+                elem_search_info = {
+                    "root_index": "resourceAssignments",
+                    "expected_key_val": {
+                        "resourceRoleCrn": f"{requests_ops.DEFAULT_IAM_CRN}:resourceRole:{role}",
+                        "resourceCrn": cdp_env_crn,
+                    },
+                    "present": elem_present,
+                }
+
+                click.echo(f"Waiting for {action} on role {role} for user {user}")
+
+                poll_for_status(
+                    poll_url=f"{iam_user_url}/listUserAssignedResourceRoles",
+                    data={"user": user_id, "pageSize": 100},
+                    elem_search_info=elem_search_info,
+                )
+
+                click.echo(
+                    f"{action} on cdp user {user} on env {cdp_env_name} assign role {role} DONE"
+                )
+                # dumping file so that Gitlab will back it up
+                with open(f"{user}_{role}.json", "w", encoding="utf-8") as f:
+                    json.dump(cdp_assign_user_role_json, f, ensure_ascii=False, indent=4)
+            click.echo(f"===========================================================")
+            click.echo()
 
 
 if __name__ == "__main__":
