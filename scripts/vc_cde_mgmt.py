@@ -18,7 +18,10 @@ def get_vc_id(cde_cluster_id, vc_name):
         data={"clusterId": cde_cluster_id},
     )
     for vc_cde_cluster_info in response["vcs"]:
-        if vc_cde_cluster_info["vcName"] == vc_name:
+        if (
+            vc_cde_cluster_info["vcName"] == vc_name
+            and vc_cde_cluster_info["status"] == "ClusterCreationCompleted"
+        ):
             return vc_cde_cluster_info["vcId"]
 
 
