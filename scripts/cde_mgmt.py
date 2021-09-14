@@ -45,7 +45,10 @@ def get_cde_cluster_id(cluster_name):
         srv_url=action_url, req_type="post", headers=generate_headers("POST", action_url), data={},
     )
     for cde_cluster_info in response["services"]:
-        if cde_cluster_info["name"] == cluster_name:
+        if (
+            cde_cluster_info["name"] == cluster_name
+            and cde_cluster_info["status"] == "ClusterCreationCompleted"
+        ):
             return cde_cluster_info["clusterId"]
 
 
