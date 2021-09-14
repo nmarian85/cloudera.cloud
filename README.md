@@ -101,7 +101,7 @@ export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.cr
 
 export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt && git pull && python3 scripts/user_sync.py --no-dryrun --env lab --json-skel sync_all_users.json
 
-export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt && git pull && python3 cde_mgmt.py --no-dryrun --action install-cde --env lab --cdp-env-name devo-lab01 --cde-cluster-name devo-lab01 --json-skel create_cde.json
+export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt && git pull && python3 scripts/cde_mgmt.py --no-dryrun --action install-cde --env lab --cdp-env-name devo-lab01 --cde-cluster-name devo-lab01-cde01 --json-skel create_cde.json
 
 export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt && git pull && python3 scripts/vc_cde_mgmt.py --no-dryrun --action install-vc-cde --env lab --cdp-env-name devo-lab01 --cde-cluster-name devo-lab01-cde01 --vc-cde-cluster-name devo-lab01-cde01-vc01 --json-skel create_vc_cde.json
 
