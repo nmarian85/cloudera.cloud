@@ -49,11 +49,6 @@ def get_cdw_cluster_id(env_crn):
     required=True,
 )
 @click.option(
-    "--cdw-cluster-name",
-    help="Please see cdw.json for details regarding the cdw cluster",
-    required=True,
-)
-@click.option(
     "--json-skel",
     help="JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
     required=True,
