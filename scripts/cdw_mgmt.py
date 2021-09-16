@@ -25,7 +25,7 @@ def dump_cdw_delete_json(cluster_id, cdw_json_skel):
 
 
 def get_cdw_cluster_id(env_crn):
-    action_url = f"{requests_ops.CDP_clusters_ENDPOINT}/dw/listClusters"
+    action_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/dw/listClusters"
     response = requests_ops.send_http_request(
         srv_url=action_url, req_type="post", headers=generate_headers("POST", action_url), data={},
     )
