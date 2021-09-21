@@ -27,7 +27,7 @@ def dump_cdl_install_json(
 
     cdp_dl_json["cloudProviderConfiguration"][
         "storageBucketLocation"
-    ] = f's3a://{cdl_cluster_info["data_bucket"]}/{cdp_env_name}'
+    ] = f's3a://{cdl_cluster_info["data_bucket"]}'
     role_iam_arn = f"arn:aws:iam::{account_id}"
     cdp_dl_json["cloudProviderConfiguration"][
         "instanceProfile"
