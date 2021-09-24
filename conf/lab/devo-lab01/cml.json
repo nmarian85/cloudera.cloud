@@ -1,5 +1,5 @@
 {
-    "devo-lab01-ml01": {
+    "devo-lab01-cml01": {
         "ml_infra_info": {
             "instance_type": "m5.2xlarge",
             "instance_count": 2,

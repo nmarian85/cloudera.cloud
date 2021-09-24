@@ -75,16 +75,18 @@ Env variables:
     - CDP_PRIVATE_KEY
 """
 
-# 1. Create credential for the environment
-# 2. Create environment
-# 3. Create ranger and idbroker mappings
-# 4. Create data lake
-# 5. Create CML/CDE/CDW
-# 6. Add user CDP idbroker mappings
-# 7. Sync idbroker mappings
 
 
 ## Complete env deployment
+
+### 1. Create credential for the environment
+
+### 2. Create environment
+### 3. Create ranger and idbroker mappings
+### 4. Create data lake
+### 5. Create CML/CDE/CDW
+### 6. Add user CDP idbroker mappings
+### 7. Sync idbroker mappings
 
 ```bash
 export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt && git pull && python3 scripts/cred_mgmt.py --no-dryrun --action create-cred --env lab --cdp-env-name devo-lab01 --json-skel cred_create.json
