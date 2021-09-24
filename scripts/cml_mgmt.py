@@ -7,58 +7,52 @@ from env_mgmt import get_env_info
 from cdpv1sign import generate_headers
 import requests_ops
 import requests
-from time import sleep
-
-""" Dependencies
-Python: pip3 install --upgrade --user click cdpcli
-Env variables: 
-    - REQUESTS_CA_BUNDLE=
-        - /etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt for RHEL/Amazon Linux
-        - /etc/ssl/certs/ca-certificates.crt for Ubuntu/Alpine
-    - CDP_ACCESS_KEY_ID
-    - CDP_PRIVATE_KEY
-"""
 
 
-def dump_env_install_json(cdp_env_name, cdp_env_info, env_json_skel):
-    cdp_env_json = dict(env_json_skel)
-    del cdp_env_json["networkCidr"]
-    del cdp_env_json["image"]
+def dump_cml_install_json(cdp_env_name, cml_json_skel, cml_cluster_info):
+    cml_json = dict(cml_json_skel)
 
-    cdp_env_json["environmentName"] = cdp_env_name
-    cdp_env_json["credentialName"] = cdp_env_info["credentials"]["cross_account_all_perm"][
-        "credential_name"
+    cml_json["usePublicLoadBalancer"] = False
+    cml_json["disableTLS"] = False
+    cml_json["enableMonitoring"] = True
+    cml_json["enableGovernance"] = True
+    cml_json["loadBalancerIPWhitelists"] = []
+    cml_json["provisionK8sRequest"]["environmentName"] = cdp_env_name
+    cml_json["provisionK8sRequest"]["network"] = {}
+    cml_json["provisionK8sRequest"]["tags"] = [
+        {"key": f"{k}", "value": f"{v}"} for k, v in cml_cluster_info["tags"].items()
     ]
-    cdp_env_json["region"] = "eu-central-1"
-    cdp_env_json["subnetIds"] = cdp_env_info["subnets"]
-    cdp_env_json["vpcId"] = cdp_env_info["vpc_id"]
-    cdp_env_json["enableTunnel"] = True
-    cdp_env_json["tags"] = cdp_env_info["tags"]
-    cdp_env_json["securityAccess"] = {
-        "securityGroupIdForKnox": cdp_env_info["sg"],
-        "defaultSecurityGroupId": cdp_env_info["sg"],
-    }
-    cdp_env_json["logStorage"]["storageLocationBase"] = f'{cdp_env_info["log_bucket"]}'
-    log_instance_profile = f'{cdp_env_info["log_role"]}-instance-profile'
-    role_iam_arn = f'arn:aws:iam::{cdp_env_info["account_id"]}'
-    cdp_env_json["logStorage"][
-        "instanceProfile"
-    ] = f"{role_iam_arn}:instance-profile/{log_instance_profile}"
-    cdp_env_json["freeIpa"]["instanceCountByGroup"] = 1
-    cdp_env_json["endpointAccessGatewayScheme"] = "PRIVATE"
-    cdp_env_json["authentication"]["publicKey"] = cdp_env_info["public_key"]
-    return cdp_env_json
+    cml_json_ig = list(cml_json["provisionK8sRequest"]["instanceGroups"])
+
+    # mlinfra
+    cml_json_ig[0]["instanceType"] = cml_cluster_info["ml_infra_info"]["instance_type"]
+    cml_json_ig[0]["instanceCount"] = cml_cluster_info["ml_infra_info"]["instance_count"]
+    cml_json_ig[0]["name"] = cml_cluster_info["ml_infra_info"]["name"]
+    cml_json_ig[0]["rootVolume"]["size"] = cml_cluster_info["ml_infra_info"]["root_volume"]
+    cml_json_ig[0]["autoscaling"]["minInstances"] = cml_cluster_info["ml_infra_info"]["min_instances"]
+    cml_json_ig[0]["autoscaling"]["maxInstances"] = cml_cluster_info["ml_infra_info"]["max_instances"]
+
+    # mlworker
+    cml_json_ig.append(dict(cml_json_ig[0]))
+    cml_json_ig[1]["instanceType"] = cml_cluster_info["ml_worker_info"]["instance_type"]
+    cml_json_ig[1]["instanceCount"] = cml_cluster_info["ml_worker_info"]["instance_count"]
+    cml_json_ig[1]["name"] = cml_cluster_info["ml_worker_info"]["name"]
+    cml_json_ig[1]["rootVolume"]["size"] = cml_cluster_info["ml_worker_info"]["root_volume"]
+    cml_json_ig[1]["autoscaling"]["minInstances"] = cml_cluster_info["ml_worker_info"]["min_instances"]
+    cml_json_ig[1]["autoscaling"]["maxInstances"] = cml_cluster_info["ml_worker_info"]["max_instances"]
+
+    cml_json["provisionK8sRequest"]["instanceGroups"] = list(cml_json_ig)
+    return cml_json
 
 
-def dump_env_delete_json(cdp_env_name, cdp_env_info, env_json_skel):
-    cdp_env_json = dict(env_json_skel)
-    cdp_env_json["environmentName"] = cdp_env_name
-    return cdp_env_json
-
+def dump_cml_delete_json(cml_json_skel):
+    cml_json = dict(cml_json_skel)
+    cml_json["removeStorage"] = True
+    return cml_json
 
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
-@click.option("--action", type=click.Choice(["install-env", "delete-env"]), required=True)
+@click.option("--action", type=click.Choice(["install-cml", "delete-cml"]), required=True)
 @click.option(
     "--env",
     type=click.Choice(["lab", "test", "dev", "acc", "prod"]),
@@ -71,66 +65,75 @@ def dump_env_delete_json(cdp_env_name, cdp_env_info, env_json_skel):
     required=True,
 )
 @click.option(
+    "--cml-cluster-name",
+    help="Please see cde.json for details regarding the CML cluster",
+    required=True,
+)
+@click.option(
     "--json-skel",
     help="JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
     required=True,
 )
-def main(dryrun, env, cdp_env_name, action, json_skel):
+def main(dryrun, env, cdp_env_name, cml_cluster_name, action, json_skel):
     if dryrun:
         show_progress("This is a dryrun")
 
     requests_ops.dryrun = dryrun
 
     with open(json_skel) as json_file:
-        env_json_skel = json.load(json_file)
+        cml_json_skel = json.load(json_file)
 
+    with open(f"conf/{env}/{cdp_env_name}/cml.json") as json_file:
+        cml_clusters = json.load(json_file)
+
+    cml_cluster_info = cml_clusters[cml_cluster_name]
     cdp_env_info = get_env_info(env, cdp_env_name)
-    env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
+    cml_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/ml"
 
-    if action == "install-env":
-        click.echo(f"==============Creating environment {cdp_env_name}==============")
-        env_json = dump_env_install_json(cdp_env_name, cdp_env_info, env_json_skel)
-        action_url = f"{env_url}/createAWSEnvironment"
-    elif action == "delete-env":
-        click.echo(f"==============Deleting environment {cdp_env_name}==============")
-        env_json = dump_env_delete_json(cdp_env_name, cdp_env_info, env_json_skel)
-        action_url = f"{env_url}/deleteEnvironment"
+    if action == "install-cml":
+        click.echo(f"==============Creating CML cluster {cml_cluster_name}==============")
+        cml_json = dump_cml_install_json(cdp_env_name, cml_json_skel, cml_cluster_info)
+        action_url = f"{cml_url}/createWorkspace"
+    elif action == "delete-cml":
+        click.echo(f"==============Deleting CML cluster {cml_cluster_name}==============")
+        cml_json = dump_cml_delete_json(cml_json_skel)
+        action_url = f"{cml_url}/deleteWorkspace"
 
     click.echo("-------------------Generated JSON-----------------------------")
-    print(json.dumps(env_json, indent=4, sort_keys=True))
+    print(json.dumps(cml_json, indent=4, sort_keys=True))
     click.echo("--------------------------------------------------------------")
 
     if not dryrun:
         response = requests_ops.send_http_request(
             srv_url=action_url,
             req_type="post",
-            data=env_json,
+            data=cml_json,
             headers=generate_headers("POST", action_url),
         )
 
-        click.echo(f"Waiting for {action} on environments {cdp_env_name}")
+        click.echo(f"Waiting for {action} on cluster {cml_cluster_name}")
 
-        poll_url = f"{env_url}/listEnvironments"
+        poll_url = f"{cml_url}/listWorkspaces"
 
-        if action == "install-env":
+        if action == "install-cml":
             elem_search_info = {
-                "root_index": "environments",
-                "expected_key_val": {"environmentName": cdp_env_name, "status": "AVAILABLE"},
+                "root_index": "workspaces",
+                "expected_key_val": {"instanceName": cml_cluster_name, "instanceStatus": "installation:finished"},
                 "present": True,
             }
-        elif action == "delete-env":
+        elif action == "delete-cml":
             elem_search_info = {
-                "root_index": "environments",
-                "expected_key_val": {"environmentName": cdp_env_name},
+                "root_index": "workspaces",
+                "expected_key_val": {"instanceName": cml_cluster_name},
                 "present": False,
             }
         poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info)
 
-        click.echo(f"Action {action} on environment {cdp_env_name} DONE")
+        click.echo(f"Action {action} on cluster {cml_cluster_name} DONE")
 
         # dumping file so that Gitlab will back it up
-        with open(f"{cdp_env_name}.json", "w", encoding="utf-8") as f:
-            json.dump(env_json, f, ensure_ascii=False, indent=4)
+        with open(f"{cml_cluster_name}.json", "w", encoding="utf-8") as f:
+            json.dump(cml_json, f, ensure_ascii=False, indent=4)
     click.echo(f"===========================================================")
     click.echo()
 
