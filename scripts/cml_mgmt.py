@@ -12,6 +12,7 @@ import requests
 def dump_cml_install_json(cdp_env_name, cml_json_skel, cml_cluster_info):
     cml_json = dict(cml_json_skel)
 
+    cml_json["environmentName"] = cdp_env_name
     cml_json["usePublicLoadBalancer"] = False
     cml_json["disableTLS"] = False
     cml_json["enableMonitoring"] = True
