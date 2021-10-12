@@ -57,7 +57,7 @@ TODO: Add section with documentation for each cluster type and talk about idempo
     ```
 - Create the CDP environment
     ```bash
-     cdp environments create-aws-environment --generate-cli-skeleton > create_env.json && \
+    cdp environments create-aws-environment --generate-cli-skeleton > create_env.json && \
     python3 scripts/env_mgmt.py --no-dryrun --env lab --cdp-env-name devo-lab02 --action install-env --json-skel create_env.json
     ```
 - Create ranger and idbroker mappings
@@ -67,7 +67,7 @@ TODO: Add section with documentation for each cluster type and talk about idempo
     ```
 - Create data lake
     ```bash
-    cdp datalake delete-datalake --generate-cli-skeleton > create_dlake.json && \
+    cdp datalake create-aws-datalake --generate-cli-skeleton > create_dlake.json && \
     python3 scripts/cdl_mgmt.py --no-dryrun --action install-cdl --env lab --cdp-env-name devo-lab02 --json-skel create_dlake.json
     ```
 
