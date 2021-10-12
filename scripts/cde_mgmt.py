@@ -11,7 +11,7 @@ import requests
 # TODO: add code to add jump server role access to EKS control plane
 
 
-def dump_cde_install_json(cdp_env_name, cde_cluster_name, cde_cluster_info, cde_json_skel):
+def dump_install_json(cdp_env_name, cde_cluster_name, cde_cluster_info, cde_json_skel):
     cde_json = dict(cde_json_skel)
     cde_json["name"] = cde_cluster_name
     cde_json["env"] = cdp_env_name
@@ -33,7 +33,7 @@ def dump_cde_install_json(cdp_env_name, cde_cluster_name, cde_cluster_info, cde_
     return cde_json
 
 
-def dump_cde_delete_json(cluster_id, cde_json_skel):
+def dump_delete_json(cluster_id, cde_json_skel):
     cdp_cde_cluster_json = dict(cde_json_skel)
     cdp_cde_cluster_json["clusterId"] = cluster_id
     return cdp_cde_cluster_json
@@ -94,13 +94,13 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, action, json_skel):
 
     if action == "install-cde":
         click.echo(f"==============Installing CDE cluster {cde_cluster_name}==============")
-        cde_cluster_json = dump_cde_install_json(
+        cde_cluster_json = dump_install_json(
             cdp_env_name, cde_cluster_name, cde_cluster_info, cde_json_skel
         )
         action_url = f"{cde_url}/enableService"
     elif action == "delete-cde":
         click.echo(f"==============Deleting CDE cluster {cde_cluster_name}==============")
-        cde_cluster_json = dump_cde_delete_json(get_cde_cluster_id(cde_cluster_name), cde_json_skel)
+        cde_cluster_json = dump_delete_json(get_cde_cluster_id(cde_cluster_name), cde_json_skel)
         action_url = f"{cde_url}/disableService"
 
     dump_json_dict(cde_cluster_json)

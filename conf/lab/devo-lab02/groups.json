@@ -33,5 +33,40 @@
         "EnvironmentUser",
         "MLUser",
         "ODUser"
+    ],
+    "ECBT1-IGAMFS-APP-DEVO-DEV-Admin": [
+        "DEAdmin",
+        "DEUser",
+        "DFAdmin",
+        "DFFlowAdmin",
+        "DFFlowUser",
+        "DWAdmin",
+        "DWUser",
+        "DataSteward",
+        "EnvironmentAdmin",
+        "EnvironmentUser",
+        "MLAdmin",
+        "MLUser",
+        "MLBusinessUser",
+        "ODAdmin",
+        "ODUser"
+    ],
+    "ECBT1-IGAMFS-APP-DEVO-DEV-Expert": [
+        "DEUser",
+        "DFFlowUser",
+        "DWUser",
+        "DataSteward",
+        "EnvironmentUser",
+        "MLUser",
+        "ODUser"
+    ],
+    "ECBT1-IGAMFS-APP-DEVO-DEV-User": [
+        "DEUser",
+        "DFFlowUser",
+        "DWUser",
+        "DataSteward",
+        "EnvironmentUser",
+        "MLUser",
+        "ODUser"
     ]
 }

@@ -42,42 +42,11 @@ User ap-devo-cdp has been assigned resource role IamGroupAdmin for ecbt1-igamfs-
 * **Python dependencies**
     - click
 
-## Pipeline - work in progress for now
-
-To a certain extent, we are abusing the traditional concept of a pipeline, since the pipeline does not contain the traditional stages (build/test/deploy). We are building a "poor man's" dynamic pipeline based on the environment variable `ACTION`. The action can be one of the following:
-
-* install (installs a CDP environment and its attached datalake)
-* delete (deletes a CDP environment and its attached datalake)
-* start (starts a CDP environment and its attached datalake)
-* stop (stops environment and its attached datalake)
-* install_cml (installs CML cluster)
-* delete_cml (deletes a CML cluster)
-* install_cde (installs a CDE cluster)
-* delete_cde (deletes a CDE cluster)
-
-Based on the value of this variable, a deployment pipeline will be generated on the fly containing the steps for that specific action. E.g. selecting `install_cml` will render a pipeline containing two stages: start the CDP environment and provision the CML cluster.
-Most of the actions are manual in order to allow the user to confirm the action he wants to perform. 
-
-### Running the pipeline
-
-* Decide the action you want to perform and change the value of the ACTION variable
-
-* Set the ENV variable to specify which environment you are going to work on
-
-* Set the CDP_ENV_NAME variable in order to specify which CDP environment should be used
-
-* Check the `{env}.json` file to make sure that the component is defined. If not, please define it (e.g. a new CML cluster)
-
-* If installing or deleting CDE/CML/CDW clusters please define them in the env variable list (e.g. `CML_CLUSTERS` when working with CML clusters)
-
-* Commit the code and run the pipeline
-
-
 ## Steps for Provisioning a new environment without the use of the pipeline
 TODO: Add section with documentation for each cluster type and talk about idempotency and scripts
 
 - Create a new folder containing the CDP environment name in the `conf` folder following the convention `devo-<stage><env_number>`, e.g. `devo-lab02`.
-- Create the json configuration files corresponding to the CDP components in the previously mentioned folder.
+- Create the json configuration files corresponding to the CDP components in the previously mentioned folder. Please fill all the required details belonging to that environment (VPC ID, security groups, subnets, role names, etc.). You can use the `devo-lab01` folder as an example.
 - Export the CA bundle certificate location
 `export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt`
 - Create the credential for the environment
@@ -128,3 +97,19 @@ TODO: Add section with documentation for each cluster type and talk about idempo
     python3 scripts/vc_cde_mgmt.py --no-dryrun --action install-vc-cde --env lab --cdp-env-name devo-lab02 --cde-cluster-name devo-lab02-cde01 --vc-cde-cluster-name devo-lab02-cde01-vc01 --json-skel create_vc_cde.json
 
     ```
+
+## Pipeline - work in progress for now
+
+To a certain extent, we are abusing the traditional concept of a pipeline, since the pipeline does not contain the traditional stages (build/test/deploy). We are building a "poor man's" dynamic pipeline based on the environment variable `ACTION`. The action can be one of the following:
+
+* install (installs a CDP environment and its attached datalake)
+* delete (deletes a CDP environment and its attached datalake)
+* start (starts a CDP environment and its attached datalake)
+* stop (stops environment and its attached datalake)
+* install_cml (installs CML cluster)
+* delete_cml (deletes a CML cluster)
+* install_cde (installs a CDE cluster)
+* delete_cde (deletes a CDE cluster)
+
+Based on the value of this variable, a deployment pipeline will be generated on the fly containing the steps for that specific action. E.g. selecting `install_cml` will render a pipeline containing two stages: start the CDP environment and provision the CML cluster.
+Most of the actions are manual in order to allow the user to confirm the action he wants to perform. 

@@ -10,7 +10,7 @@ import requests
 from time import sleep
 
 
-def dump_cdl_install_json(
+def dump_install_json(
     cdp_env_name, cdl_cluster_name, cdl_cluster_info, account_id, cdl_json_skel
 ):
     cdp_dl_json = dict(cdl_json_skel)
@@ -36,7 +36,7 @@ def dump_cdl_install_json(
     return cdp_dl_json
 
 
-def dump_cdl_delete_json(cdl_cluster_name, cdl_json_skel):
+def dump_delete_json(cdl_cluster_name, cdl_json_skel):
     cdp_dl_json = dict(cdl_json_skel)
     cdp_dl_json["datalakeName"] = cdl_cluster_name
     return cdp_dl_json
@@ -80,7 +80,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
 
     if action == "install-cdl":
         click.echo(f"==============Creating environment {cdp_env_name}==============")
-        cdl_json = dump_cdl_install_json(
+        cdl_json = dump_install_json(
             cdp_env_name,
             cdl_cluster_name,
             cdl_cluster_info,
@@ -90,7 +90,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         action_url = f"{cdl_url}/createAWSDatalake"
     elif action == "delete-cdl":
         click.echo(f"==============Deleting environment {cdp_env_name}==============")
-        cdl_json = dump_cdl_delete_json(cdl_cluster_name, cdl_json_skel)
+        cdl_json = dump_delete_json(cdl_cluster_name, cdl_json_skel)
         action_url = f"{cdl_url}/deleteDatalake"
 
     dump_json_dict(cdl_json)

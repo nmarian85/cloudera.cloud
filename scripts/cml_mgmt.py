@@ -9,7 +9,7 @@ import requests_ops
 import requests
 
 
-def dump_cml_install_json(cdp_env_name, cml_json_skel, cml_cluster_name, cml_cluster_info):
+def dump_install_json(cdp_env_name, cml_json_skel, cml_cluster_name, cml_cluster_info):
     cml_json = dict(cml_json_skel)
 
     cml_json["environmentName"] = cdp_env_name
@@ -47,7 +47,7 @@ def dump_cml_install_json(cdp_env_name, cml_json_skel, cml_cluster_name, cml_clu
     return cml_json
 
 
-def dump_cml_delete_json(cml_json_skel):
+def dump_delete_json(cml_json_skel):
     cml_json = dict(cml_json_skel)
     cml_json["removeStorage"] = True
     return cml_json
@@ -94,11 +94,11 @@ def main(dryrun, env, cdp_env_name, cml_cluster_name, action, json_skel):
 
     if action == "install-cml":
         click.echo(f"==============Creating CML cluster {cml_cluster_name}==============")
-        cml_json = dump_cml_install_json(cdp_env_name, cml_json_skel, cml_cluster_name, cml_cluster_info)
+        cml_json = dump_install_json(cdp_env_name, cml_json_skel, cml_cluster_name, cml_cluster_info)
         action_url = f"{cml_url}/createWorkspace"
     elif action == "delete-cml":
         click.echo(f"==============Deleting CML cluster {cml_cluster_name}==============")
-        cml_json = dump_cml_delete_json(cml_json_skel)
+        cml_json = dump_delete_json(cml_json_skel)
         action_url = f"{cml_url}/deleteWorkspace"
 
     click.echo("-------------------Generated JSON-----------------------------")

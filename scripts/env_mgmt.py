@@ -45,7 +45,7 @@ def get_cdp_env_crn(cdp_env_name):
     return response["environment"]["crn"]
 
 
-def dump_env_install_json(cdp_env_name, cdp_env_info, env_json_skel):
+def dump_install_json(cdp_env_name, cdp_env_info, env_json_skel):
     cdp_env_json = dict(env_json_skel)
     del cdp_env_json["networkCidr"]
     del cdp_env_json["image"]
@@ -76,7 +76,7 @@ def dump_env_install_json(cdp_env_name, cdp_env_info, env_json_skel):
     return cdp_env_json
 
 
-def dump_env_delete_json(cdp_env_name, cdp_env_info, env_json_skel):
+def dump_delete_json(cdp_env_name, cdp_env_info, env_json_skel):
     cdp_env_json = dict(env_json_skel)
     cdp_env_json["environmentName"] = cdp_env_name
     return cdp_env_json
@@ -115,11 +115,11 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
 
     if action == "install-env":
         click.echo(f"==============Creating environment {cdp_env_name}==============")
-        env_json = dump_env_install_json(cdp_env_name, cdp_env_info, env_json_skel)
+        env_json = dump_install_json(cdp_env_name, cdp_env_info, env_json_skel)
         action_url = f"{env_url}/createAWSEnvironment"
     elif action == "delete-env":
         click.echo(f"==============Deleting environment {cdp_env_name}==============")
-        env_json = dump_env_delete_json(cdp_env_name, cdp_env_info, env_json_skel)
+        env_json = dump_delete_json(cdp_env_name, cdp_env_info, env_json_skel)
         action_url = f"{env_url}/deleteEnvironment"
 
     dump_json_dict(env_json)

@@ -9,7 +9,7 @@ import requests_ops
 import requests
 
 
-def dump_create_cred_json(cred_info, json_skel):
+def dump_install_json(cred_info, json_skel):
     """[summary]
 
     Args:
@@ -26,7 +26,7 @@ def dump_create_cred_json(cred_info, json_skel):
     return cred_json
 
 
-def dump_delete_cred_json(cred_info, json_skel):
+def dump_delete_json(cred_info, json_skel):
     """[summary]
 
     Args:
@@ -77,11 +77,11 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         cred_name = cred_info["credential_name"]
         if action == "create-cred":
             click.echo(f"==============Creating credential {cred_name}==============")
-            cdp_cred_json = dump_create_cred_json(cred_info, cred_json_skel)
+            cdp_cred_json = dump_install_json(cred_info, cred_json_skel)
             action_url = f"{env_url}/createAWSCredential"
         elif action == "delete-cred":
             click.echo(f"==============Deleting credential {cred_name}==============")
-            cdp_cred_json = dump_delete_cred_json(cred_info, cred_json_skel)
+            cdp_cred_json = dump_delete_json(cred_info, cred_json_skel)
             action_url = f"{env_url}/deleteCredential"
 
         dump_json_dict(cdp_cred_json)
