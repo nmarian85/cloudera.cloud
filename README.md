@@ -4,6 +4,7 @@
 
 The purpose of this repo is to deliver the pipeline and the code required for managing CDP components (e.g. install and start an environment, install and delete CDE/CML clusters, etc.) via the CDP REST API. The code was written in such a manner that it can be run from any host, provided that the dependencies below (env variables and so on) are set up and access to the Cloudera Management Console is available, i.e. Internet access is required. 
 There is as well a pipeline (described below) in order to provide a one-click provisioning method. 
+It is important to mention that the code will wait after POST-ing the corresponding JSON and check if the action submitted was succesful or not. In case the expected status is not reached, the execution will time out.
 
 ## Repo structure
 The repo contains the following folders:
