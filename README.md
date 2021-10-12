@@ -77,11 +77,12 @@ TODO: Add section with documentation for each cluster type and talk about idempo
     python3 scripts/idbroker_sync.py --no-dryrun --env lab --cdp-env-name devo-lab02 --json-skel sync_idbroker_mapping.json
     ```
 
-- Assign CDP users their CDP resource roles
+- Assign CDP groups their CDP resource roles
     ```bash
     cdp iam assign-user-resource-role --generate-cli-skeleton > asg_user_res_role.json && \
     python3 scripts/group_cdprole_map.py --no-dryrun --env lab --cdp-env-name devo-lab02 --action assign-cdproles-to-groups --json-skel asg_user_res_role.json
     ```
+
 - Sync CDP users to environment
     ```bash
     cdp environments sync-all-users --generate-cli-skeleton > sync_all_users.json && \
