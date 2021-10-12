@@ -46,7 +46,7 @@ User ap-devo-cdp has been assigned resource role IamGroupAdmin for ecbt1-igamfs-
 TODO: Add section with documentation for each cluster type and talk about idempotency and scripts
 
 - Create a new folder containing the CDP environment name in the `conf` folder following the convention `devo-<stage><env_number>`, e.g. `devo-lab02`.
-- Create the json configuration files corresponding to the CDP components in the previously mentioned folder. Please fill all the required details belonging to that environment (VPC ID, security groups, subnets, role names, etc.). You can use the `devo-lab01` folder as an example.
+- Create the json configuration files corresponding to the CDP components in the previously mentioned folder. Please fill all the required details belonging to that environment (VPC ID, security groups, subnets, role names, public key, account id, etc.). You can use the `devo-lab01` folder as an example.
 - Export the CA bundle certificate location
 `export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt`
 - Create the credential for the environment
