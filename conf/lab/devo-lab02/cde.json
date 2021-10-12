@@ -1,5 +1,5 @@
 {
-    "devo-lab01-cde01": {
+    "devo-lab02-cde01": {
         "instance_type": "c5.2xlarge",
         "min_instances": 1,
         "max_instances": 5,
@@ -14,7 +14,7 @@
             "origin": "cdp"
         },
         "vcs": {
-            "devo-lab01-cde01-vc01": {
+            "devo-lab02-cde01-vc01": {
                 "cpu_requests": "40",
                 "memory_requests": "80Gi",
                 "chart_value_overrides": [

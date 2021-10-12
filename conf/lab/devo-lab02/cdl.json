@@ -1,7 +1,7 @@
 {
-    "name": "devo-lab01-dl",
-    "data_bucket": "devo-lab01-adm-data-i7ijrnh8",
-    "idbroker_role_instance_profile": "devo-lab01-idbroker-role-instance-profile",
+    "name": "devo-lab02-dl",
+    "data_bucket": "devo-lab02-adm-data-i7ijrnh8",
+    "idbroker_role_instance_profile": "devo-lab02-idbroker-role-instance-profile",
     "tags": [
         {
             "key": "env",
