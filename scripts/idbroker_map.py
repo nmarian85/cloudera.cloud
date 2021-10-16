@@ -27,7 +27,8 @@ def dump_create_mapping_json(
     mapping_json["environmentName"] = cdp_env_name
     mapping_json["dataAccessRole"] = data_role_arn
     mapping_json["mappings"] = [
-        {"accessorCrn": user_crn, "role": user_roles[user]} for user, user_crn in user_crns.items()
+        {"accessorCrn": user_crn, "role": user_roles[user]}
+        for user, user_crn in user_crns.items()
     ]
     mapping_json["setEmptyMappings"] = False
     return mapping_json
@@ -76,7 +77,12 @@ def main(dryrun, env, cdp_env_name, json_skel):
     user_crns = {user: get_user_attr(user, "crn") for user in users.keys()}
 
     cdp_mapping_json = dump_create_mapping_json(
-        cdp_env_name, ranger_role_arn, data_role_arn, user_crns, user_roles, mapping_json_skel
+        cdp_env_name,
+        ranger_role_arn,
+        data_role_arn,
+        user_crns,
+        user_roles,
+        mapping_json_skel,
     )
 
     click.echo(f"========Setting idbroker mapping for users on {cdp_env_name}====")
@@ -107,7 +113,9 @@ def main(dryrun, env, cdp_env_name, json_skel):
                 elem_search_info=elem_search_info,
                 data={"environmentName": cdp_env_name},
             )
-            click.echo(f"idbroker mapping for user {user} on environment {cdp_env_name} DONE")
+            click.echo(
+                f"idbroker mapping for user {user} on environment {cdp_env_name} DONE"
+            )
             # dumping file so that Gitlab will back it up
             with open(f"{user}_idbroker_mapping.json", "w", encoding="utf-8") as f:
                 json.dump(cdp_mapping_json, f, ensure_ascii=False, indent=4)

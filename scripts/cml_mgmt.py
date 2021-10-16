@@ -28,20 +28,36 @@ def dump_install_json(cdp_env_name, cml_json_skel, cml_cluster_name, cml_cluster
 
     # mlinfra
     cml_json_ig[0]["instanceType"] = cml_cluster_info["ml_infra_info"]["instance_type"]
-    cml_json_ig[0]["instanceCount"] = cml_cluster_info["ml_infra_info"]["instance_count"]
+    cml_json_ig[0]["instanceCount"] = cml_cluster_info["ml_infra_info"][
+        "instance_count"
+    ]
     cml_json_ig[0]["name"] = cml_cluster_info["ml_infra_info"]["name"]
-    cml_json_ig[0]["rootVolume"]["size"] = cml_cluster_info["ml_infra_info"]["root_volume"]
-    cml_json_ig[0]["autoscaling"]["minInstances"] = cml_cluster_info["ml_infra_info"]["min_instances"]
-    cml_json_ig[0]["autoscaling"]["maxInstances"] = cml_cluster_info["ml_infra_info"]["max_instances"]
+    cml_json_ig[0]["rootVolume"]["size"] = cml_cluster_info["ml_infra_info"][
+        "root_volume"
+    ]
+    cml_json_ig[0]["autoscaling"]["minInstances"] = cml_cluster_info["ml_infra_info"][
+        "min_instances"
+    ]
+    cml_json_ig[0]["autoscaling"]["maxInstances"] = cml_cluster_info["ml_infra_info"][
+        "max_instances"
+    ]
 
     # mlworker
     cml_json_ig.append(dict(cml_json_ig[0]))
     cml_json_ig[1]["instanceType"] = cml_cluster_info["ml_worker_info"]["instance_type"]
-    cml_json_ig[1]["instanceCount"] = cml_cluster_info["ml_worker_info"]["instance_count"]
+    cml_json_ig[1]["instanceCount"] = cml_cluster_info["ml_worker_info"][
+        "instance_count"
+    ]
     cml_json_ig[1]["name"] = cml_cluster_info["ml_worker_info"]["name"]
-    cml_json_ig[1]["rootVolume"]["size"] = cml_cluster_info["ml_worker_info"]["root_volume"]
-    cml_json_ig[1]["autoscaling"]["minInstances"] = cml_cluster_info["ml_worker_info"]["min_instances"]
-    cml_json_ig[1]["autoscaling"]["maxInstances"] = cml_cluster_info["ml_worker_info"]["max_instances"]
+    cml_json_ig[1]["rootVolume"]["size"] = cml_cluster_info["ml_worker_info"][
+        "root_volume"
+    ]
+    cml_json_ig[1]["autoscaling"]["minInstances"] = cml_cluster_info["ml_worker_info"][
+        "min_instances"
+    ]
+    cml_json_ig[1]["autoscaling"]["maxInstances"] = cml_cluster_info["ml_worker_info"][
+        "max_instances"
+    ]
 
     cml_json["provisionK8sRequest"]["instanceGroups"] = list(cml_json_ig)
     return cml_json
@@ -52,9 +68,12 @@ def dump_delete_json(cml_json_skel):
     cml_json["removeStorage"] = True
     return cml_json
 
+
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
-@click.option("--action", type=click.Choice(["install-cml", "delete-cml"]), required=True)
+@click.option(
+    "--action", type=click.Choice(["install-cml", "delete-cml"]), required=True
+)
 @click.option(
     "--env",
     type=click.Choice(["lab", "test", "dev", "acc", "prod"]),
@@ -93,11 +112,17 @@ def main(dryrun, env, cdp_env_name, cml_cluster_name, action, json_skel):
     cml_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/ml"
 
     if action == "install-cml":
-        click.echo(f"==============Creating CML cluster {cml_cluster_name}==============")
-        cml_json = dump_install_json(cdp_env_name, cml_json_skel, cml_cluster_name, cml_cluster_info)
+        click.echo(
+            f"==============Creating CML cluster {cml_cluster_name}=============="
+        )
+        cml_json = dump_install_json(
+            cdp_env_name, cml_json_skel, cml_cluster_name, cml_cluster_info
+        )
         action_url = f"{cml_url}/createWorkspace"
     elif action == "delete-cml":
-        click.echo(f"==============Deleting CML cluster {cml_cluster_name}==============")
+        click.echo(
+            f"==============Deleting CML cluster {cml_cluster_name}=============="
+        )
         cml_json = dump_delete_json(cml_json_skel)
         action_url = f"{cml_url}/deleteWorkspace"
 
@@ -120,7 +145,10 @@ def main(dryrun, env, cdp_env_name, cml_cluster_name, action, json_skel):
         if action == "install-cml":
             elem_search_info = {
                 "root_index": "workspaces",
-                "expected_key_val": {"instanceName": cml_cluster_name, "instanceStatus": "installation:finished"},
+                "expected_key_val": {
+                    "instanceName": cml_cluster_name,
+                    "instanceStatus": "installation:finished",
+                },
                 "present": True,
             }
         elif action == "delete-cml":

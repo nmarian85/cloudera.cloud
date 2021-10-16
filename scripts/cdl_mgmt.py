@@ -44,7 +44,9 @@ def dump_delete_json(cdl_cluster_name, cdl_json_skel):
 
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
-@click.option("--action", type=click.Choice(["install-cdl", "delete-cdl"]), required=True)
+@click.option(
+    "--action", type=click.Choice(["install-cdl", "delete-cdl"]), required=True
+)
 @click.option(
     "--env",
     type=click.Choice(["lab", "test", "dev", "acc", "prod"]),
@@ -110,7 +112,10 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         if action == "install-cdl":
             elem_search_info = {
                 "root_index": "datalakes",
-                "expected_key_val": {"datalakeName": cdl_cluster_name, "status": "RUNNING"},
+                "expected_key_val": {
+                    "datalakeName": cdl_cluster_name,
+                    "status": "RUNNING",
+                },
                 "present": True,
             }
         elif action == "delete-cdl":

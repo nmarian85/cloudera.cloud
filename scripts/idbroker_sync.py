@@ -42,7 +42,6 @@ def main(dryrun, env, cdp_env_name, json_skel):
     with open(json_skel) as json_file:
         sync_json_skel = json.load(json_file)
 
-    cdp_env_info = get_env_info(env, cdp_env_name)
     sync_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
 
     click.echo(f"========Syncing idbroker mappings on {cdp_env_name}====")
@@ -52,7 +51,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
     dump_json_dict(cdp_sync_json)
 
     if not dryrun:
-        response = requests_ops.send_http_request(
+        requests_ops.send_http_request(
             srv_url=action_url,
             req_type="post",
             data=cdp_sync_json,

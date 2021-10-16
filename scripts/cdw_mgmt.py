@@ -27,7 +27,10 @@ def dump_cdw_delete_json(cluster_id, cdw_json_skel):
 def get_cdw_cluster_id(env_crn):
     action_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/dw/listClusters"
     response = requests_ops.send_http_request(
-        srv_url=action_url, req_type="post", headers=generate_headers("POST", action_url), data={},
+        srv_url=action_url,
+        req_type="post",
+        headers=generate_headers("POST", action_url),
+        data={},
     )
     for cdw_cluster_info in response["clusters"]:
         if cdw_cluster_info["environmentCrn"] == env_crn:
@@ -36,7 +39,9 @@ def get_cdw_cluster_id(env_crn):
 
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
-@click.option("--action", type=click.Choice(["install-cdw", "delete-cdw"]), required=True)
+@click.option(
+    "--action", type=click.Choice(["install-cdw", "delete-cdw"]), required=True
+)
 @click.option(
     "--env",
     type=click.Choice(["lab", "test", "dev", "acc", "prod"]),
@@ -71,11 +76,17 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     cluster_id = get_cdw_cluster_id(env_crn)
 
     if action == "install-cdw":
-        click.echo(f"==============Installing cdw cluster on env {cdp_env_name}==============")
-        cdw_cluster_json = dump_cdw_install_json(cdp_env_name, cdw_cluster_info, cdw_json_skel)
+        click.echo(
+            f"==============Installing cdw cluster on env {cdp_env_name}=============="
+        )
+        cdw_cluster_json = dump_cdw_install_json(
+            cdp_env_name, cdw_cluster_info, cdw_json_skel
+        )
         action_url = f"{cdw_url}/createCluster"
     elif action == "delete-cdw":
-        click.echo(f"==============Deleting cdw cluster from env {cdp_env_name}==============")
+        click.echo(
+            f"==============Deleting cdw cluster from env {cdp_env_name}=============="
+        )
         cdw_cluster_json = dump_cdw_delete_json(cluster_id, cdw_json_skel)
         action_url = f"{cdw_url}/deleteCluster"
 

@@ -29,13 +29,18 @@ def get_env_info(env, cdp_env_name):
 def get_all_cdp_envs():
     action_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2/listEnvironments"
     response = requests_ops.send_http_request(
-        srv_url=action_url, req_type="post", headers=generate_headers("POST", action_url), data={}
+        srv_url=action_url,
+        req_type="post",
+        headers=generate_headers("POST", action_url),
+        data={},
     )
     return response["environments"]
 
 
 def get_cdp_env_crn(cdp_env_name):
-    action_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2/describeEnvironment"
+    action_url = (
+        f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2/describeEnvironment"
+    )
     response = requests_ops.send_http_request(
         srv_url=action_url,
         req_type="post",
@@ -52,9 +57,9 @@ def dump_install_json(cdp_env_name, cdp_env_info, env_json_skel):
 
     cdp_env_json["environmentName"] = cdp_env_name
     cdp_env_json["workloadAnalytics"] = cdp_env_info["workload_analytics"]
-    cdp_env_json["credentialName"] = cdp_env_info["credentials"]["cross_account_all_perm"][
-        "credential_name"
-    ]
+    cdp_env_json["credentialName"] = cdp_env_info["credentials"][
+        "cross_account_all_perm"
+    ]["credential_name"]
     cdp_env_json["region"] = "eu-central-1"
     cdp_env_json["subnetIds"] = cdp_env_info["subnets"]
     cdp_env_json["vpcId"] = cdp_env_info["vpc_id"]
@@ -84,7 +89,9 @@ def dump_delete_json(cdp_env_name, cdp_env_info, env_json_skel):
 
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
-@click.option("--action", type=click.Choice(["install-env", "delete-env"]), required=True)
+@click.option(
+    "--action", type=click.Choice(["install-env", "delete-env"]), required=True
+)
 @click.option(
     "--env",
     type=click.Choice(["lab", "test", "dev", "acc", "prod"]),
@@ -139,7 +146,10 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         if action == "install-env":
             elem_search_info = {
                 "root_index": "environments",
-                "expected_key_val": {"environmentName": cdp_env_name, "status": "AVAILABLE"},
+                "expected_key_val": {
+                    "environmentName": cdp_env_name,
+                    "status": "AVAILABLE",
+                },
                 "present": True,
             }
         elif action == "delete-env":

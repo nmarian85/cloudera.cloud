@@ -28,10 +28,14 @@ DEFAULT_REGION = "us-west-1"
 DEFAULT_IAM_CRN = f"crn:altus:iam:{DEFAULT_REGION}:altus"
 CDP_API_VERSION = "1"
 CDP_IAM_ENDPOINT = f"https://iamapi.{DEFAULT_REGION}.altus.cloudera.com/iam"
-CDP_SERVICES_ENDPOINT = f"https://api.{DEFAULT_REGION}.cdp.cloudera.com/api/v{CDP_API_VERSION}"
+CDP_SERVICES_ENDPOINT = (
+    f"https://api.{DEFAULT_REGION}.cdp.cloudera.com/api/v{CDP_API_VERSION}"
+)
 
 # @lru_cache()
-def send_http_request(srv_url, req_type="get", params=None, data=None, auth=None, headers=None):
+def send_http_request(
+    srv_url, req_type="get", params=None, data=None, auth=None, headers=None
+):
     """
     Wrapper for requests (HTTP POST, PUT, GET, DELETE) with some error checking
     """

@@ -106,7 +106,9 @@ def make_signature_header(method, uri, headers, access_key, private_key):
 
     auth_method = "ed25519v1"
 
-    canonical_string = create_canonical_request_string(method, uri, headers, auth_method)
+    canonical_string = create_canonical_request_string(
+        method, uri, headers, auth_method
+    )
     signature = create_signature_string(canonical_string, private_key)
     encoded_authn_params = create_encoded_authn_params_string(access_key, auth_method)
     signature_header = create_signature_header(encoded_authn_params, signature)
@@ -117,7 +119,11 @@ def generate_headers(http_req_type, url):
     headers = {"Content-Type": "application/json"}
     headers["x-altus-date"] = formatdate(usegmt=True)
     headers["x-altus-auth"] = make_signature_header(
-        http_req_type, url, headers, os.getenv("CDP_ACCESS_KEY_ID"), os.getenv("CDP_PRIVATE_KEY")
+        http_req_type,
+        url,
+        headers,
+        os.getenv("CDP_ACCESS_KEY_ID"),
+        os.getenv("CDP_PRIVATE_KEY"),
     )
     return headers
     # for header_key, header_value in headers.items():

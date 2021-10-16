@@ -48,7 +48,13 @@ events = [json.loads(msg[0]["value"]) for msg in response["results"]]
 
 
 for event in events:
-    print(event["errorCode"] + " " + event["eventName"] + " " + event["userIdentity"]["arn"])
+    print(
+        event["errorCode"]
+        + " "
+        + event["eventName"]
+        + " "
+        + event["userIdentity"]["arn"]
+    )
 
 
 with open("events.json", "w", encoding="utf-8") as f:

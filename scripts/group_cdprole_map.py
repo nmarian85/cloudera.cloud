@@ -51,11 +51,21 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         for role in roles:
             if action == "assign-cdproles-to-groups":
                 assign_cdprole_to_group(
-                    cdp_env_crn, role, group, cdp_env_name, group_cdprole_json_skel, dryrun
+                    cdp_env_crn,
+                    role,
+                    group,
+                    cdp_env_name,
+                    group_cdprole_json_skel,
+                    dryrun,
                 )
             elif action == "unassign-cdproles-from-groups":
                 unassign_role_from_group(
-                    cdp_env_crn, role, group, cdp_env_name, group_cdprole_json_skel, dryrun
+                    cdp_env_crn,
+                    role,
+                    group,
+                    cdp_env_name,
+                    group_cdprole_json_skel,
+                    dryrun,
                 )
 
 

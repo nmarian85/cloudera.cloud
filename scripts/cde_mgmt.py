@@ -42,7 +42,10 @@ def dump_delete_json(cluster_id, cde_json_skel):
 def get_cde_cluster_id(cluster_name):
     action_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/de/listServices"
     response = requests_ops.send_http_request(
-        srv_url=action_url, req_type="post", headers=generate_headers("POST", action_url), data={},
+        srv_url=action_url,
+        req_type="post",
+        headers=generate_headers("POST", action_url),
+        data={},
     )
     for cde_cluster_info in response["services"]:
         if (
@@ -54,7 +57,9 @@ def get_cde_cluster_id(cluster_name):
 
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
-@click.option("--action", type=click.Choice(["install-cde", "delete-cde"]), required=True)
+@click.option(
+    "--action", type=click.Choice(["install-cde", "delete-cde"]), required=True
+)
 @click.option(
     "--env",
     type=click.Choice(["lab", "test", "dev", "acc", "prod"]),
@@ -93,14 +98,20 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, action, json_skel):
     cde_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/de"
 
     if action == "install-cde":
-        click.echo(f"==============Installing CDE cluster {cde_cluster_name}==============")
+        click.echo(
+            f"==============Installing CDE cluster {cde_cluster_name}=============="
+        )
         cde_cluster_json = dump_install_json(
             cdp_env_name, cde_cluster_name, cde_cluster_info, cde_json_skel
         )
         action_url = f"{cde_url}/enableService"
     elif action == "delete-cde":
-        click.echo(f"==============Deleting CDE cluster {cde_cluster_name}==============")
-        cde_cluster_json = dump_delete_json(get_cde_cluster_id(cde_cluster_name), cde_json_skel)
+        click.echo(
+            f"==============Deleting CDE cluster {cde_cluster_name}=============="
+        )
+        cde_cluster_json = dump_delete_json(
+            get_cde_cluster_id(cde_cluster_name), cde_json_skel
+        )
         action_url = f"{cde_url}/disableService"
 
     dump_json_dict(cde_cluster_json)
@@ -133,7 +144,9 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, action, json_skel):
                 "present": False,
             }
         poll_for_status(
-            poll_url=poll_url, elem_search_info=elem_search_info, data={"removeDeleted": True}
+            poll_url=poll_url,
+            elem_search_info=elem_search_info,
+            data={"removeDeleted": True},
         )
 
         click.echo(f"Action {action} on cluster {cde_cluster_name} DONE")

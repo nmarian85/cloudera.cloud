@@ -45,7 +45,9 @@ def dump_delete_json(cde_cluster_id, vc_name, vc_cde_json_skel):
 
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
-@click.option("--action", type=click.Choice(["install-vc-cde", "delete-vc-cde"]), required=True)
+@click.option(
+    "--action", type=click.Choice(["install-vc-cde", "delete-vc-cde"]), required=True
+)
 @click.option(
     "--env",
     type=click.Choice(["lab", "test", "dev", "acc", "prod"]),
@@ -72,7 +74,9 @@ def dump_delete_json(cde_cluster_id, vc_name, vc_cde_json_skel):
     help="JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
     required=True,
 )
-def main(dryrun, env, cdp_env_name, cde_cluster_name, vc_cde_cluster_name, action, json_skel):
+def main(
+    dryrun, env, cdp_env_name, cde_cluster_name, vc_cde_cluster_name, action, json_skel
+):
     if dryrun:
         show_progress("This is a dryrun")
 
@@ -126,7 +130,10 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, vc_cde_cluster_name, actio
         if action == "install-vc-cde":
             elem_search_info = {
                 "root_index": "vcs",
-                "expected_key_val": {"vcName": vc_cde_cluster_name, "status": "AppInstalled"},
+                "expected_key_val": {
+                    "vcName": vc_cde_cluster_name,
+                    "status": "AppInstalled",
+                },
                 "present": True,
             }
         elif action == "delete-vc-cde":
@@ -136,7 +143,9 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, vc_cde_cluster_name, actio
                 "present": False,
             }
         poll_for_status(
-            poll_url=poll_url, elem_search_info=elem_search_info, data={"clusterId": cde_cluster_id}
+            poll_url=poll_url,
+            elem_search_info=elem_search_info,
+            data={"clusterId": cde_cluster_id},
         )
 
         click.echo(f"Action {action} on virtual cluster {vc_cde_cluster_name} DONE")

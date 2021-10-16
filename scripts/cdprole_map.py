@@ -88,7 +88,9 @@ def assign_cdprole_to_group(cdp_env_crn, role, group, cdp_env_name, json_skel, d
 
 
 def unassign_role_from_group(cdp_env_crn, role, group, cdp_env_name, json_skel, dryrun):
-    click.echo(f"===Unassigning role {role} from group {group} on env {cdp_env_name}===")
+    click.echo(
+        f"===Unassigning role {role} from group {group} on env {cdp_env_name}==="
+    )
     action_url = f"{iam_url}/unassignGroupResourceRole"
 
     cdp_assign_group_role_json = dump_group_cdprole_map_role_json(
@@ -122,7 +124,9 @@ def unassign_role_from_group(cdp_env_crn, role, group, cdp_env_name, json_skel, 
             elem_search_info=elem_search_info,
         )
 
-        click.echo(f"Unassigning {role} from cdp group {group} on env {cdp_env_name} DONE")
+        click.echo(
+            f"Unassigning {role} from cdp group {group} on env {cdp_env_name} DONE"
+        )
         # dumping file so that Gitlab will back it up
         with open(f"{group}_{role}.json", "w", encoding="utf-8") as f:
             json.dump(cdp_assign_group_role_json, f, ensure_ascii=False, indent=4)
@@ -134,7 +138,9 @@ def assign_role_to_user(role, user, cdp_env_crn, cdp_env_name, json_skel, dryrun
     click.echo(f"===Assigning role {role} to user {user} on env {cdp_env_name}===")
     action_url = f"{iam_url}/assignuserResourceRole"
 
-    cdp_assign_user_role_json = dump_user_cdprole_map_json(cdp_env_crn, role, user, json_skel)
+    cdp_assign_user_role_json = dump_user_cdprole_map_json(
+        cdp_env_crn, role, user, json_skel
+    )
 
     dump_json_dict(cdp_assign_user_role_json)
 
@@ -175,7 +181,9 @@ def unassign_role_from_user(cdp_env_crn, role, user, cdp_env_name, json_skel, dr
     click.echo(f"===Unassigning role {role} from user {user} on env {cdp_env_name}===")
     action_url = f"{iam_url}/unassignuserResourceRole"
 
-    cdp_assign_user_role_json = dump_user_cdprole_map_json(cdp_env_crn, role, user, json_skel)
+    cdp_assign_user_role_json = dump_user_cdprole_map_json(
+        cdp_env_crn, role, user, json_skel
+    )
 
     dump_json_dict(cdp_assign_user_role_json)
 
@@ -204,7 +212,9 @@ def unassign_role_from_user(cdp_env_crn, role, user, cdp_env_name, json_skel, dr
             elem_search_info=elem_search_info,
         )
 
-        click.echo(f"Unassigning {role} from cdp user {user} on env {cdp_env_name} DONE")
+        click.echo(
+            f"Unassigning {role} from cdp user {user} on env {cdp_env_name} DONE"
+        )
         # dumping file so that Gitlab will back it up
         with open(f"{user}_{role}.json", "w", encoding="utf-8") as f:
             json.dump(cdp_assign_user_role_json, f, ensure_ascii=False, indent=4)
