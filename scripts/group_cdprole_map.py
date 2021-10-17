@@ -1,0 +1,73 @@
+import click
+import sys
+import json
+import os
+from utils import show_progress, poll_for_status, dump_json_dict
+from env_mgmt import get_cdp_env_crn, get_env_info
+from cdpv1sign import generate_headers
+from cdprole_map import assign_cdprole_to_group, unassign_role_from_group
+import requests_ops
+import requests
+
+
+@click.command()
+@click.option("--dryrun/--no-dryrun", default=True)
+@click.option(
+    "--action",
+    type=click.Choice(["assign-cdproles-to-groups", "unassign-cdproles-from-groups"]),
+    required=True,
+)
+@click.option(
+    "--env",
+    type=click.Choice(["lab", "test", "dev", "acc", "prod"]),
+    help="ECB environment: lab, test, etc.",
+    required=True,
+)
+@click.option(
+    "--cdp-env-name",
+    help="Please see {env}.json file where you defined the CDP env name",
+    required=True,
+)
+@click.option(
+    "--json-skel",
+    help="JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
+    required=True,
+)
+def main(dryrun, env, cdp_env_name, action, json_skel):
+    if dryrun:
+        show_progress("This is a dryrun")
+
+    requests_ops.dryrun = dryrun
+
+    with open(json_skel) as json_file:
+        group_cdprole_json_skel = json.load(json_file)
+
+    with open(f"conf/{env}/{cdp_env_name}/groups.json") as json_file:
+        groups = json.load(json_file)
+
+    cdp_env_crn = get_cdp_env_crn(cdp_env_name)
+
+    for group, roles in groups.items():
+        for role in roles:
+            if action == "assign-cdproles-to-groups":
+                assign_cdprole_to_group(
+                    cdp_env_crn,
+                    role,
+                    group,
+                    cdp_env_name,
+                    group_cdprole_json_skel,
+                    dryrun,
+                )
+            elif action == "unassign-cdproles-from-groups":
+                unassign_role_from_group(
+                    cdp_env_crn,
+                    role,
+                    group,
+                    cdp_env_name,
+                    group_cdprole_json_skel,
+                    dryrun,
+                )
+
+
+if __name__ == "__main__":
+    main()
