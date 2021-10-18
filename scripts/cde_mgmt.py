@@ -48,9 +48,9 @@ def get_cde_cluster_id(cluster_name):
         data={},
     )
     for cde_cluster_info in response["services"]:
-        if (
-            cde_cluster_info["name"] == cluster_name
-            and cde_cluster_info["status"] == "ClusterCreationCompleted"
+        if cde_cluster_info["name"] == cluster_name and (
+            cde_cluster_info["status"] == "ClusterCreationCompleted"
+            or cde_cluster_info["status"] == "ClusterProvisioningFailed"
         ):
             return cde_cluster_info["clusterId"]
 
