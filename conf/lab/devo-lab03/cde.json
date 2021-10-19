@@ -1,8 +1,8 @@
 {
     "devo-lab03-cde01": {
-        "instance_type": "c4.8xlarge",
+        "instance_type": "m5.8xlarge",
         "min_instances": 1,
-        "max_instances": 5,
+        "max_instances": 4,
         "initial_instances": 1,
         "min_spot_instances": 0,
         "max_spot_instances": 0,
@@ -15,15 +15,15 @@
         },
         "vcs": {
             "devo-lab03-cde01-vc01": {
-                "cpu_requests": "180",
-                "memory_requests": "300Gi",
+                "cpu_requests": "128",
+                "memory_requests": "512Gi",
                 "chart_value_overrides": [
                     {
                         "chartName": "dex-app",
                         "overrides": "airflow.enabled:true"
                     }
                 ],
-                "runtime_spot_component": "NONE"
+                "runtime_spot_component": "DEFAULT"
             }
         }
     }
