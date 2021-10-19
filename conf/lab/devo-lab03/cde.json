@@ -2,13 +2,13 @@
     "devo-lab03-cde01": {
         "instance_type": "m5.8xlarge",
         "min_instances": 1,
-        "max_instances": 4,
+        "max_instances": 2,
         "initial_instances": 1,
         "min_spot_instances": 0,
-        "max_spot_instances": 0,
+        "max_spot_instances": 2,
         "initial_spot_instances": 0,
         "root_vol_size": 100,
-        "use_ssd": true,
+        "use_ssd": false,
         "tags": {
             "env": "lab",
             "origin": "cdp"
