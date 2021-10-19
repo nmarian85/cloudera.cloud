@@ -4,9 +4,9 @@
         "min_instances": 1,
         "max_instances": 5,
         "initial_instances": 1,
-        "min_spot_instances": 1,
+        "min_spot_instances": 0,
         "max_spot_instances": 5,
-        "initial_spot_instances": 1,
+        "initial_spot_instances": 0,
         "root_vol_size": 100,
         "use_ssd": true,
         "tags": {
@@ -23,7 +23,7 @@
                         "overrides": "airflow.enabled:true"
                     }
                 ],
-                "runtime_spot_component": "DEFAULT"
+                "runtime_spot_component": "NONE"
             }
         }
     }
