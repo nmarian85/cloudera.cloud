@@ -29,9 +29,10 @@ def dump_install_json(vc_name, vc_cde_info, cde_cluster_id, vc_cde_json_skel):
     cde_vc_json["cpuRequests"] = vc_cde_info["cpu_requests"]
     cde_vc_json["memoryRequests"] = vc_cde_info["memory_requests"]
     cde_vc_json["chartValueOverrides"] = vc_cde_info["chart_value_overrides"]
-    rsc = vc_cde_info["runtime_spot_component"]
-    if rsc == "DEFAULT":
-        del cde_vc_json["runtimeSpotComponent"]
+    cde_vc_json["runtimeSpotComponent"] = vc_cde_info["runtime_spot_component"]
+    # rsc = vc_cde_info["runtime_spot_component"]
+    # if rsc == "DEFAULT":
+    #     del cde_vc_json["runtimeSpotComponent"]
     return cde_vc_json
 
 
