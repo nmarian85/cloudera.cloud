@@ -1,0 +1,16 @@
+{
+    "name": "devo-lab04-dl",
+    "data_bucket": "devo-lab04-adm-data-i7ijrnh8",
+    "idbroker_role_instance_profile": "devo-lab04-idbroker-role-instance-profile",
+    "tags": [
+        {
+            "key": "env",
+            "value": "lab"
+        },
+        {
+            "key": "origin",
+            "value": "cdp"
+        }
+    ],
+    "scale": "LIGHT_DUTY"
+}
