@@ -7,8 +7,11 @@ There is as well a pipeline (described below) in order to provide a one-click pr
 It is important to mention that the code will wait after POST-ing the corresponding JSON and check if the action submitted was succesful or not. In case the expected status is not reached, the execution will time out.
 
 ## Repo structure
+
 The repo contains the following folders:
+
 - `conf`: the configurations required for provisioning a complete CDP environment (CDP environment, data lake, CDE, CML and CDW). The configurations are split per stage (e.g. lab, prod, etc.) and CDP environment name. Each CDP environment folder contains the json configuration files, split per CDP components. 
+
 - `scripts`: the Python scripts required for interacting with the CDP REST API. Each CDP component has its own Python script. The CDP REST API requires specific headers, hence the `cdpv1sign.py` is required.
 - `pipeline`: the Gitlab yml pipelines
 
@@ -46,41 +49,54 @@ User ap-devo-cdp has been assigned resource role IamGroupAdmin for ecbt1-igamfs-
 ## Steps for Provisioning a new environment without the use of the pipeline
 TODO: Add section with documentation for each cluster type and talk about idempotency and scripts
 
-- Create a new folder containing the CDP environment name in the `conf` folder following the convention `devo-<stage><env_number>`, e.g. `devo-lab03`.
+- Create a new folder containing the CDP environment name in the `conf` folder following the convention `devo-<stage><env_number>`, e.g. `devo-lab04`.
 - Create the json configuration files corresponding to the CDP components in the previously mentioned folder. Please fill all the required details belonging to that environment (VPC ID, security groups, subnets, role names, public key, account id, etc.). You can use the `devo-lab01` folder as an example.
 - Export the CA bundle certificate location
-`export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt`
+```bash
+export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt
+export DEVO_ENV_NAME=devo-lab04
+```
+
 - Create the credential for the environment
+
     ```bash
     cdp environments create-aws-credential --generate-cli-skeleton > cred_create.json && \
-    python3 scripts/cred_mgmt.py --no-dryrun --action create-cred --env lab --cdp-env-name devo-lab03 --json-skel cred_create.json
+    python3 scripts/cred_mgmt.py --no-dryrun --action create-cred --env lab --cdp-env-name ${DEVO_ENV_NAME} --json-skel cred_create.json
     ```
+
 - Create the CDP environment
+
     ```bash
     cdp environments create-aws-environment --generate-cli-skeleton > create_env.json && \
-    python3 scripts/env_mgmt.py --no-dryrun --env lab --cdp-env-name devo-lab03 --action install-env --json-skel create_env.json
+    python3 scripts/env_mgmt.py --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME} --action install-env --json-skel create_env.json
     ```
+
 - Create ranger and idbroker mappings
+
     ```bash
     cdp environments set-id-broker-mappings --generate-cli-skeleton > create_idbroker_mapping.json && \
-    python3 scripts/idbroker_map.py  --no-dryrun --env lab --cdp-env-name devo-lab03 --json-skel create_idbroker_mapping.json
+    python3 scripts/idbroker_map.py  --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME} --json-skel create_idbroker_mapping.json
     ```
+
 - Create data lake
+
     ```bash
     cdp datalake create-aws-datalake --generate-cli-skeleton > create_dlake.json && \
-    python3 scripts/cdl_mgmt.py --no-dryrun --action install-cdl --env lab --cdp-env-name devo-lab03 --json-skel create_dlake.json
+    python3 scripts/cdl_mgmt.py --no-dryrun --action install-cdl --env lab --cdp-env-name ${DEVO_ENV_NAME} --json-skel create_dlake.json
     ```
 
 - Sync idbroker mappings
+
     ```bash
     cdp environments sync-id-broker-mappings --generate-cli-skeleton > sync_idbroker_mapping.json && \
-    python3 scripts/idbroker_sync.py --no-dryrun --env lab --cdp-env-name devo-lab03 --json-skel sync_idbroker_mapping.json
+    python3 scripts/idbroker_sync.py --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME} --json-skel sync_idbroker_mapping.json
     ```
 
 - Assign CDP groups their CDP resource roles
+
     ```bash
     cdp iam assign-user-resource-role --generate-cli-skeleton > asg_user_res_role.json && \
-    python3 scripts/group_cdprole_map.py --no-dryrun --env lab --cdp-env-name devo-lab03 --action assign-cdproles-to-groups --json-skel asg_user_res_role.json
+    python3 scripts/group_cdprole_map.py --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME} --action assign-cdproles-to-groups --json-skel asg_user_res_role.json
     ```
 
 - Sync CDP users to environment
@@ -89,15 +105,19 @@ TODO: Add section with documentation for each cluster type and talk about idempo
     cdp environments sync-all-users --generate-cli-skeleton > sync_all_users.json && \
     python3 scripts/user_sync.py --no-dryrun --env lab --json-skel sync_all_users.json
     ```
+
 - Install CDE
+
     ```bash
     cdp de enable-service --generate-cli-skeleton > create_cde.json && \
-    python3 scripts/cde_mgmt.py --no-dryrun --action install-cde --env lab --cdp-env-name devo-lab03 --cde-cluster-name devo-lab03-cde01 --json-skel create_cde.json
+    python3 scripts/cde_mgmt.py --no-dryrun --action install-cde --env lab --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --json-skel create_cde.json
     ```
+
 - Install CDE VC
+
     ```bash
     cdp de create-vc --generate-cli-skeleton > create_vc_cde.json && \
-    python3 scripts/vc_cde_mgmt.py --no-dryrun --action install-vc-cde --env lab --cdp-env-name devo-lab03 --cde-cluster-name devo-lab03-cde01 --vc-cde-cluster-name devo-lab03-cde01-vc01 --json-skel create_vc_cde.json
+    python3 scripts/vc_cde_mgmt.py --no-dryrun --action install-vc-cde --env lab --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --vc-cde-cluster-name ${DEVO_ENV_NAME}-cde01-vc01 --json-skel create_vc_cde.json
 
     ```
 
