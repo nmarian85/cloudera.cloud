@@ -121,6 +121,13 @@ export DEVO_ENV_NAME=devo-lab04
 
     ```
 
+- Install CML
+
+    ```bash
+    cdp ml create-workspace --generate-cli-skeleton > create_cml.json && python3 scripts/cml_mgmt.py --no-dryrun --action install-cml --env lab --cdp-env-name ${DEVO_ENV_NAME} --cml-cluster-name ${DEVO_ENV_NAME}-cml01 --json-skel create_cml.json
+
+    ```
+
 ## Pipeline - work in progress for now
 
 To a certain extent, we are abusing the traditional concept of a pipeline, since the pipeline does not contain the traditional stages (build/test/deploy). We are building a "poor man's" dynamic pipeline based on the environment variable `ACTION`. The action can be one of the following:
