@@ -124,7 +124,8 @@ export DEVO_ENV_NAME=devo-lab04
 - Install CML
 
     ```bash
-    cdp ml create-workspace --generate-cli-skeleton > create_cml.json && python3 scripts/cml_mgmt.py --no-dryrun --action install-cml --env lab --cdp-env-name ${DEVO_ENV_NAME} --cml-cluster-name ${DEVO_ENV_NAME}-cml01 --json-skel create_cml.json
+    cdp ml create-workspace --generate-cli-skeleton > create_cml.json && \
+    python3 scripts/cml_mgmt.py --no-dryrun --action install-cml --env lab --cdp-env-name ${DEVO_ENV_NAME} --cml-cluster-name ${DEVO_ENV_NAME}-cml01 --json-skel create_cml.json
 
     ```
 
