@@ -88,7 +88,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
     action_url = f"{idbroker_url}/setIdBrokerMappings"
 
     if not dryrun:
-        response = requests_ops.send_http_request(
+        requests_ops.send_http_request(
             srv_url=action_url,
             req_type="post",
             data=cdp_mapping_json,
