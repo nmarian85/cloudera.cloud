@@ -47,15 +47,18 @@ User ap-devo-cdp has been assigned resource role IamGroupAdmin for ecbt1-igamfs-
     - click
 
 ## Steps for Provisioning a new environment without the use of the pipeline
-TODO: Add section with documentation for each cluster type and talk about idempotency and scripts
+    TODO: Add section with documentation for each cluster type and talk about idempotency and scripts
 
 - Create a new folder containing the CDP environment name in the `conf` folder following the convention `devo-<stage><env_number>`, e.g. `devo-lab04`.
+
 - Create the json configuration files corresponding to the CDP components in the previously mentioned folder. Please fill all the required details belonging to that environment (VPC ID, security groups, subnets, role names, public key, account id, etc.). You can use the `devo-lab01` folder as an example.
+
 - Export the CA bundle certificate location
-```bash
-export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt
-export DEVO_ENV_NAME=devo-lab04
-```
+
+    ```bash
+    export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt
+    export DEVO_ENV_NAME=devo-lab04
+    ```
 
 - Create the credential for the environment
 
