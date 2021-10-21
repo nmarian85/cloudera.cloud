@@ -1,8 +1,11 @@
 {
     "subnets": [
-        "subnet-01243e9afaaf36d3b",
-        "subnet-012c688e22929b604",
-        "subnet-029106fec17ba4c79"
+        "subnet-04024eed8cf2426fc",
+        "subnet-06118f58006e50a3d",
+        "subnet-0d158af8d06ee2fcc",
+        "subnet-033b3f7f751101ef9",
+        "subnet-0d01ccd888602a535",
+        "subnet-07079829836761e42"
     ],
     "tags": {
         "env": "lab",
