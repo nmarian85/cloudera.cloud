@@ -1,13 +1,9 @@
 import click
-import sys
 import json
-import os
 from utils import show_progress, poll_for_status, dump_json_dict
-from env_mgmt import get_cdp_env_crn, get_env_info
-from cdpv1sign import generate_headers
+from env_mgmt import get_cdp_env_crn
 from cdprole_map import assign_cdprole_to_group, unassign_role_from_group
 import requests_ops
-import requests
 
 
 @click.command()

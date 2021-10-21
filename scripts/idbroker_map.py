@@ -1,13 +1,10 @@
 import click
-import sys
 import json
-import os
 from utils import show_progress, poll_for_status, dump_json_dict
 from env_mgmt import get_env_info
 from cdprole_map import get_user_attr
 from cdpv1sign import generate_headers
 import requests_ops
-import requests
 
 
 def dump_create_mapping_json(

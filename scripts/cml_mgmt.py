@@ -1,12 +1,8 @@
 import click
-import sys
 import json
-import os
 from utils import show_progress, poll_for_status
-from env_mgmt import get_env_info
 from cdpv1sign import generate_headers
 import requests_ops
-import requests
 
 
 def dump_install_json(cdp_env_name, cml_json_skel, cml_cluster_name, cml_cluster_info):
@@ -17,7 +13,7 @@ def dump_install_json(cdp_env_name, cml_json_skel, cml_cluster_name, cml_cluster
     cml_json["usePublicLoadBalancer"] = False
     cml_json["disableTLS"] = False
     cml_json["enableMonitoring"] = True
-    cml_json["enableGovernance"] = True
+    cml_json["enableGovernance"] = cml_cluster_info["enable_governance"]
     cml_json["loadBalancerIPWhitelists"] = []
     cml_json["provisionK8sRequest"]["environmentName"] = cdp_env_name
     cml_json["provisionK8sRequest"]["network"] = {}
@@ -108,7 +104,6 @@ def main(dryrun, env, cdp_env_name, cml_cluster_name, action, json_skel):
         cml_clusters = json.load(json_file)
 
     cml_cluster_info = cml_clusters[cml_cluster_name]
-    cdp_env_info = get_env_info(env, cdp_env_name)
     cml_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/ml"
 
     if action == "install-cml":
@@ -131,7 +126,7 @@ def main(dryrun, env, cdp_env_name, cml_cluster_name, action, json_skel):
     click.echo("--------------------------------------------------------------")
 
     if not dryrun:
-        response = requests_ops.send_http_request(
+        requests_ops.send_http_request(
             srv_url=action_url,
             req_type="post",
             data=cml_json,

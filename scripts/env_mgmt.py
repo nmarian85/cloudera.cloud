@@ -1,27 +1,11 @@
 import click
-import sys
 import json
-import os
 from utils import show_progress, poll_for_status, dump_json_dict
 from cdpv1sign import generate_headers
 import requests_ops
-import requests
-from time import sleep
 
 
 def get_env_info(env, cdp_env_name):
-    """[summary]
-
-    Args:
-        env ([type]): [description]
-        cdp_env_name ([type]): [description]
-
-    Raises:
-        ValueError: [description]
-
-    Returns:
-        [type]: [description]
-    """
     with open(f"conf/{env}/{cdp_env_name}/env.json", "r") as read_file:
         return json.load(read_file)
 

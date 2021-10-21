@@ -2,7 +2,6 @@ from click import echo
 import json
 from time import sleep, time
 from functools import wraps
-import requests
 import requests_ops
 from cdpv1sign import generate_headers
 

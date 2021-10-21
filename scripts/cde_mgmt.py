@@ -1,11 +1,7 @@
 import click
-import sys
 import json
-import os
 from utils import show_progress, poll_for_status, dump_json_dict
-from cdpv1sign import generate_headers
 import requests_ops
-import requests
 
 
 # TODO: add code to add jump server role access to EKS control plane

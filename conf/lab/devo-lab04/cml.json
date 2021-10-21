@@ -19,6 +19,10 @@
         "tags": {
             "env": "lab",
             "origin": "cdp"
-        }
+        },
+        "enable_governance": "true",
+        "authorized_ip_ranges": [
+            ""
+        ]
     }
 }

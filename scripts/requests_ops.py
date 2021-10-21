@@ -6,9 +6,7 @@ the REST API using the python requests module.
 import requests
 import json
 from os import getenv
-from abc import ABC, abstractmethod
-from time import strftime, gmtime, sleep, time
-from functools import wraps
+
 
 dryrun = True
 

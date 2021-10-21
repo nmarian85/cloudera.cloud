@@ -1,12 +1,9 @@
 import click
-import sys
 import json
-import os
 from utils import show_progress, poll_for_status, dump_json_dict
-from env_mgmt import get_env_info, get_all_cdp_envs
+from env_mgmt import get_all_cdp_envs
 from cdpv1sign import generate_headers
 import requests_ops
-import requests
 
 
 def dump_sync_all_users_json(json_skel, cdp_env_name=None):
