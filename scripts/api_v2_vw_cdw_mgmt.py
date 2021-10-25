@@ -20,6 +20,35 @@ def get_vw_id(cdw_cluster_id, vw_name):
             return vw_cdw_cluster_info["id"]
 
 
+"""
+{
+  "impalaName": "impala-test-nic",
+  "warehouseId": "warehouse-1631018543-krn4",
+  "template": "xsmall-impala",
+  "autoScaling": {
+    "autoSuspendTimeoutSeconds": 300,
+    "triggerScaleUpDelay": 20,
+    "triggerScaleDownDelay": 20,
+    "impalaAutoscalingVersionNumber": 6,
+    "enableHA": true,
+    "autoScaleMode": 0,
+    "minClusters": 1,
+    "maxClusters": 20
+  },
+  "fengEnabled": false,
+  "enableViz": true,
+  "config": {
+    "enableSSO": true
+  },
+  "multithreading": {
+    "useLegacyMultithreading": false,
+    "multithreadingVersion": 1
+  },
+  "tags": []
+}
+"""
+
+
 def dump_install_json(vw_name, cdw_vw_info, cdw_cluster_id):
     cdw_vw_json = {}
 
