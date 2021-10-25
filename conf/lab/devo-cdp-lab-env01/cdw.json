@@ -29,7 +29,7 @@
             "template": "xsmall-impala",
             "dbc_name": "default",
             "config": {
-                "enable_sso": true,
+                "enable_sso": true
             },
             "multithreading": {
                 "use_legacy_multithreading": false,
