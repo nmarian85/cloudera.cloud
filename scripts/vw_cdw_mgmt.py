@@ -115,7 +115,7 @@ def main(dryrun, env, cdp_env_name, cdw_cluster_name, vw_name, action, json_skel
         click.echo(f"===Deleting virtual cdw cluster {vw_name}===")
         vw_json = dump_delete_json(cdw_cluster_id, vw_name, json_skel)
 
-        action_url = f"{cdw_url}/deleteVc"
+        action_url = f"{cdw_url}/deleteVw"
 
     dump_json_dict(vw_json)
 
@@ -129,18 +129,18 @@ def main(dryrun, env, cdp_env_name, cdw_cluster_name, vw_name, action, json_skel
 
         click.echo(f"Waiting for {action} on virtual cluster {vw_name}")
 
-        poll_url = f"{cdw_url}/listVcs"
+        poll_url = f"{cdw_url}/listVws"
 
         if action == "install-vw-cdw":
             elem_search_info = {
-                "root_index": "vcs",
-                "expected_key_val": {"vcName": vw_name, "status": "AppInstalled"},
+                "root_index": "vws",
+                "expected_key_val": {"name": vw_name, "status": "Running"},
                 "present": True,
             }
         elif action == "delete-vw-cdw":
             elem_search_info = {
-                "root_index": "services",
-                "expected_key_val": {"vcName": vw_name},
+                "root_index": "vws",
+                "expected_key_val": {"name": vw_name},
                 "present": False,
             }
         poll_for_status(
