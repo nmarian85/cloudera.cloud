@@ -8,7 +8,7 @@ from env_mgmt import get_cdp_env_crn
 
 
 def get_vw_id(cdw_cluster_id, vw_name):
-    action_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/de/listVws"
+    action_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/dw/listVws"
     response = requests_ops.send_http_request(
         srv_url=action_url,
         req_type="post",
