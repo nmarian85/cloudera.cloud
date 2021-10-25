@@ -82,7 +82,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
         mapping_json_skel,
     )
 
-    click.echo(f"========Setting idbroker mapping for users on {cdp_env_name}====")
+    click.echo(f"===Setting idbroker mapping for users on {cdp_env_name}===")
     dump_json_dict(cdp_mapping_json)
 
     action_url = f"{idbroker_url}/setIdBrokerMappings"
@@ -116,7 +116,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
             # dumping file so that Gitlab will back it up
             with open(f"{user}_idbroker_mapping.json", "w", encoding="utf-8") as f:
                 json.dump(cdp_mapping_json, f, ensure_ascii=False, indent=4)
-        click.echo(f"===========================================================")
+        click.echo(f"===============")
         click.echo()
 
 

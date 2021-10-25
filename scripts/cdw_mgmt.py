@@ -6,22 +6,10 @@ import requests_ops
 from env_mgmt import get_cdp_env_crn
 
 
-def dump_cdw_install_json(cdp_env_name, cdw_cluster_info, cdw_json_skel):
-    cdw_json = dict(cdw_json_skel)
-    cdw_json["environmentCrn"] = get_cdp_env_crn(cdp_env_name)
-    cdw_json["useOverlayNetwork"] = True
-    cdw_json["awsOptions"]["privateSubnetIds"] = cdw_cluster_info["subnets"]
-    cdw_json["tags"] = cdw_cluster_info["tags"]
-    return cdw_json
+# TODO: Add role that can access the EKS CP
 
 
-def dump_cdw_delete_json(cluster_id, cdw_json_skel):
-    cdp_cdw_cluster_json = dict(cdw_json_skel)
-    cdp_cdw_cluster_json["clusterId"] = cluster_id
-    return cdp_cdw_cluster_json
-
-
-def get_cdw_cluster_id(env_crn):
+def get_cdw_cluster_id(cdp_env_crn):
     action_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/dw/listClusters"
     response = requests_ops.send_http_request(
         srv_url=action_url,
@@ -30,8 +18,39 @@ def get_cdw_cluster_id(env_crn):
         data={},
     )
     for cdw_cluster_info in response["clusters"]:
-        if cdw_cluster_info["environmentCrn"] == env_crn:
-            return cdw_cluster_info["id"]
+        if (
+            cdw_cluster_info["environmentCrn"] == cdp_env_crn
+            and cdw_cluster_info["status"] == "Running"
+        ):
+            return cdw_cluster_info["clusterId"]
+
+
+def get_cdw_dbc_id(cdw_cluster_id, dbc_name="default"):
+    action_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/dw/listDbcs"
+    response = requests_ops.send_http_request(
+        srv_url=action_url,
+        req_type="post",
+        headers=generate_headers("POST", action_url),
+        data={"clusterId": cdw_cluster_id},
+    )
+    for dbc_info in response["dbcs"]:
+        if dbc_info["name"] == dbc_name and dbc_info["status"] == "Running":
+            return dbc_info["id"]
+
+
+def dump_cdw_install_json(cdp_env_crn, cdw_cluster_info, json_skel):
+    cdw_json = dict(json_skel)
+    cdw_json["environmentCrn"] = cdp_env_crn
+    cdw_json["useOverlayNetwork"] = True
+    cdw_json["awsOptions"]["privateSubnetIds"] = cdw_cluster_info["subnets"]
+    cdw_json["tags"] = cdw_cluster_info["tags"]
+    return cdw_json
+
+
+def dump_cdw_delete_json(cluster_id, json_skel):
+    cdp_cdw_cluster_json = dict(json_skel)
+    cdp_cdw_cluster_json["clusterId"] = cluster_id
+    return cdp_cdw_cluster_json
 
 
 @click.command()
@@ -62,35 +81,31 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     requests_ops.dryrun = dryrun
 
     with open(json_skel) as json_file:
-        cdw_json_skel = json.load(json_file)
+        json_skel = json.load(json_file)
 
     with open(f"conf/{env}/{cdp_env_name}/cdw.json") as json_file:
         cdw_cluster_info = json.load(json_file)
 
     cdw_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/dw"
 
-    env_crn = get_cdp_env_crn(cdp_env_name)
-    cluster_id = get_cdw_cluster_id(env_crn)
+    cdp_env_crn = get_cdp_env_crn(cdp_env_name)
+    cluster_id = get_cdw_cluster_id(cdp_env_crn)
 
     if action == "install-cdw":
-        click.echo(
-            f"==============Installing cdw cluster on env {cdp_env_name}=============="
-        )
+        click.echo(f"===Installing cdw cluster on env {cdp_env_name}===")
         cdw_cluster_json = dump_cdw_install_json(
-            cdp_env_name, cdw_cluster_info, cdw_json_skel
+            cdp_env_name, cdw_cluster_info, json_skel
         )
         action_url = f"{cdw_url}/createCluster"
     elif action == "delete-cdw":
-        click.echo(
-            f"==============Deleting cdw cluster from env {cdp_env_name}=============="
-        )
-        cdw_cluster_json = dump_cdw_delete_json(cluster_id, cdw_json_skel)
+        click.echo(f"===Deleting cdw cluster from env {cdp_env_name}===")
+        cdw_cluster_json = dump_cdw_delete_json(cluster_id, json_skel)
         action_url = f"{cdw_url}/deleteCluster"
 
     dump_json_dict(cdw_cluster_json)
 
     if not dryrun:
-        response = requests_ops.send_http_request(
+        requests_ops.send_http_request(
             srv_url=action_url,
             req_type="post",
             data=cdw_cluster_json,
@@ -110,7 +125,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         elif action == "delete-cdw":
             elem_search_info = {
                 "root_index": "clusters",
-                "expected_key_val": {"environmentCrn": env_crn},
+                "expected_key_val": {"environmentCrn": cdp_env_crn},
                 "present": False,
             }
         poll_for_status(poll_url=poll_url, elem_search_info=elem_search_info)
@@ -120,7 +135,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         # dumping file so that Gitlab will back it up
         with open("cdw.json", "w", encoding="utf-8") as f:
             json.dump(cdw_cluster_json, f, ensure_ascii=False, indent=4)
-    click.echo(f"===========================================================")
+    click.echo(f"===============")
     click.echo()
 
 

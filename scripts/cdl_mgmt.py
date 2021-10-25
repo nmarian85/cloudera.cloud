@@ -7,9 +7,9 @@ import requests_ops
 
 
 def dump_install_json(
-    cdp_env_name, cdl_cluster_name, cdl_cluster_info, account_id, cdl_json_skel
+    cdp_env_name, cdl_cluster_name, cdl_cluster_info, account_id, json_skel
 ):
-    cdp_dl_json = dict(cdl_json_skel)
+    cdp_dl_json = dict(json_skel)
 
     del cdp_dl_json["runtime"]
     del cdp_dl_json["image"]
@@ -32,8 +32,8 @@ def dump_install_json(
     return cdp_dl_json
 
 
-def dump_delete_json(cdl_cluster_name, cdl_json_skel):
-    cdp_dl_json = dict(cdl_json_skel)
+def dump_delete_json(cdl_cluster_name, json_skel):
+    cdp_dl_json = dict(json_skel)
     cdp_dl_json["datalakeName"] = cdl_cluster_name
     return cdp_dl_json
 
@@ -66,7 +66,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     requests_ops.dryrun = dryrun
 
     with open(json_skel) as json_file:
-        cdl_json_skel = json.load(json_file)
+        json_skel = json.load(json_file)
 
     cdp_env_info = get_env_info(env, cdp_env_name)
 
@@ -77,24 +77,24 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     cdl_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/datalake"
 
     if action == "install-cdl":
-        click.echo(f"==============Creating environment {cdp_env_name}==============")
+        click.echo(f"===Creating environment {cdp_env_name}===")
         cdl_json = dump_install_json(
             cdp_env_name,
             cdl_cluster_name,
             cdl_cluster_info,
             cdp_env_info["account_id"],
-            cdl_json_skel,
+            json_skel,
         )
         action_url = f"{cdl_url}/createAWSDatalake"
     elif action == "delete-cdl":
-        click.echo(f"==============Deleting environment {cdp_env_name}==============")
-        cdl_json = dump_delete_json(cdl_cluster_name, cdl_json_skel)
+        click.echo(f"===Deleting environment {cdp_env_name}===")
+        cdl_json = dump_delete_json(cdl_cluster_name, json_skel)
         action_url = f"{cdl_url}/deleteDatalake"
 
     dump_json_dict(cdl_json)
 
     if not dryrun:
-        response = requests_ops.send_http_request(
+        requests_ops.send_http_request(
             srv_url=action_url,
             req_type="post",
             data=cdl_json,
@@ -127,7 +127,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         # dumping file so that Gitlab will back it up
         with open(f"{cdl_cluster_name}.json", "w", encoding="utf-8") as f:
             json.dump(cdl_json, f, ensure_ascii=False, indent=4)
-    click.echo(f"===========================================================")
+    click.echo(f"===============")
     click.echo()
 
 

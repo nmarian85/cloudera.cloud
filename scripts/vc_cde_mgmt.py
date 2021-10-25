@@ -19,8 +19,8 @@ def get_vc_id(cde_cluster_id, vc_name):
             return vc_cde_cluster_info["vcId"]
 
 
-def dump_install_json(vc_name, vc_cde_info, cde_cluster_id, vc_cde_json_skel):
-    cde_vc_json = dict(vc_cde_json_skel)
+def dump_install_json(vc_name, vc_cde_info, cde_cluster_id, vc_json):
+    cde_vc_json = dict(vc_json)
     cde_vc_json["clusterId"] = cde_cluster_id
     cde_vc_json["name"] = vc_name
     cde_vc_json["cpuRequests"] = vc_cde_info["cpu_requests"]
@@ -33,8 +33,8 @@ def dump_install_json(vc_name, vc_cde_info, cde_cluster_id, vc_cde_json_skel):
     return cde_vc_json
 
 
-def dump_delete_json(cde_cluster_id, vc_name, vc_cde_json_skel):
-    cde_vc_json = dict(vc_cde_json_skel)
+def dump_delete_json(cde_cluster_id, vc_name, vc_json):
+    cde_vc_json = dict(vc_json)
     vc_id = get_vc_id(cde_cluster_id, vc_name)
     cde_vc_json["vcId"] = vc_id
     cde_vc_json["clusterId"] = cde_cluster_id
@@ -72,72 +72,59 @@ def dump_delete_json(cde_cluster_id, vc_name, vc_cde_json_skel):
     help="JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
     required=True,
 )
-def main(
-    dryrun, env, cdp_env_name, cde_cluster_name, vc_cde_cluster_name, action, json_skel
-):
+def main(dryrun, env, cdp_env_name, cde_cluster_name, vc_name, action, json_skel):
     if dryrun:
         show_progress("This is a dryrun")
 
     requests_ops.dryrun = dryrun
 
     with open(json_skel) as json_file:
-        vc_cde_json_skel = json.load(json_file)
+        vc_json = json.load(json_file)
 
     with open(f"conf/{env}/{cdp_env_name}/cde.json") as json_file:
         cde_clusters = json.load(json_file)
 
     cde_cluster_info = cde_clusters[cde_cluster_name]
 
-    vc_cde_info = cde_cluster_info["vcs"][vc_cde_cluster_name]
+    vc_cde_info = cde_cluster_info["vcs"][vc_name]
     cde_cluster_id = get_cde_cluster_id(cde_cluster_name)
 
     cde_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/de"
 
     if action == "install-vc-cde":
-        click.echo(
-            f"==============Installing virtual CDE cluster {vc_cde_cluster_name}=============="
-        )
-        vc_cde_cluster_json = dump_install_json(
-            vc_cde_cluster_name, vc_cde_info, cde_cluster_id, vc_cde_json_skel
-        )
+        click.echo(f"===Installing virtual CDE cluster {vc_name}===")
+        vc_json = dump_install_json(vc_name, vc_cde_info, cde_cluster_id, vc_json)
         action_url = f"{cde_url}/createVc"
     elif action == "delete-vc-cde":
-        click.echo(
-            f"==============Deleting virtual CDE cluster {vc_cde_cluster_name}=============="
-        )
-        vc_cde_cluster_json = dump_delete_json(
-            cde_cluster_id, vc_cde_cluster_name, vc_cde_json_skel
-        )
+        click.echo(f"===Deleting virtual CDE cluster {vc_name}===")
+        vc_json = dump_delete_json(cde_cluster_id, vc_name, vc_json)
 
         action_url = f"{cde_url}/deleteVc"
 
-    dump_json_dict(vc_cde_cluster_json)
+    dump_json_dict(vc_json)
 
     if not dryrun:
-        response = requests_ops.send_http_request(
+        requests_ops.send_http_request(
             srv_url=action_url,
             req_type="post",
-            data=vc_cde_cluster_json,
+            data=vc_json,
             headers=generate_headers("POST", action_url),
         )
 
-        click.echo(f"Waiting for {action} on virtual cluster {vc_cde_cluster_name}")
+        click.echo(f"Waiting for {action} on virtual cluster {vc_name}")
 
         poll_url = f"{cde_url}/listVcs"
 
         if action == "install-vc-cde":
             elem_search_info = {
                 "root_index": "vcs",
-                "expected_key_val": {
-                    "vcName": vc_cde_cluster_name,
-                    "status": "AppInstalled",
-                },
+                "expected_key_val": {"vcName": vc_name, "status": "AppInstalled"},
                 "present": True,
             }
         elif action == "delete-vc-cde":
             elem_search_info = {
                 "root_index": "services",
-                "expected_key_val": {"vcName": vc_cde_cluster_name},
+                "expected_key_val": {"vcName": vc_name},
                 "present": False,
             }
         poll_for_status(
@@ -146,12 +133,12 @@ def main(
             data={"clusterId": cde_cluster_id},
         )
 
-        click.echo(f"Action {action} on virtual cluster {vc_cde_cluster_name} DONE")
+        click.echo(f"Action {action} on virtual cluster {vc_name} DONE")
 
         # dumping file so that Gitlab will back it up
-        with open(f"{vc_cde_cluster_name}.json", "w", encoding="utf-8") as f:
-            json.dump(vc_cde_cluster_json, f, ensure_ascii=False, indent=4)
-    click.echo(f"===========================================================")
+        with open(f"{vc_name}.json", "w", encoding="utf-8") as f:
+            json.dump(vc_json, f, ensure_ascii=False, indent=4)
+    click.echo(f"===============")
     click.echo()
 
 

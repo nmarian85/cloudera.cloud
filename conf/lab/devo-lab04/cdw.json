@@ -14,7 +14,22 @@
     "dbcs": [
         {}
     ],
-    "vws": [
-        {}
-    ]
+    "vws": {
+        "devo-lab04-impala01": {
+            "autoscaling": {
+                "min_clusters": 1,
+                "max_clusters": 5
+            },
+            "image_version": "",
+            "template": "xsmall",
+            "vw_type": "impala",
+            "dbc": "",
+            "config": {
+                "application_configs": {},
+                "common_configs": "",
+                "enable_sso": true,
+                "ldap_groups": []
+            }
+        }
+    }
 }

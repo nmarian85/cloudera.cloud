@@ -105,18 +105,18 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
 
     if action == "install-env":
-        click.echo(f"==============Creating environment {cdp_env_name}==============")
+        click.echo(f"===Creating environment {cdp_env_name}===")
         env_json = dump_install_json(cdp_env_name, cdp_env_info, env_json_skel)
         action_url = f"{env_url}/createAWSEnvironment"
     elif action == "delete-env":
-        click.echo(f"==============Deleting environment {cdp_env_name}==============")
+        click.echo(f"===Deleting environment {cdp_env_name}===")
         env_json = dump_delete_json(cdp_env_name, cdp_env_info, env_json_skel)
         action_url = f"{env_url}/deleteEnvironment"
 
     dump_json_dict(env_json)
 
     if not dryrun:
-        response = requests_ops.send_http_request(
+        requests_ops.send_http_request(
             srv_url=action_url,
             req_type="post",
             data=env_json,
@@ -149,7 +149,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
         # dumping file so that Gitlab will back it up
         with open(f"{cdp_env_name}.json", "w", encoding="utf-8") as f:
             json.dump(env_json, f, ensure_ascii=False, indent=4)
-    click.echo(f"===========================================================")
+    click.echo(f"===============")
     click.echo()
 
 

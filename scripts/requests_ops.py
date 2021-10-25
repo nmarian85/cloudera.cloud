@@ -30,6 +30,7 @@ CDP_SERVICES_ENDPOINT = (
     f"https://api.{DEFAULT_REGION}.cdp.cloudera.com/api/v{CDP_API_VERSION}"
 )
 
+
 # @lru_cache()
 def send_http_request(
     srv_url, req_type="get", params=None, data=None, auth=None, headers=None
