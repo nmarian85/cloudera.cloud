@@ -28,7 +28,11 @@
                 "application_configs": {},
                 "common_configs": {},
                 "enable_sso": true,
-                "ldap_groups": []
+                "ldap_groups": [
+                    "ecbt1-igamfs-app-cdp-admin",
+                    "ecbt1-igamfs-app-cdp-expert",
+                    "ecbt1-igamfs-app-cdp-user"
+                ]
             },
             "tags": {
                 "env": "lab",
