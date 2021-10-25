@@ -34,6 +34,7 @@ def dump_install_json(vw_name, cdw_vw_info, cdw_cluster_id, json_skel):
     cdw_vw_json["dbcId"] = get_cdw_dbc_id(cdw_cluster_id, cdw_vw_info["dbc_name"])
 
     cdw_vw_json["vwType"] = cdw_vw_info["vw_type"]
+    cdw_vw_json["template"] = cdw_vw_info["template"]
     cdw_vw_json["config"]["applicationConfigs"] = cdw_vw_info["config"][
         "application_configs"
     ]
