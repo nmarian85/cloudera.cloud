@@ -135,6 +135,7 @@ def main(dryrun, env, cdp_env_name, vw_name, action, json_skel):
     cdw_v2_url = (
         f"{requests_ops.CDP_SERVICES_ENDPOINT_V2}/dwx/environments/{cdp_env_name}"
     )
+    print(cdw_v2_url)
 
     if action == "install-vw-cdw":
         click.echo(f"===Installing virtual warehouse {vw_name}===")
