@@ -29,6 +29,10 @@
                 "common_configs": "",
                 "enable_sso": true,
                 "ldap_groups": []
+            },
+            "tags": {
+                "env": "lab",
+                "origin": "cdp"
             }
         }
     }
