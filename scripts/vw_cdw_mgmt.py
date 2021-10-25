@@ -149,7 +149,7 @@ def main(dryrun, env, cdp_env_name, vw_name, action, json_skel):
                 req_type="post",
                 data=vw_json,
                 headers=generate_headers("POST", action_url),
-                params={"q": "start"},
+                params={"start"},
             )
         click.echo(f"Waiting for {action} on virtual warehouse {vw_name}")
 
