@@ -27,10 +27,13 @@ def dump_install_json(vw_name, cdw_vw_info, cdw_cluster_id, json_skel):
     cdw_vw_json["tags"] = cdw_vw_info["tags"]
     image_version = cdw_vw_info["image_version"]
     if len(image_version) != 0:
-        cdw_vw_json["imageVersion"] = cdw_vw_info["image_version"]
+        cdw_vw_json["imageVersion"] = image_version
+
+    ldap_groups = cdw_vw_info["ldap_groups"]
+    if len(ldap_groups) != 0:
+        cdw_vw_json["ldapGroups"] = ldap_groups
 
     cdw_vw_json["vwType"] = cdw_vw_info["vw_type"]
-    cdw_vw_json["ldapGroups"] = cdw_vw_info["ldap_groups"]
     cdw_vw_json["dbcId"] = get_cdw_dbc_id(cdw_cluster_id)
     cdw_vw_json["config"]["applicationConfigs"] = cdw_vw_info["config"][
         "application_configs"
@@ -101,11 +104,11 @@ def main(dryrun, env, cdp_env_name, vw_name, action, json_skel):
     cdw_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/dw"
 
     if action == "install-vw-cdw":
-        click.echo(f"===Installing virtual cdw cluster {vw_name}===")
+        click.echo(f"===Installing virtual warehouse {vw_name}===")
         vw_json = dump_install_json(vw_name, cdw_vw_info, cdw_cluster_id, json_skel)
         action_url = f"{cdw_url}/createVw"
     elif action == "delete-vw-cdw":
-        click.echo(f"===Deleting virtual cdw cluster {vw_name}===")
+        click.echo(f"===Deleting virtual warehouse {vw_name}===")
         vw_json = dump_delete_json(cdw_cluster_id, vw_name, json_skel)
 
         action_url = f"{cdw_url}/deleteVw"
