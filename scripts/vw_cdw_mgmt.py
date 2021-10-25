@@ -51,7 +51,7 @@ def dump_install_json(vw_name, cdw_vw_info, cdw_cluster_id, json_skel):
 def dump_delete_json(cdw_cluster_id, vw_name, json_skel):
     cdw_vw_json = dict(json_skel)
     vw_id = get_vw_id(cdw_cluster_id, vw_name)
-    cdw_vw_json["vcId"] = vw_id
+    cdw_vw_json["vwId"] = vw_id
     cdw_vw_json["clusterId"] = cdw_cluster_id
     return cdw_vw_json
 
