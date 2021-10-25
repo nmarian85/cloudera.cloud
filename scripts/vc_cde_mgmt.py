@@ -63,7 +63,7 @@ def dump_delete_json(cde_cluster_id, vc_name, vc_json):
     required=True,
 )
 @click.option(
-    "--vc-cde-cluster-name",
+    "--vc-name",
     help="Please see cde.json for details regarding the CDE virtual cluster",
     required=True,
 )

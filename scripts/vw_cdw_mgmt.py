@@ -73,12 +73,7 @@ def dump_delete_json(cdw_cluster_id, vw_name, json_skel):
     required=True,
 )
 @click.option(
-    "--cdw-cluster-name",
-    help="Please see cdw.json for details regarding the cdw cluster",
-    required=True,
-)
-@click.option(
-    "--vw-cdw-cluster-name",
+    "--vw-name",
     help="Please see cdw.json for details regarding the cdw virtual cluster",
     required=True,
 )
@@ -87,7 +82,7 @@ def dump_delete_json(cdw_cluster_id, vw_name, json_skel):
     help="JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
     required=True,
 )
-def main(dryrun, env, cdp_env_name, cdw_cluster_name, vw_name, action, json_skel):
+def main(dryrun, env, cdp_env_name, vw_name, action, json_skel):
     if dryrun:
         show_progress("This is a dryrun")
 
@@ -97,9 +92,7 @@ def main(dryrun, env, cdp_env_name, cdw_cluster_name, vw_name, action, json_skel
         json_skel = json.load(json_file)
 
     with open(f"conf/{env}/{cdp_env_name}/cdw.json") as json_file:
-        cdw_clusters = json.load(json_file)
-
-    cdw_cluster_info = cdw_clusters[cdw_cluster_name]
+        cdw_cluster_info = json.load(json_file)
 
     cdw_vw_info = cdw_cluster_info["vcs"][vw_name]
     cdp_env_crn = get_cdp_env_crn(cdp_env_name)
