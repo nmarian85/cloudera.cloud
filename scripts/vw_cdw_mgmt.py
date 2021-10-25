@@ -20,58 +20,63 @@ def get_vw_id(cdw_cluster_id, vw_name):
             return vw_cdw_cluster_info["id"]
 
 
-def dump_install_json(vw_name, cdw_vw_info, cdw_cluster_id, json_skel):
-    cdw_vw_json = dict(json_skel)
+def dump_install_json(vw_name, cdw_vw_info, cdw_cluster_id):
+    cdw_vw_json = {}
+
     cdw_vw_json["clusterId"] = cdw_cluster_id
+    cdw_vw_json["fengEnabled"] = cdw_vw_info["feng_enabled"]
+    cdw_vw_json["enableViz"] = cdw_vw_info["enable_viz"]
+    cdw_vw_json["autoscaling"] = {}
+    cdw_vw_json["multithreading"] = {}
+    cdw_vw_json["config"] = {}
 
     if "impala" in vw_name:
         cdw_vw_json["impalaName"] = vw_name
+        cdw_vw_json["autoscaling"]["minClusters"] = cdw_vw_info["autoscaling"][
+            "min_clusters"
+        ]
+        cdw_vw_json["autoscaling"]["maxClusters"] = cdw_vw_info["autoscaling"][
+            "max_clusters"
+        ]
+        cdw_vw_json["autoscaling"]["autoSuspendTimeoutSeconds"] = cdw_vw_info[
+            "autoscaling"
+        ]["auto_suspend_timeout_seconds"]
+
+        cdw_vw_json["autoscaling"]["triggerScaleUpDelay"] = cdw_vw_info["autoscaling"][
+            "trigger_scale_up_delay"
+        ]
+        cdw_vw_json["autoscaling"]["triggerScaleDownDelay"] = cdw_vw_info[
+            "autoscaling"
+        ]["trigger_scale_down_delay"]
+
+        cdw_vw_json["autoscaling"]["impalaAutoscalingVersionNumber"] = cdw_vw_info[
+            "autoscaling"
+        ]["impala_autoscaling_version_number"]
+
+        cdw_vw_json["autoscaling"]["enableHA"] = cdw_vw_info["autoscaling"]["enableHA"]
+
+        cdw_vw_json["autoscaling"]["autoScaleMode"] = cdw_vw_info["autoscaling"][
+            "auto_scale_mode"
+        ]
+
+        cdw_vw_json["multithreading"]["useLegacyMultithreading"] = cdw_vw_info[
+            "multithreading"
+        ]["use_legacy_multithreading"]
+
+        cdw_vw_json["autoscaling"]["multithreadingVersion"] = cdw_vw_info[
+            "multithreading"
+        ]["multithreading_version"]
+
+        cdw_vw_json["tags"] = cdw_vw_info["tags"]
+        cdw_vw_json["warehouseId"] = get_cdw_dbc_id(
+            cdw_cluster_id, cdw_vw_info["dbc_name"]
+        )
+
+        cdw_vw_json["template"] = cdw_vw_info["template"]
+        cdw_vw_json["config"]["enableSSO"] = cdw_vw_info["config"]["enable_sso"]
+
     elif "hive" in vw_name:
         cdw_vw_json["hiveName"] = vw_name
-
-    cdw_vw_json["autoscaling"]["minClusters"] = cdw_vw_info["autoscaling"][
-        "min_clusters"
-    ]
-    cdw_vw_json["autoscaling"]["maxClusters"] = cdw_vw_info["autoscaling"][
-        "max_clusters"
-    ]
-    cdw_vw_json["autoscaling"]["autoSuspendTimeoutSeconds"] = cdw_vw_info[
-        "autoscaling"
-    ]["auto_suspend_timeout_seconds"]
-
-    cdw_vw_json["autoscaling"]["triggerScaleUpDelay"] = cdw_vw_info["autoscaling"][
-        "trigger_scale_up_delay"
-    ]
-    cdw_vw_json["autoscaling"]["triggerScaleDownDelay"] = cdw_vw_info["autoscaling"][
-        "trigger_scale_down_delay"
-    ]
-
-    cdw_vw_json["autoscaling"]["impalaAutoscalingVersionNumber"] = cdw_vw_info[
-        "autoscaling"
-    ]["impala_autoscaling_version_number"]
-
-    cdw_vw_json["autoscaling"]["enableHA"] = cdw_vw_info["autoscaling"]["enableHA"]
-
-    cdw_vw_json["autoscaling"]["autoScaleMode"] = cdw_vw_info["autoscaling"][
-        "auto_scale_mode"
-    ]
-
-    cdw_vw_json["fengEnabled"] = cdw_vw_info["feng_enabled"]
-    cdw_vw_json["enableViz"] = cdw_vw_info["enable_viz"]
-
-    cdw_vw_json["multithreading"]["useLegacyMultithreading"] = cdw_vw_info[
-        "multithreading"
-    ]["use_legacy_multithreading"]
-
-    cdw_vw_json["autoscaling"]["multithreadingVersion"] = cdw_vw_info["multithreading"][
-        "multithreading_version"
-    ]
-
-    cdw_vw_json["tags"] = cdw_vw_info["tags"]
-    cdw_vw_json["warehouseId"] = get_cdw_dbc_id(cdw_cluster_id, cdw_vw_info["dbc_name"])
-
-    cdw_vw_json["template"] = cdw_vw_info["template"]
-    cdw_vw_json["config"]["enableSSO"] = cdw_vw_info["config"]["enable_sso"]
 
     return cdw_vw_json
 
@@ -107,7 +112,7 @@ def dump_delete_json(cdw_cluster_id, vw_name, json_skel):
 )
 @click.option(
     "--json-skel",
-    help="JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
+    help="NOT USED FOR CREATE-VW - JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
     required=True,
 )
 def main(dryrun, env, cdp_env_name, vw_name, action, json_skel):
@@ -133,7 +138,7 @@ def main(dryrun, env, cdp_env_name, vw_name, action, json_skel):
 
     if action == "install-vw-cdw":
         click.echo(f"===Installing virtual warehouse {vw_name}===")
-        vw_json = dump_install_json(vw_name, cdw_vw_info, cdw_cluster_id, json_skel)
+        vw_json = dump_install_json(vw_name, cdw_vw_info, cdw_cluster_id)
         if "impala" in vw_name:
             action_url = "f{cdw_v2_url}/impalas"
         elif "hive" in vw_name:
