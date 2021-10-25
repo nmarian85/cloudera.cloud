@@ -22,7 +22,7 @@ def get_cdw_cluster_id(cdp_env_crn):
             cdw_cluster_info["environmentCrn"] == cdp_env_crn
             and cdw_cluster_info["status"] == "Running"
         ):
-            return cdw_cluster_info["clusterId"]
+            return cdw_cluster_info["id"]
 
 
 def get_cdw_dbc_id(cdw_cluster_id, dbc_name="default"):
