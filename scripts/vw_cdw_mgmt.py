@@ -33,12 +33,13 @@ def dump_install_json(vw_name, cdw_vw_info, cdw_cluster_id, json_skel):
     if len(ldap_groups) != 0:
         cdw_vw_json["ldapGroups"] = ldap_groups
 
+    cdw_vw_json["dbcId"] = get_cdw_dbc_id(cdw_cluster_id, cdw_vw_info["dbc_name"])
+
     cdw_vw_json["vwType"] = cdw_vw_info["vw_type"]
-    cdw_vw_json["dbcId"] = get_cdw_dbc_id(cdw_cluster_id)
-    cdw_vw_json["config"]["applicationConfigs"] = cdw_vw_info["config"][
-        "application_configs"
-    ]
-    cdw_vw_json["config"]["commonConfigs"] = cdw_vw_info["config"]["common_configs"]
+    # cdw_vw_json["config"]["applicationConfigs"] = cdw_vw_info["config"][
+    #     "application_configs"
+    # ]
+    # cdw_vw_json["config"]["commonConfigs"] = cdw_vw_info["config"]["common_configs"]
     cdw_vw_json["config"]["enableSSO"] = cdw_vw_info["config"]["enable_sso"]
     cdw_vw_json["config"]["ldapGroups"] = cdw_vw_info["config"]["ldap_groups"]
     cdw_vw_json["autoscaling"]["minClusters"] = cdw_vw_json["autoscaling"][

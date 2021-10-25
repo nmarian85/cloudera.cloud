@@ -23,7 +23,7 @@
             "image_version": "",
             "template": "xsmall",
             "vw_type": "impala",
-            "dbc": "",
+            "dbc_name": "default",
             "config": {
                 "application_configs": {},
                 "common_configs": "",
