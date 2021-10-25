@@ -74,7 +74,7 @@ def dump_delete_json(cdw_cluster_id, vw_name, json_skel):
 )
 @click.option(
     "--vw-name",
-    help="Please see cdw.json for details regarding the cdw virtual cluster",
+    help="Please see cdw.json for details regarding the cdw virtual warehouse",
     required=True,
 )
 @click.option(
@@ -120,7 +120,7 @@ def main(dryrun, env, cdp_env_name, vw_name, action, json_skel):
             headers=generate_headers("POST", action_url),
         )
 
-        click.echo(f"Waiting for {action} on virtual cluster {vw_name}")
+        click.echo(f"Waiting for {action} on virtual warehouse {vw_name}")
 
         poll_url = f"{cdw_url}/listVws"
 
@@ -142,7 +142,7 @@ def main(dryrun, env, cdp_env_name, vw_name, action, json_skel):
             data={"clusterId": cdw_cluster_id},
         )
 
-        click.echo(f"Action {action} on virtual cluster {vw_name} DONE")
+        click.echo(f"Action {action} on virtual warehouse {vw_name} DONE")
 
         # dumping file so that Gitlab will back it up
         with open(f"{vw_name}.json", "w", encoding="utf-8") as f:
