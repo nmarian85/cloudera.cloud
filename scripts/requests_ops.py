@@ -29,7 +29,7 @@ CDP_IAM_ENDPOINT = f"https://iamapi.{DEFAULT_REGION}.altus.cloudera.com/iam"
 CDP_SERVICES_ENDPOINT = (
     f"https://api.{DEFAULT_REGION}.cdp.cloudera.com/api/v{CDP_API_VERSION}"
 )
-
+CDP_SERVICES_ENDPOINT_V2 = f"https://api.{DEFAULT_REGION}.cdp.cloudera.com/api/v2"
 
 # @lru_cache()
 def send_http_request(
