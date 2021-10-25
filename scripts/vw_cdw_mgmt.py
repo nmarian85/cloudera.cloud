@@ -94,7 +94,7 @@ def main(dryrun, env, cdp_env_name, vw_name, action, json_skel):
     with open(f"conf/{env}/{cdp_env_name}/cdw.json") as json_file:
         cdw_cluster_info = json.load(json_file)
 
-    cdw_vw_info = cdw_cluster_info["vcs"][vw_name]
+    cdw_vw_info = cdw_cluster_info["vws"][vw_name]
     cdp_env_crn = get_cdp_env_crn(cdp_env_name)
     cdw_cluster_id = get_cdw_cluster_id(cdp_env_crn)
 
