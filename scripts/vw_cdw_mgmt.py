@@ -55,7 +55,7 @@ def dump_install_json(vw_name, cdw_vw_info, cdw_cluster_id, json_skel):
             "application_configs"
         ]
     else:
-        del cdw_vw_json["config"]["application_configs"]
+        del cdw_vw_json["config"]["applicationConfigs"]
 
     common_configs = cdw_vw_info["config"]["common_configs"]
     if len(common_configs) > 0:
