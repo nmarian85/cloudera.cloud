@@ -17,7 +17,7 @@ def get_vw_id(cdw_cluster_id, vw_name):
     )
     for vw_cdw_cluster_info in response["vws"]:
         if vw_cdw_cluster_info["name"] == vw_name:
-            return vw_cdw_cluster_info["vwId"]
+            return vw_cdw_cluster_info["id"]
 
 
 def dump_install_json(vw_name, cdw_vw_info, cdw_cluster_id, json_skel):
