@@ -25,32 +25,43 @@ def dump_install_json(vw_name, cdw_vw_info, cdw_cluster_id, json_skel):
     cdw_vw_json["clusterId"] = cdw_cluster_id
     cdw_vw_json["name"] = vw_name
     cdw_vw_json["tags"] = cdw_vw_info["tags"]
-    image_version = cdw_vw_info["image_version"]
-    if len(image_version) != 0:
-        cdw_vw_json["imageVersion"] = image_version
-    else:
-        del cdw_vw_json["imageVersion"]
-
     cdw_vw_json["dbcId"] = get_cdw_dbc_id(cdw_cluster_id, cdw_vw_info["dbc_name"])
 
     cdw_vw_json["vwType"] = cdw_vw_info["vw_type"]
     cdw_vw_json["template"] = cdw_vw_info["template"]
-    cdw_vw_json["config"]["applicationConfigs"] = cdw_vw_info["config"][
-        "application_configs"
-    ]
-    cdw_vw_json["config"]["commonConfigs"] = cdw_vw_info["config"]["common_configs"]
     cdw_vw_json["config"]["enableSSO"] = cdw_vw_info["config"]["enable_sso"]
-    ldap_groups = cdw_vw_info["config"]["ldap_groups"]
-    if len(ldap_groups) != 0:
-        cdw_vw_json["config"]["ldapGroups"] = ldap_groups
-    else:
-        del cdw_vw_json["config"]["ldapGroups"]
     cdw_vw_json["autoscaling"]["minClusters"] = cdw_vw_info["autoscaling"][
         "min_clusters"
     ]
     cdw_vw_json["autoscaling"]["maxClusters"] = cdw_vw_info["autoscaling"][
         "max_clusters"
     ]
+
+    ldap_groups = cdw_vw_info["config"]["ldap_groups"]
+    if len(ldap_groups) != 0:
+        cdw_vw_json["config"]["ldapGroups"] = ldap_groups
+    else:
+        del cdw_vw_json["config"]["ldapGroups"]
+
+    image_version = cdw_vw_info["image_version"]
+    if len(image_version) != 0:
+        cdw_vw_json["imageVersion"] = image_version
+    else:
+        del cdw_vw_json["imageVersion"]
+
+    application_configs = cdw_vw_info["config"]["applicationConfigs"]
+    if len(application_configs) > 0:
+        cdw_vw_json["config"]["applicationConfigs"] = cdw_vw_info["config"][
+            "application_configs"
+        ]
+    else:
+        del cdw_vw_json["config"]["applicationConfigs"]
+
+    common_configs = cdw_vw_info["config"]["applicationConfigs"]
+    if len(common_configs) > 0:
+        cdw_vw_json["config"]["commonConfigs"] = cdw_vw_info["config"]["common_configs"]
+    else:
+        del cdw_vw_json["config"]["commonConfigs"]
 
     return cdw_vw_json
 
