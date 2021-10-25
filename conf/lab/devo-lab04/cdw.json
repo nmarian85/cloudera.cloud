@@ -15,7 +15,7 @@
         {}
     ],
     "vws": {
-        "devo-lab04-impala01": {
+        "impala01": {
             "autoscaling": {
                 "min_clusters": 1,
                 "max_clusters": 5
