@@ -26,7 +26,7 @@
             "dbc_name": "default",
             "config": {
                 "application_configs": {},
-                "common_configs": "",
+                "common_configs": {},
                 "enable_sso": true,
                 "ldap_groups": []
             },
