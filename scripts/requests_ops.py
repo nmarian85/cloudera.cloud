@@ -62,11 +62,12 @@ def send_http_request(
     except requests.exceptions.ConnectionError:
         raise
     except requests.exceptions.HTTPError:
-        if res.text:
-            print(res.text)
-        if ok_exception_str not in res.text:
-            print("DUUUUUUUUUUUUMB")
-            raise
+        pass
+        # if res.text:
+        #     print(res.text)
+        # if ok_exception_str not in res.text:
+        #     print("DUUUUUUUUUUUUMB")
+        #     raise
 
     try:
         out = res.json()
