@@ -18,6 +18,7 @@ def dump_group_cdp_role_map_role_json(cdp_role, group_name, json_skel):
 def assign_cdp_role_to_group(role, group, json_skel, dryrun):
     click.echo(f"===Assigning role {role} to group {group}===")
     action_url = f"{iam_url}/assignGroupRole"
+    role = f"crn:altus:iam:{requests_ops.DEFAULT_REGION}:altus:role:${role}"
 
     cdp_assign_group_role_json = dump_group_cdp_role_map_role_json(
         role, group, json_skel
@@ -61,6 +62,7 @@ def assign_cdp_role_to_group(role, group, json_skel, dryrun):
 def unassign_cdp_role_from_group(role, group, json_skel, dryrun):
     click.echo(f"===Unassigning role {role} from group {group}===")
     action_url = f"{iam_url}/unassignGroupRole"
+    role = f"crn:altus:iam:{requests_ops.DEFAULT_REGION}:altus:role:${role}"
 
     cdp_assign_group_role_json = dump_group_cdp_role_map_role_json(
         role, group, json_skel
