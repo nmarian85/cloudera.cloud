@@ -66,6 +66,8 @@ def send_http_request(
         if len(ok_exception_str) > 0:
             if ok_exception_str not in res.text:
                 raise
+        else:
+            raise
 
     try:
         out = res.json()
