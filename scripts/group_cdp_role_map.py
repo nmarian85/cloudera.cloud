@@ -18,11 +18,6 @@ import requests_ops
     required=True,
 )
 @click.option(
-    "--cdp-env-name",
-    help="Please see {env}.json file where you defined the CDP env name",
-    required=True,
-)
-@click.option(
     "--json-skel",
     help="JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
     required=True,
