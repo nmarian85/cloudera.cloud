@@ -59,7 +59,8 @@ def send_http_request(
         res.raise_for_status()
     except requests.exceptions.ConnectionError:
         raise
-    except requests.exceptions.HTTPError:
+    except requests.exceptions.HTTPError as err:
+        print(err)
         if res.text:
             print(res.text)
         if ok_exception_str not in res.text:
