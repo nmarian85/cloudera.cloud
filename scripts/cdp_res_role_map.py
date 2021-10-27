@@ -80,7 +80,7 @@ def assign_cdp_res_role_to_group(
 
         click.echo(f"Assigning {role} on cdp group {group} on env {cdp_env_name} DONE")
         # dumping file so that Gitlab will back it up
-        with open(f"{group}_{role}.json", "w", encoding="utf-8") as f:
+        with open(f"{group}_res_{role}.json", "w", encoding="utf-8") as f:
             json.dump(cdp_assign_group_role_json, f, ensure_ascii=False, indent=4)
     click.echo(f"===============")
     click.echo()
@@ -129,7 +129,7 @@ def unassign_cdp_res_role_to_group(
             f"Unassigning {role} from cdp group {group} on env {cdp_env_name} DONE"
         )
         # dumping file so that Gitlab will back it up
-        with open(f"{group}_{role}.json", "w", encoding="utf-8") as f:
+        with open(f"{group}_res_{role}.json", "w", encoding="utf-8") as f:
             json.dump(cdp_assign_group_role_json, f, ensure_ascii=False, indent=4)
     click.echo(f"===============")
     click.echo()
@@ -175,7 +175,7 @@ def assign_cdp_res_role_to_user(
 
         click.echo(f"Assigning {role} on cdp user {user} on env {cdp_env_name} DONE")
         # dumping file so that Gitlab will back it up
-        with open(f"{user}_{role}.json", "w", encoding="utf-8") as f:
+        with open(f"{user}_res_{role}.json", "w", encoding="utf-8") as f:
             json.dump(cdp_assign_user_role_json, f, ensure_ascii=False, indent=4)
     click.echo(f"===============")
     click.echo()
@@ -222,7 +222,7 @@ def unassign_cdp_res_role_to_user(
             f"Unassigning {role} from cdp user {user} on env {cdp_env_name} DONE"
         )
         # dumping file so that Gitlab will back it up
-        with open(f"{user}_{role}.json", "w", encoding="utf-8") as f:
+        with open(f"{user}_res_{role}.json", "w", encoding="utf-8") as f:
             json.dump(cdp_assign_user_role_json, f, ensure_ascii=False, indent=4)
     click.echo(f"===============")
     click.echo()

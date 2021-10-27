@@ -8,62 +8,49 @@ import requests_ops
 iam_url = f"{requests_ops.CDP_IAM_ENDPOINT}"
 
 
-def dump_user_cdp_res_role_map_json(cdp_env_crn, cdp_role, user_name, json_skel):
-    assign_user_role_json = dict(json_skel)
-    resource_role_crn = f"{requests_ops.DEFAULT_IAM_CRN}:resourceRole:{cdp_role}"
-    assign_user_role_json["user"] = user_name
-    assign_user_role_json["resourceRoleCrn"] = resource_role_crn
-    assign_user_role_json["resourceCrn"] = cdp_env_crn
-    return assign_user_role_json
-
-
-def dump_group_cdp_res_role_map_role_json(cdp_env_crn, cdp_role, group_name, json_skel):
+def dump_group_cdp_role_map_role_json(cdp_role, group_name, json_skel):
     assign_group_role_json = dict(json_skel)
-    resource_role_crn = f"{requests_ops.DEFAULT_IAM_CRN}:resourceRole:{cdp_role}"
     assign_group_role_json["groupName"] = group_name
-    assign_group_role_json["resourceRoleCrn"] = resource_role_crn
-    assign_group_role_json["resourceCrn"] = cdp_env_crn
+    assign_group_role_json["role"] = cdp_role
     return assign_group_role_json
 
 
-def assign_cdp_res_role_to_group(
-    cdp_env_crn, role, group, cdp_env_name, json_skel, dryrun
-):
-    click.echo(f"===Assigning role {role} to group {group} on env {cdp_env_name}===")
-    action_url = f"{iam_url}/assignGroupResourceRole"
+def assign_cdp_role_to_group(role, group, json_skel, dryrun):
+    click.echo(f"===Assigning role {role} to group {group}===")
+    action_url = f"{iam_url}/assignGroupRole"
 
-    cdp_assign_group_role_json = dump_group_cdp_res_role_map_role_json(
-        cdp_env_crn, role, group, json_skel
+    cdp_assign_group_role_json = dump_group_cdp_role_map_role_json(
+        role, group, json_skel
     )
 
     dump_json_dict(cdp_assign_group_role_json)
 
     if not dryrun:
-        response = requests_ops.send_http_request(
+        requests_ops.send_http_request(
             srv_url=action_url,
             req_type="post",
             data=cdp_assign_group_role_json,
             headers=generate_headers("POST", action_url),
         )
 
-        elem_search_info = {
-            "root_index": "resourceAssignments",
-            "expected_key_val": {
-                "resourceRoleCrn": f"{requests_ops.DEFAULT_IAM_CRN}:resourceRole:{role}",
-                "resourceCrn": cdp_env_crn,
-            },
-            "present": True,
-        }
+        # elem_search_info = {
+        #     "root_index": "resourceAssignments",
+        #     "expected_key_val": {
+        #         "role": f"{requests_ops.DEFAULT_IAM_CRN}:Role:{role}",
+        #         "resourceCrn": cdp_env_crn,
+        #     },
+        #     "present": True,
+        # }
 
         click.echo(f"Waiting for assigning {role} for group {group}")
 
-        poll_for_status(
-            poll_url=f"{iam_url}/listGroupAssignedResourceRoles",
-            data={"groupName": group, "pageSize": 100},
-            elem_search_info=elem_search_info,
-        )
+        # poll_for_status(
+        #     poll_url=f"{iam_url}/listGroupAssignedRoles",
+        #     data={"groupName": group, "pageSize": 100},
+        #     elem_search_info=elem_search_info,
+        # )
 
-        click.echo(f"Assigning {role} on cdp group {group} on env {cdp_env_name} DONE")
+        click.echo(f"Assigning {role} on cdp group {group} DONE")
         # dumping file so that Gitlab will back it up
         with open(f"{group}_{role}.json", "w", encoding="utf-8") as f:
             json.dump(cdp_assign_group_role_json, f, ensure_ascii=False, indent=4)
@@ -71,16 +58,12 @@ def assign_cdp_res_role_to_group(
     click.echo()
 
 
-def unassign_cdp_res_role_to_group(
-    cdp_env_crn, role, group, cdp_env_name, json_skel, dryrun
-):
-    click.echo(
-        f"===Unassigning role {role} from group {group} on env {cdp_env_name}==="
-    )
-    action_url = f"{iam_url}/unassignGroupResourceRole"
+def unassign_cdp_role_from_group(role, group, json_skel, dryrun):
+    click.echo(f"===Unassigning role {role} from group {group}===")
+    action_url = f"{iam_url}/unassignGroupRole"
 
-    cdp_assign_group_role_json = dump_group_cdp_res_role_map_role_json(
-        cdp_env_crn, role, group, json_skel
+    cdp_assign_group_role_json = dump_group_cdp_role_map_role_json(
+        role, group, json_skel
     )
 
     dump_json_dict(cdp_assign_group_role_json)
@@ -93,120 +76,26 @@ def unassign_cdp_res_role_to_group(
             headers=generate_headers("POST", action_url),
         )
 
-        elem_search_info = {
-            "root_index": "resourceAssignments",
-            "expected_key_val": {
-                "resourceRoleCrn": f"{requests_ops.DEFAULT_IAM_CRN}:resourceRole:{role}",
-                "resourceCrn": cdp_env_crn,
-            },
-            "present": False,
-        }
+        # elem_search_info = {
+        #     "root_index": "resourceAssignments",
+        #     "expected_key_val": {
+        #         "role": f"{requests_ops.DEFAULT_IAM_CRN}:Role:{role}",
+        #         "resourceCrn": cdp_env_crn,
+        #     },
+        #     "present": False,
+        # }
 
         click.echo(f"Waiting for unassigning {role} from group {group}")
 
-        poll_for_status(
-            poll_url=f"{iam_url}/listGroupAssignedResourceRoles",
-            data={"groupName": group, "pageSize": 100},
-            elem_search_info=elem_search_info,
-        )
+        # poll_for_status(
+        #     poll_url=f"{iam_url}/listGroupAssignedRoles",
+        #     data={"groupName": group, "pageSize": 100},
+        #     elem_search_info=elem_search_info,
+        # )
 
-        click.echo(
-            f"Unassigning {role} from cdp group {group} on env {cdp_env_name} DONE"
-        )
+        click.echo(f"Unassigning {role} from cdp group {group} DONE")
         # dumping file so that Gitlab will back it up
         with open(f"{group}_{role}.json", "w", encoding="utf-8") as f:
             json.dump(cdp_assign_group_role_json, f, ensure_ascii=False, indent=4)
-    click.echo(f"===============")
-    click.echo()
-
-
-def assign_cdp_res_role_to_user(
-    role, user, cdp_env_crn, cdp_env_name, json_skel, dryrun
-):
-    click.echo(f"===Assigning role {role} to user {user} on env {cdp_env_name}===")
-    action_url = f"{iam_url}/assignuserResourceRole"
-
-    cdp_assign_user_role_json = dump_user_cdp_res_role_map_json(
-        cdp_env_crn, role, user, json_skel
-    )
-
-    dump_json_dict(cdp_assign_user_role_json)
-
-    if not dryrun:
-        response = requests_ops.send_http_request(
-            srv_url=action_url,
-            req_type="post",
-            data=cdp_assign_user_role_json,
-            headers=generate_headers("POST", action_url),
-        )
-
-        elem_search_info = {
-            "root_index": "resourceAssignments",
-            "expected_key_val": {
-                "resourceRoleCrn": f"{requests_ops.DEFAULT_IAM_CRN}:resourceRole:{role}",
-                "resourceCrn": cdp_env_crn,
-            },
-            "present": True,
-        }
-
-        click.echo(f"Waiting for assigning {role} for user {user}")
-
-        poll_for_status(
-            poll_url=f"{iam_url}/listUserAssignedResourceRoles",
-            data={"userName": user, "pageSize": 100},
-            elem_search_info=elem_search_info,
-        )
-
-        click.echo(f"Assigning {role} on cdp user {user} on env {cdp_env_name} DONE")
-        # dumping file so that Gitlab will back it up
-        with open(f"{user}_{role}.json", "w", encoding="utf-8") as f:
-            json.dump(cdp_assign_user_role_json, f, ensure_ascii=False, indent=4)
-    click.echo(f"===============")
-    click.echo()
-
-
-def unassign_cdp_res_role_to_user(
-    cdp_env_crn, role, user, cdp_env_name, json_skel, dryrun
-):
-    click.echo(f"===Unassigning role {role} from user {user} on env {cdp_env_name}===")
-    action_url = f"{iam_url}/unassignuserResourceRole"
-
-    cdp_assign_user_role_json = dump_user_cdp_res_role_map_json(
-        cdp_env_crn, role, user, json_skel
-    )
-
-    dump_json_dict(cdp_assign_user_role_json)
-
-    if not dryrun:
-        requests_ops.send_http_request(
-            srv_url=action_url,
-            req_type="post",
-            data=cdp_assign_user_role_json,
-            headers=generate_headers("POST", action_url),
-        )
-
-        elem_search_info = {
-            "root_index": "resourceAssignments",
-            "expected_key_val": {
-                "resourceRoleCrn": f"{requests_ops.DEFAULT_IAM_CRN}:resourceRole:{role}",
-                "resourceCrn": cdp_env_crn,
-            },
-            "present": False,
-        }
-
-        click.echo(f"Waiting for unassigning {role} from user {user}")
-
-        poll_for_status(
-            poll_url=f"{iam_url}/listUserAssignedResourceRoles",
-            data={"userName": user, "pageSize": 100},
-            elem_search_info=elem_search_info,
-        )
-
-        click.echo(
-            f"Unassigning {role} from cdp user {user} on env {cdp_env_name} DONE"
-        )
-        # dumping file so that Gitlab will back it up
-        with open(f"{user}_{role}.json", "w", encoding="utf-8") as f:
-            json.dump(cdp_assign_user_role_json, f, ensure_ascii=False, indent=4)
     click.echo(f"===============")
     click.echo()
