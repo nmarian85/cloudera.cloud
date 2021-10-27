@@ -46,12 +46,13 @@ User ap-devo-cdp has been assigned resource role IamGroupAdmin for ecbt1-igamfs-
 * **Python dependencies**
     - click
 
+
 ## Steps for Provisioning a new environment without the use of the pipeline
     TODO: Add section with documentation for each cluster type and talk about idempotency and scripts
 
 - Create a new folder containing the CDP environment name in the `conf` folder following the convention `devo-<stage><env_number>`, e.g. `devo-lab04`.
 
-- Create the json configuration files corresponding to the CDP components in the previously mentioned folder. Please fill all the required details belonging to that environment (VPC ID, security groups, subnets, role names, public key, account id, etc.). You can use the `devo-lab01` folder as an example.
+- Create the json configuration files corresponding to the CDP components in the previously mentioned folder. Please fill all the required details belonging to that environment (VPC ID, security groups, subnets, role names, public key, account id, etc.). You can use the `devo-lab04` folder as an example.
 
 - Export the CA bundle certificate location
 
@@ -130,6 +131,15 @@ User ap-devo-cdp has been assigned resource role IamGroupAdmin for ecbt1-igamfs-
     cdp ml create-workspace --generate-cli-skeleton > create_cml.json && \
     python3 scripts/cml_mgmt.py --no-dryrun --action install-cml --env lab --cdp-env-name ${DEVO_ENV_NAME} --cml-cluster-name ${DEVO_ENV_NAME}-cml01 --json-skel create_cml.json
 
+    ```
+
+## Steps for configuring a new CDP tenant
+
+- Assign the cdp roles to the admin groups
+
+    ```bash
+    cdp iam assign-group-role --generate-cli-skeleton > asg_group_role.json && \
+    python3 scripts/group_cdp_role_map.py --no-dryrun --env lab --action assign --json-skel asg_group_role.json
     ```
 
 ## Pipeline - work in progress for now
