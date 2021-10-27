@@ -33,13 +33,21 @@ CDP_SERVICES_ENDPOINT_V2 = f"https://api.{DEFAULT_REGION}.cdp.cloudera.com/api/v
 
 # @lru_cache()
 def send_http_request(
-    srv_url, req_type="get", params=None, data=None, auth=None, headers=None
+    srv_url,
+    req_type="get",
+    params=None,
+    data=None,
+    auth=None,
+    headers=None,
+    ok_exception_str="",
 ):
     """
     Wrapper for requests (HTTP POST, PUT, GET, DELETE) with some error checking
     """
     if req_type not in "post put get delete".split():
         raise ValueError("Unknown request type")
+
+    ok_exception_str = "ALREADY_EXISTS"
 
     try:
         res = getattr(requests, req_type)(
@@ -56,9 +64,8 @@ def send_http_request(
     except requests.exceptions.HTTPError:
         if res.text:
             print(res.text)
-        # if res.status_code == 400:
-        #         return res.text
-        raise
+        if ok_exception_str not in res.text:
+            raise
 
     try:
         out = res.json()
