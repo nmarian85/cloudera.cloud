@@ -8,22 +8,7 @@ import requests_ops
 iam_url = f"{requests_ops.CDP_IAM_ENDPOINT}"
 
 
-def get_user_attr(user_name, attr, next_token=""):
-    action_url = f"{iam_url}/listUsers"
-    response = requests_ops.send_http_request(
-        srv_url=action_url,
-        req_type="post",
-        headers=generate_headers("POST", action_url),
-        data={"startingToken": next_token},
-    )
-    for user_info in response["users"]:
-        if user_info["workloadUsername"] == user_name:
-            return user_info[attr]
-    if "nextToken" in response:
-        return get_user_attr(user_name, attr, response["nextToken"])
-
-
-def dump_user_cdprole_map_json(cdp_env_crn, cdp_role, user_name, json_skel):
+def dump_user_cdp_res_role_map_json(cdp_env_crn, cdp_role, user_name, json_skel):
     assign_user_role_json = dict(json_skel)
     resource_role_crn = f"{requests_ops.DEFAULT_IAM_CRN}:resourceRole:{cdp_role}"
     assign_user_role_json["user"] = user_name
@@ -32,7 +17,7 @@ def dump_user_cdprole_map_json(cdp_env_crn, cdp_role, user_name, json_skel):
     return assign_user_role_json
 
 
-def dump_group_cdprole_map_role_json(cdp_env_crn, cdp_role, group_name, json_skel):
+def dump_group_cdp_res_role_map_role_json(cdp_env_crn, cdp_role, group_name, json_skel):
     assign_group_role_json = dict(json_skel)
     resource_role_crn = f"{requests_ops.DEFAULT_IAM_CRN}:resourceRole:{cdp_role}"
     assign_group_role_json["groupName"] = group_name
@@ -41,11 +26,13 @@ def dump_group_cdprole_map_role_json(cdp_env_crn, cdp_role, group_name, json_ske
     return assign_group_role_json
 
 
-def assign_cdprole_to_group(cdp_env_crn, role, group, cdp_env_name, json_skel, dryrun):
+def assign_cdp_res_role_to_group(
+    cdp_env_crn, role, group, cdp_env_name, json_skel, dryrun
+):
     click.echo(f"===Assigning role {role} to group {group} on env {cdp_env_name}===")
     action_url = f"{iam_url}/assignGroupResourceRole"
 
-    cdp_assign_group_role_json = dump_group_cdprole_map_role_json(
+    cdp_assign_group_role_json = dump_group_cdp_res_role_map_role_json(
         cdp_env_crn, role, group, json_skel
     )
 
@@ -84,13 +71,15 @@ def assign_cdprole_to_group(cdp_env_crn, role, group, cdp_env_name, json_skel, d
     click.echo()
 
 
-def unassign_role_from_group(cdp_env_crn, role, group, cdp_env_name, json_skel, dryrun):
+def unassign_cdp_res_role_to_group(
+    cdp_env_crn, role, group, cdp_env_name, json_skel, dryrun
+):
     click.echo(
         f"===Unassigning role {role} from group {group} on env {cdp_env_name}==="
     )
     action_url = f"{iam_url}/unassignGroupResourceRole"
 
-    cdp_assign_group_role_json = dump_group_cdprole_map_role_json(
+    cdp_assign_group_role_json = dump_group_cdp_res_role_map_role_json(
         cdp_env_crn, role, group, json_skel
     )
 
@@ -131,11 +120,13 @@ def unassign_role_from_group(cdp_env_crn, role, group, cdp_env_name, json_skel, 
     click.echo()
 
 
-def assign_role_to_user(role, user, cdp_env_crn, cdp_env_name, json_skel, dryrun):
+def assign_cdp_res_role_to_user(
+    role, user, cdp_env_crn, cdp_env_name, json_skel, dryrun
+):
     click.echo(f"===Assigning role {role} to user {user} on env {cdp_env_name}===")
     action_url = f"{iam_url}/assignuserResourceRole"
 
-    cdp_assign_user_role_json = dump_user_cdprole_map_json(
+    cdp_assign_user_role_json = dump_user_cdp_res_role_map_json(
         cdp_env_crn, role, user, json_skel
     )
 
@@ -174,11 +165,13 @@ def assign_role_to_user(role, user, cdp_env_crn, cdp_env_name, json_skel, dryrun
     click.echo()
 
 
-def unassign_role_from_user(cdp_env_crn, role, user, cdp_env_name, json_skel, dryrun):
+def unassign_cdp_res_role_to_user(
+    cdp_env_crn, role, user, cdp_env_name, json_skel, dryrun
+):
     click.echo(f"===Unassigning role {role} from user {user} on env {cdp_env_name}===")
     action_url = f"{iam_url}/unassignuserResourceRole"
 
-    cdp_assign_user_role_json = dump_user_cdprole_map_json(
+    cdp_assign_user_role_json = dump_user_cdp_res_role_map_json(
         cdp_env_crn, role, user, json_skel
     )
 

@@ -2,7 +2,10 @@ import click
 import json
 from utils import show_progress, poll_for_status, dump_json_dict
 from env_mgmt import get_cdp_env_crn
-from cdprole_map import assign_cdprole_to_group, unassign_role_from_group
+from cdp_res_role_map import (
+    assign_cdp_res_role_to_group,
+    unassign_cdp_res_role_to_group,
+)
 import requests_ops
 
 
@@ -44,9 +47,9 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     cdp_env_crn = get_cdp_env_crn(cdp_env_name)
 
     for group, roles in groups.items():
-        for role in roles:
+        for role in roles["resource_roles"]:
             if action == "assign-cdproles-to-groups":
-                assign_cdprole_to_group(
+                assign_cdp_res_role_to_group(
                     cdp_env_crn,
                     role,
                     group,
@@ -55,7 +58,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                     dryrun,
                 )
             elif action == "unassign-cdproles-from-groups":
-                unassign_role_from_group(
+                unassign_cdp_res_role_to_group(
                     cdp_env_crn,
                     role,
                     group,
