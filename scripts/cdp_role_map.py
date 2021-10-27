@@ -32,6 +32,7 @@ def assign_cdp_role_to_group(role, group, json_skel, dryrun):
             req_type="post",
             data=cdp_assign_group_role_json,
             headers=generate_headers("POST", action_url),
+            # ok_exception_str="ALREADY_EXISTS",
         )
 
         # elem_search_info = {
