@@ -1,6 +1,6 @@
 {
     "ECBT1-IGAMFS-APP-DEVO-DEV-Admin": {
-        "roles": [
+        "mgt_roles": [
             "PowerUser"
         ],
         "resource_roles": [
@@ -22,7 +22,7 @@
         ]
     },
     "ECBT1-IGAMFS-APP-DEVO-DEV-Expert": {
-        "roles": [
+        "mgt_roles": [
             "IamUser"
         ],
         "resource_roles": [
@@ -36,7 +36,7 @@
         ]
     },
     "ECBT1-IGAMFS-APP-DEVO-DEV-User": {
-        "roles": [],
+        "mgt_roles": [],
         "resource_roles": [
             "DEUser",
             "DFFlowUser",

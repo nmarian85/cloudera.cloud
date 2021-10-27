@@ -98,8 +98,8 @@ User ap-devo-cdp has been assigned resource role IamGroupAdmin for ecbt1-igamfs-
 - Assign CDP groups their CDP resource roles
 
     ```bash
-    cdp iam assign-user-resource-role --generate-cli-skeleton > asg_user_res_role.json && \
-    python3 scripts/group_cdprole_map.py --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME} --action assign-cdproles-to-groups --json-skel asg_user_res_role.json
+    cdp iam assign-group-resource-role --generate-cli-skeleton > asg_group_res_role.json && \
+    python3 scripts/group_cdp_res_role_map.py --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME} --action assign --json-skel asg_group_res_role.json
     ```
 
 - Sync CDP users to environment
