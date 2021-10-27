@@ -27,7 +27,7 @@ import requests_ops
     help="JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
     required=True,
 )
-def main(dryrun, env, cdp_env_name, action, json_skel):
+def main(dryrun, env, action, json_skel):
     if dryrun:
         show_progress("This is a dryrun")
 
@@ -36,7 +36,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     with open(json_skel) as json_file:
         group_cdprole_json_skel = json.load(json_file)
 
-    with open(f"conf/{env}/{cdp_env_name}/groups.json") as json_file:
+    with open(f"conf/{env}/tenant/groups.json") as json_file:
         groups = json.load(json_file)
 
     for group, roles in groups.items():
