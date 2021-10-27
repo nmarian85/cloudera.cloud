@@ -148,11 +148,12 @@ def assign_cdp_res_role_to_user(
     dump_json_dict(cdp_assign_user_role_json)
 
     if not dryrun:
-        response = requests_ops.send_http_request(
+        requests_ops.send_http_request(
             srv_url=action_url,
             req_type="post",
             data=cdp_assign_user_role_json,
             headers=generate_headers("POST", action_url),
+            ok_exception_str="ALREADY_EXISTS",
         )
 
         elem_search_info = {

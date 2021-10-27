@@ -47,8 +47,6 @@ def send_http_request(
     if req_type not in "post put get delete".split():
         raise ValueError("Unknown request type")
 
-    ok_exception_str = "ALREADY_EXISTS"
-
     try:
         res = getattr(requests, req_type)(
             url=srv_url,
@@ -62,12 +60,10 @@ def send_http_request(
     except requests.exceptions.ConnectionError:
         raise
     except requests.exceptions.HTTPError:
-        pass
-        # if res.text:
-        #     print(res.text)
-        # if ok_exception_str not in res.text:
-        #     print("DUUUUUUUUUUUUMB")
-        #     raise
+        if res.text:
+            print(res.text)
+        if ok_exception_str not in res.text:
+            raise
 
     try:
         out = res.json()
