@@ -39,7 +39,7 @@ def send_http_request(
     data=None,
     auth=None,
     headers=None,
-    ok_exception_str=None,
+    ok_exception_str="",
 ):
     """
     Wrapper for requests (HTTP POST, PUT, GET, DELETE) with some error checking
@@ -63,8 +63,9 @@ def send_http_request(
         print(http_err)
         if res.text:
             print(res.text)
-        if ok_exception_str not in res.text:
-            raise
+        if len(ok_exception_str) > 0:
+            if ok_exception_str not in res.text:
+                raise
 
     try:
         out = res.json()
