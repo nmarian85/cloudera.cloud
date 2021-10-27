@@ -36,6 +36,7 @@ def main(dryrun, env, action, json_skel):
 
     for group, roles in groups.items():
         for role in roles["mgt_roles"]:
+            role = f"crn:altus:iam:{requests_ops.DEFAULT_REGION}:altus:role:${role}"
             if action == "assign":
                 assign_cdp_role_to_group(
                     role, group, group_cdprole_json_skel, dryrun,
