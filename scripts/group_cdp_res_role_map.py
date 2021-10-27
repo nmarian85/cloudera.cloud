@@ -13,7 +13,9 @@ import requests_ops
 @click.option("--dryrun/--no-dryrun", default=True)
 @click.option(
     "--action",
-    type=click.Choice(["assign-cdproles-to-groups", "unassign-cdproles-from-groups"]),
+    type=click.Choice(
+        ["assign-cdp-res-roles-to-groups", "unassign-cdp-res-roles-from-groups"]
+    ),
     required=True,
 )
 @click.option(
@@ -48,7 +50,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
 
     for group, roles in groups.items():
         for role in roles["resource_roles"]:
-            if action == "assign-cdproles-to-groups":
+            if action == "assign-cdp-res-roles-to-groups":
                 assign_cdp_res_role_to_group(
                     cdp_env_crn,
                     role,
@@ -57,7 +59,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                     group_cdprole_json_skel,
                     dryrun,
                 )
-            elif action == "unassign-cdproles-from-groups":
+            elif action == "unassign-cdp-res-roles-from-groups":
                 unassign_cdp_res_role_to_group(
                     cdp_env_crn,
                     role,
