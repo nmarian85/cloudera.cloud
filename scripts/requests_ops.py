@@ -63,7 +63,7 @@ def send_http_request(
         print(http_err)
         if res.text:
             print(res.text)
-        if ok_exception_str not in res.text:
+        if ok_exception_str not in res.text or len(ok_exception_str) == 0:
             raise
 
     try:
