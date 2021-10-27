@@ -92,7 +92,7 @@ User ap-devo-cdp has been assigned resource role IamGroupAdmin for ecbt1-igamfs-
 
     ```bash
     cdp environments sync-id-broker-mappings --generate-cli-skeleton > sync_idbroker_mapping.json && \
-    python3 scripts/idbroker_sync.py --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME} --json-skel sync_idbroker_mapping.json
+    python3 scripts/idbroker_sync.py --no-dryrun --cdp-env-name ${DEVO_ENV_NAME} --json-skel sync_idbroker_mapping.json
     ```
 
 - Assign CDP groups their CDP resource roles

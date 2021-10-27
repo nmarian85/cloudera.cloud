@@ -41,9 +41,9 @@ def get_cdw_dbc_id(cdw_cluster_id, dbc_name="default"):
 def dump_cdw_install_json(cdp_env_crn, cdw_cluster_info, json_skel):
     cdw_json = dict(json_skel)
     cdw_json["environmentCrn"] = cdp_env_crn
-    cdw_json["useOverlayNetwork"] = True
+    cdw_json["useOverlayNetwork"] = cdw_cluster_info["use_overlay_network"]
+    cdw_json["usePrivateLoadBalancer"] = cdw_cluster_info["use_private_load_balancer"]
     cdw_json["awsOptions"]["privateSubnetIds"] = cdw_cluster_info["subnets"]
-    cdw_json["tags"] = cdw_cluster_info["tags"]
     return cdw_json
 
 
