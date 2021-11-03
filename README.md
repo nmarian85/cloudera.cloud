@@ -47,8 +47,14 @@ User ap-devo-cdp has been assigned resource role IamGroupAdmin for ecbt1-igamfs-
     - click
 
 
-## Steps for Provisioning a new environment without the use of the pipeline
-    TODO: Add section with documentation for each cluster type and talk about idempotency and scripts
+## Terraform prerequisites for installing CDP components
+Before installing any CDP component we need to make sure that the AWS underlying infrastructure is provisioned in the ECB AWS account. For this, we are going to use the IaC repo (e.g. for lab https://gitlab-ccoe-hyhop.ecbcloud.xyz/cloud/aws/iac/product-teams/devo2/devo2-lab). 
+Please make sure that the IaC code was ran before continuing. 
+
+## Installing a new CDP environment
+The steps below show how to install a CDP environment (environment, datalake, CDE, CML, etc.) from scratch. 
+
+**Important mention: CDW requires a specific way of provisioning which could not be fully automated. You will find the instructions for it at the end of this README**
 
 - Create a new folder containing the CDP environment name in the `conf` folder following the convention `devo-<stage><env_number>`, e.g. `devo-lab04`.
 
@@ -141,6 +147,36 @@ User ap-devo-cdp has been assigned resource role IamGroupAdmin for ecbt1-igamfs-
     cdp iam assign-group-role --generate-cli-skeleton > asg_group_role.json && \
     python3 scripts/group_cdp_role_map.py --no-dryrun --env lab --action assign --json-skel asg_group_role.json
     ```
+
+
+## CDW installation
+This procedure is based on the one here: https://docs.cloudera.com/data-warehouse/cloud/aws-environments/topics/dw-aws-reduced-perms-mode-activating-environments.html
+
+- Open the CDP MC (e.g. `https://t-igam.tadnet.eu/oamfed/idp/initiatesso?providerid=CDP`), click on Data Warehouse, click on the lighting bolt for the specific environment where you want to provision CDW then:
+- choose only private subnets as Deployment Mode
+- Choose only BE networks in the Private Subents area
+- Check use overlay nw
+- Click Activate and then check to activate environment with reduced permissions mode.
+- Click Activate
+- Copy the CDW environment (e.g. `env-tljvnr`)
+- Go to the TF repo and paste the environment name in the environment's folder `main.tf` (`modules/devo-lab04/main.tf`) in the locals section: 
+`  cdw_env_name  = "env-5frx9b"`
+- Make sure that the `cdp-cdw-eks` module is commented. **Due to plenty of limitations (CDP CDW env name not known beforehand, TF not being able to cope with waiting for an EKS cluster to be provisioned, the ECB pipeline not allowing ), you need to run the TF code twice**
+
+```bash
+# module "cdp-cdw-eks" {
+#  source            = "../cdp-cdw-eks"
+#  this_account_id   = var.this_account_id
+#  eks_stack_outputs = module.cdp_cdw_infra.stack_outputs
+#  jumpserver_role   = var.jumpserver_role
+#  crossaccount_role = local.role_name["crossaccount"]
+#  pipeline_role     = var.pipeline_role
+#  cdw_policy_name   = local.cdw_policy_name
+#  cdw_policy_json   = local.cdw_policy_json
+#} 
+```
+- Run the TF code
+
 
 ## Pipeline - work in progress for now
 
