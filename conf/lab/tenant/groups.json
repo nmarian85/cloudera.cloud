@@ -1,0 +1,12 @@
+{
+    "ECBT1-IGAMFS-APP-DEVO-DEV-Admin": {
+        "mgt_roles": [
+            "PowerUser"
+        ]
+    },
+    "ECBT1-IGAMFS-APP-DEVO-DEV-Expert": {
+        "mgt_roles": [
+            "IamUser"
+        ]
+    }
+}

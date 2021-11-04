@@ -1,12 +1,9 @@
 import click
-import sys
 import json
-import os
 from utils import show_progress, poll_for_status, dump_json_dict
 from env_mgmt import get_env_info
 from cdpv1sign import generate_headers
 import requests_ops
-import requests
 
 
 def dump_install_json(cred_info, account_id, json_skel):
@@ -117,7 +114,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
             # dumping file so that Gitlab will back it up
             with open(f"{cred_name}.json", "w", encoding="utf-8") as f:
                 json.dump(cdp_cred_json, f, ensure_ascii=False, indent=4)
-        click.echo(f"================================")
+        click.echo(f"==========")
         click.echo()
 
 

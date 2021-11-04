@@ -1,12 +1,9 @@
 import click
-import sys
 import json
-import os
 from utils import show_progress, poll_for_status, dump_json_dict
-from env_mgmt import get_env_info, get_all_cdp_envs
+from env_mgmt import get_all_cdp_envs
 from cdpv1sign import generate_headers
 import requests_ops
-import requests
 
 
 def dump_sync_all_users_json(json_skel, cdp_env_name=None):
@@ -21,12 +18,6 @@ def dump_sync_all_users_json(json_skel, cdp_env_name=None):
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
 @click.option(
-    "--env",
-    type=click.Choice(["lab", "test", "dev", "acc", "prod"]),
-    help="ECB environment: lab, test, etc.",
-    required=True,
-)
-@click.option(
     "--cdp-env-name",
     help="""Optional argument. When it is not specified the sync will happen for all envs. 
     Please see {env}.json file where you defined the CDP env name""",
@@ -37,7 +28,7 @@ def dump_sync_all_users_json(json_skel, cdp_env_name=None):
     help="JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
     required=True,
 )
-def main(dryrun, env, cdp_env_name, json_skel):
+def main(dryrun, cdp_env_name, json_skel):
     if dryrun:
         show_progress("This is a dryrun")
 
@@ -61,7 +52,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
     dump_json_dict(cdp_sync_json)
 
     if not dryrun:
-        response = requests_ops.send_http_request(
+        requests_ops.send_http_request(
             srv_url=action_url,
             req_type="post",
             data=cdp_sync_json,
@@ -89,7 +80,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
         # dumping file so that Gitlab will back it up
         with open("sync_users.json", "w", encoding="utf-8") as f:
             json.dump(cdp_sync_json, f, ensure_ascii=False, indent=4)
-    click.echo(f"===========================================================")
+    click.echo(f"===============")
     click.echo()
 
 

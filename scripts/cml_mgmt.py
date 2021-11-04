@@ -1,23 +1,19 @@
 import click
-import sys
 import json
-import os
 from utils import show_progress, poll_for_status
-from env_mgmt import get_env_info
 from cdpv1sign import generate_headers
 import requests_ops
-import requests
 
 
-def dump_install_json(cdp_env_name, cml_json_skel, cml_cluster_name, cml_cluster_info):
-    cml_json = dict(cml_json_skel)
+def dump_install_json(cdp_env_name, json_skel, cml_cluster_name, cml_cluster_info):
+    cml_json = dict(json_skel)
 
     cml_json["environmentName"] = cdp_env_name
     cml_json["workspaceName"] = cml_cluster_name
     cml_json["usePublicLoadBalancer"] = False
     cml_json["disableTLS"] = False
     cml_json["enableMonitoring"] = True
-    cml_json["enableGovernance"] = True
+    cml_json["enableGovernance"] = cml_cluster_info["enable_governance"]
     cml_json["loadBalancerIPWhitelists"] = []
     cml_json["provisionK8sRequest"]["environmentName"] = cdp_env_name
     cml_json["provisionK8sRequest"]["network"] = {}
@@ -63,8 +59,8 @@ def dump_install_json(cdp_env_name, cml_json_skel, cml_cluster_name, cml_cluster
     return cml_json
 
 
-def dump_delete_json(cml_json_skel):
-    cml_json = dict(cml_json_skel)
+def dump_delete_json(json_skel):
+    cml_json = dict(json_skel)
     cml_json["removeStorage"] = True
     return cml_json
 
@@ -102,28 +98,23 @@ def main(dryrun, env, cdp_env_name, cml_cluster_name, action, json_skel):
     requests_ops.dryrun = dryrun
 
     with open(json_skel) as json_file:
-        cml_json_skel = json.load(json_file)
+        json_skel = json.load(json_file)
 
     with open(f"conf/{env}/{cdp_env_name}/cml.json") as json_file:
         cml_clusters = json.load(json_file)
 
     cml_cluster_info = cml_clusters[cml_cluster_name]
-    cdp_env_info = get_env_info(env, cdp_env_name)
     cml_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/ml"
 
     if action == "install-cml":
-        click.echo(
-            f"==============Creating CML cluster {cml_cluster_name}=============="
-        )
+        click.echo(f"===Creating CML cluster {cml_cluster_name}===")
         cml_json = dump_install_json(
-            cdp_env_name, cml_json_skel, cml_cluster_name, cml_cluster_info
+            cdp_env_name, json_skel, cml_cluster_name, cml_cluster_info
         )
         action_url = f"{cml_url}/createWorkspace"
     elif action == "delete-cml":
-        click.echo(
-            f"==============Deleting CML cluster {cml_cluster_name}=============="
-        )
-        cml_json = dump_delete_json(cml_json_skel)
+        click.echo(f"===Deleting CML cluster {cml_cluster_name}===")
+        cml_json = dump_delete_json(json_skel)
         action_url = f"{cml_url}/deleteWorkspace"
 
     click.echo("-------------------Generated JSON-----------------------------")
@@ -131,7 +122,7 @@ def main(dryrun, env, cdp_env_name, cml_cluster_name, action, json_skel):
     click.echo("--------------------------------------------------------------")
 
     if not dryrun:
-        response = requests_ops.send_http_request(
+        requests_ops.send_http_request(
             srv_url=action_url,
             req_type="post",
             data=cml_json,
@@ -164,7 +155,7 @@ def main(dryrun, env, cdp_env_name, cml_cluster_name, action, json_skel):
         # dumping file so that Gitlab will back it up
         with open(f"{cml_cluster_name}.json", "w", encoding="utf-8") as f:
             json.dump(cml_json, f, ensure_ascii=False, indent=4)
-    click.echo(f"===========================================================")
+    click.echo(f"===============")
     click.echo()
 
 

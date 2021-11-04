@@ -1,21 +1,18 @@
 import click
-import sys
 import json
-import os
 from utils import show_progress, poll_for_status, dump_json_dict
-from env_mgmt import get_cdp_env_crn, get_env_info
-from cdpv1sign import generate_headers
-from cdprole_map import assign_cdprole_to_group, unassign_role_from_group
+from env_mgmt import get_cdp_env_crn
+from cdp_res_role_map import (
+    assign_cdp_res_role_to_group,
+    unassign_cdp_res_role_to_group,
+)
 import requests_ops
-import requests
 
 
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
 @click.option(
-    "--action",
-    type=click.Choice(["assign-cdproles-to-groups", "unassign-cdproles-from-groups"]),
-    required=True,
+    "--action", type=click.Choice(["assign", "unassign"]), required=True,
 )
 @click.option(
     "--env",
@@ -48,9 +45,9 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     cdp_env_crn = get_cdp_env_crn(cdp_env_name)
 
     for group, roles in groups.items():
-        for role in roles:
-            if action == "assign-cdproles-to-groups":
-                assign_cdprole_to_group(
+        for role in roles["resource_roles"]:
+            if action == "assign":
+                assign_cdp_res_role_to_group(
                     cdp_env_crn,
                     role,
                     group,
@@ -58,8 +55,8 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                     group_cdprole_json_skel,
                     dryrun,
                 )
-            elif action == "unassign-cdproles-from-groups":
-                unassign_role_from_group(
+            elif action == "unassign":
+                unassign_cdp_res_role_to_group(
                     cdp_env_crn,
                     role,
                     group,

@@ -1,12 +1,8 @@
 import click
-import sys
 import json
-import os
 from utils import show_progress, poll_for_status, dump_json_dict
-from env_mgmt import get_env_info
 from cdpv1sign import generate_headers
 import requests_ops
-import requests
 
 
 def dump_sync_idbroker_sync_json(cdp_env_name, json_skel):
@@ -18,12 +14,6 @@ def dump_sync_idbroker_sync_json(cdp_env_name, json_skel):
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
 @click.option(
-    "--env",
-    type=click.Choice(["lab", "test", "dev", "acc", "prod"]),
-    help="ECB environment: lab, test, etc.",
-    required=True,
-)
-@click.option(
     "--cdp-env-name",
     help="Please see {env}.json file where you defined the CDP env name",
     required=True,
@@ -33,7 +23,7 @@ def dump_sync_idbroker_sync_json(cdp_env_name, json_skel):
     help="JSON skeleton for command to be run (generate it with cdpcli generate skel option)",
     required=True,
 )
-def main(dryrun, env, cdp_env_name, json_skel):
+def main(dryrun, cdp_env_name, json_skel):
     if dryrun:
         show_progress("This is a dryrun")
 
@@ -44,7 +34,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
 
     sync_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
 
-    click.echo(f"========Syncing idbroker mappings on {cdp_env_name}====")
+    click.echo(f"===Syncing idbroker mappings on {cdp_env_name}====")
     cdp_sync_json = dump_sync_idbroker_sync_json(cdp_env_name, sync_json_skel)
     action_url = f"{sync_url}/syncIdBrokerMappings"
 
@@ -76,7 +66,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
         # dumping file so that Gitlab will back it up
         with open(f"{cdp_env_name}_idbroker_sync.json", "w", encoding="utf-8") as f:
             json.dump(cdp_sync_json, f, ensure_ascii=False, indent=4)
-    click.echo(f"===========================================================")
+    click.echo(f"===============")
     click.echo()
 
 

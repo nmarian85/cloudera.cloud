@@ -1,18 +1,15 @@
 import click
-import sys
 import json
-import os
 from utils import show_progress, poll_for_status, dump_json_dict
 from cdpv1sign import generate_headers
 import requests_ops
-import requests
 
 
 # TODO: add code to add jump server role access to EKS control plane
 
 
-def dump_install_json(cdp_env_name, cde_cluster_name, cde_cluster_info, cde_json_skel):
-    cde_json = dict(cde_json_skel)
+def dump_install_json(cdp_env_name, cde_cluster_name, cde_cluster_info, json_skel):
+    cde_json = dict(json_skel)
     cde_json["name"] = cde_cluster_name
     cde_json["env"] = cdp_env_name
     cde_json["instanceType"] = cde_cluster_info["instance_type"]
@@ -33,8 +30,8 @@ def dump_install_json(cdp_env_name, cde_cluster_name, cde_cluster_info, cde_json
     return cde_json
 
 
-def dump_delete_json(cluster_id, cde_json_skel):
-    cdp_cde_cluster_json = dict(cde_json_skel)
+def dump_delete_json(cluster_id, json_skel):
+    cdp_cde_cluster_json = dict(json_skel)
     cdp_cde_cluster_json["clusterId"] = cluster_id
     return cdp_cde_cluster_json
 
@@ -48,9 +45,9 @@ def get_cde_cluster_id(cluster_name):
         data={},
     )
     for cde_cluster_info in response["services"]:
-        if (
-            cde_cluster_info["name"] == cluster_name
-            and cde_cluster_info["status"] == "ClusterCreationCompleted"
+        if cde_cluster_info["name"] == cluster_name and (
+            cde_cluster_info["status"] == "ClusterCreationCompleted"
+            or cde_cluster_info["status"] == "ClusterProvisioningFailed"
         ):
             return cde_cluster_info["clusterId"]
 
@@ -88,7 +85,7 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, action, json_skel):
     requests_ops.dryrun = dryrun
 
     with open(json_skel) as json_file:
-        cde_json_skel = json.load(json_file)
+        json_skel = json.load(json_file)
 
     with open(f"conf/{env}/{cdp_env_name}/cde.json") as json_file:
         cde_clusters = json.load(json_file)
@@ -98,19 +95,15 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, action, json_skel):
     cde_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/de"
 
     if action == "install-cde":
-        click.echo(
-            f"==============Installing CDE cluster {cde_cluster_name}=============="
-        )
+        click.echo(f"===Installing CDE cluster {cde_cluster_name}===")
         cde_cluster_json = dump_install_json(
-            cdp_env_name, cde_cluster_name, cde_cluster_info, cde_json_skel
+            cdp_env_name, cde_cluster_name, cde_cluster_info, json_skel
         )
         action_url = f"{cde_url}/enableService"
     elif action == "delete-cde":
-        click.echo(
-            f"==============Deleting CDE cluster {cde_cluster_name}=============="
-        )
+        click.echo(f"===Deleting CDE cluster {cde_cluster_name}===")
         cde_cluster_json = dump_delete_json(
-            get_cde_cluster_id(cde_cluster_name), cde_json_skel
+            get_cde_cluster_id(cde_cluster_name), json_skel
         )
         action_url = f"{cde_url}/disableService"
 
@@ -154,7 +147,7 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, action, json_skel):
         # dumping file so that Gitlab will back it up
         with open(f"{cde_cluster_name}.json", "w", encoding="utf-8") as f:
             json.dump(cde_cluster_json, f, ensure_ascii=False, indent=4)
-    click.echo(f"===========================================================")
+    click.echo(f"===============")
     click.echo()
 
 

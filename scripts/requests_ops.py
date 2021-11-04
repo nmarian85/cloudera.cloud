@@ -6,9 +6,7 @@ the REST API using the python requests module.
 import requests
 import json
 from os import getenv
-from abc import ABC, abstractmethod
-from time import strftime, gmtime, sleep, time
-from functools import wraps
+
 
 dryrun = True
 
@@ -31,10 +29,17 @@ CDP_IAM_ENDPOINT = f"https://iamapi.{DEFAULT_REGION}.altus.cloudera.com/iam"
 CDP_SERVICES_ENDPOINT = (
     f"https://api.{DEFAULT_REGION}.cdp.cloudera.com/api/v{CDP_API_VERSION}"
 )
+CDP_SERVICES_ENDPOINT_V2 = f"https://api.{DEFAULT_REGION}.cdp.cloudera.com/api/v2"
 
 # @lru_cache()
 def send_http_request(
-    srv_url, req_type="get", params=None, data=None, auth=None, headers=None
+    srv_url,
+    req_type="get",
+    params=None,
+    data=None,
+    auth=None,
+    headers=None,
+    ok_exception_str="",
 ):
     """
     Wrapper for requests (HTTP POST, PUT, GET, DELETE) with some error checking
@@ -54,12 +59,15 @@ def send_http_request(
         res.raise_for_status()
     except requests.exceptions.ConnectionError:
         raise
-    except requests.exceptions.HTTPError:
+    except requests.exceptions.HTTPError as http_err:
+        print(http_err)
         if res.text:
             print(res.text)
-        # if res.status_code == 400:
-        #         return res.text
-        raise
+        if len(ok_exception_str) > 0:
+            if ok_exception_str not in res.text:
+                raise
+        else:
+            raise
 
     try:
         out = res.json()

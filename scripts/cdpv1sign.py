@@ -25,7 +25,6 @@ from collections import OrderedDict
 from email.utils import formatdate
 import json
 import os
-import sys
 from urllib.parse import urlparse
 
 from pure25519 import eddsa
