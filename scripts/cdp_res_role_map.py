@@ -54,7 +54,7 @@ def assign_cdp_res_role_to_group(
     dump_json_dict(cdp_assign_group_role_json)
 
     if not dryrun:
-        response = requests_ops.send_http_request(
+        requests_ops.send_http_request(
             srv_url=action_url,
             req_type="post",
             data=cdp_assign_group_role_json,
