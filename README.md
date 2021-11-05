@@ -54,6 +54,9 @@ Before installing any CDP component we need to make sure that the underlying AWS
 Please make sure that the IaC code was ran before continuing. 
 **Important mention: CDW requires a specific way of provisioning which could not be fully automated. You will find the instructions for it at the end of this README**
 
+## Running the code
+The python scripts have a `--dryrun` option so that nothing gets executed but you will be able to see all the actions that will be done together with the JSON that would be posted to the CDP REST API endpoint. Please use the `--no-dryrun` flag when initiating a "real" execution.
+
 ## Installing a new CDP environment
 The steps below show how to install CDP components(environment, datalake, CDE, CML, etc.) from scratch. 
 
@@ -167,7 +170,7 @@ This procedure is based on the one here: https://docs.cloudera.com/data-warehous
 - Click Activate
 - Copy the CDW environment (e.g. `env-5frx9b`)
 - Go to the TF repo and paste the environment name in the environment's folder `main.tf` (e.g. `modules/devo-lab04/main.tf`) in the locals section: 
-`  cdw_env_name  = "env-5frx9b"`
+`cdw_env_name = "env-5frx9b"`
 - **Make sure that the following resource in the `modules/cdp-cdw-infra/main.tf` is commented. This is due to plenty of limitations (CDP CDW env name not known beforehand, TF not being able to cope with waiting for an EKS cluster to be provisioned, the ECB pipeline not allowing the AWS pipeline role to be impersonated)**
   
   ```bash
