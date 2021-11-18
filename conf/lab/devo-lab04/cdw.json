@@ -35,6 +35,32 @@
           "value": "cdp"
         }
       ]
+    },
+    "h03": {
+      "autoscaling": {
+        "min_clusters": 1,
+        "max_clusters": 5
+      },
+      "image_version": "",
+      "template": "xsmall",
+      "vw_type": "hive",
+      "dbc_name": "default",
+      "config": {
+        "application_configs": {},
+        "common_configs": "",
+        "enable_sso": "true",
+        "ldap_groups": []
+      },
+      "tags": [
+        {
+          "key": "env",
+          "value": "lab"
+        },
+        {
+          "key": "origin",
+          "value": "cdp"
+        }
+      ]
     }
   }
 }
