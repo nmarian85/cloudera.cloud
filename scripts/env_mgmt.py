@@ -73,9 +73,7 @@ def dump_delete_json(cdp_env_name, cdp_env_info, env_json_skel):
 
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
-@click.option(
-    "--action", type=click.Choice(["install-env", "delete-env"]), required=True
-)
+@click.option("--action", type=click.Choice(["install", "delete"]), required=True)
 @click.option(
     "--env",
     type=click.Choice(["lab", "test", "dev", "acc", "prod"]),
@@ -104,11 +102,11 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     cdp_env_info = get_env_info(env, cdp_env_name)
     env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
 
-    if action == "install-env":
+    if action == "install":
         click.echo(f"===Creating environment {cdp_env_name}===")
         env_json = dump_install_json(cdp_env_name, cdp_env_info, env_json_skel)
         action_url = f"{env_url}/createAWSEnvironment"
-    elif action == "delete-env":
+    elif action == "delete":
         click.echo(f"===Deleting environment {cdp_env_name}===")
         env_json = dump_delete_json(cdp_env_name, cdp_env_info, env_json_skel)
         action_url = f"{env_url}/deleteEnvironment"
@@ -127,7 +125,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
 
         poll_url = f"{env_url}/listEnvironments"
 
-        if action == "install-env":
+        if action == "install":
             elem_search_info = {
                 "root_index": "environments",
                 "expected_key_val": {
@@ -136,7 +134,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 },
                 "present": True,
             }
-        elif action == "delete-env":
+        elif action == "delete":
             elem_search_info = {
                 "root_index": "environments",
                 "expected_key_val": {"environmentName": cdp_env_name},

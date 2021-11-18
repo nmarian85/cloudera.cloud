@@ -54,97 +54,15 @@ Before installing any CDP component we need to make sure that the underlying AWS
 Please make sure that the IaC code was ran before continuing. 
 **Important mention: CDW requires a specific way of provisioning which could not be fully automated. You will find the instructions for it at the end of this README**
 
-## Installing a new CDP environment
-The steps below show how to install CDP components(environment, datalake, CDE, CML, etc.) from scratch. 
+## Running the code
+- The python scripts have a `--dryrun` option so that nothing gets executed but you will be able to see all the actions that will be done together with the JSON that would be posted to the CDP REST API endpoint. Please use the `--no-dryrun` flag when initiating a "real" execution.
 
-- Create a new folder containing the CDP environment name in the `conf` folder following the convention `devo-<stage><env_number>`, e.g. `devo-lab04`.
-
-- Create the json configuration files corresponding to the CDP components in the previously mentioned folder. Please fill all the required details belonging to that environment (VPC ID, security groups, subnets, role names, public key, account id, etc.). You can use the `devo-lab04` folder as an example.
-
-- Export the CA bundle certificate location
+- Export the CA bundle certificate location the environment name
 
     ```bash
     export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt
     export DEVO_ENV_NAME=devo-lab04
     ```
-
-- Create the credential for the environment
-
-    ```bash
-    cdp environments create-aws-credential --generate-cli-skeleton > cred_create.json && \
-    python3 scripts/cred_mgmt.py --no-dryrun --action create-cred --env lab --cdp-env-name ${DEVO_ENV_NAME} --json-skel cred_create.json
-    ```
-
-- Create the CDP environment
-
-    ```bash
-    cdp environments create-aws-environment --generate-cli-skeleton > create_env.json && \
-    python3 scripts/env_mgmt.py --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME} --action install-env --json-skel create_env.json
-    ```
-
-- Create ranger and idbroker mappings
-
-    ```bash
-    cdp environments set-id-broker-mappings --generate-cli-skeleton > create_idbroker_mapping.json && \
-    python3 scripts/idbroker_map.py  --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME} --json-skel create_idbroker_mapping.json
-    ```
-
-- Create data lake
-
-    ```bash
-    cdp datalake create-aws-datalake --generate-cli-skeleton > create_dlake.json && \
-    python3 scripts/cdl_mgmt.py --no-dryrun --action install-cdl --env lab --cdp-env-name ${DEVO_ENV_NAME} --json-skel create_dlake.json
-    ```
-
-- Sync idbroker mappings
-
-    ```bash
-    cdp environments sync-id-broker-mappings --generate-cli-skeleton > sync_idbroker_mapping.json && \
-    python3 scripts/idbroker_sync.py --no-dryrun --cdp-env-name ${DEVO_ENV_NAME} --json-skel sync_idbroker_mapping.json
-    ```
-
-- Assign CDP groups their CDP resource roles
-
-    ```bash
-    cdp iam assign-group-resource-role --generate-cli-skeleton > asg_group_res_role.json && \
-    python3 scripts/group_cdp_res_role_map.py --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME} --action assign --json-skel asg_group_res_role.json
-    ```
-
-- Sync CDP users to environment
-
-    ```bash
-    cdp environments sync-all-users --generate-cli-skeleton > sync_all_users.json && \
-    python3 scripts/user_sync.py --no-dryrun --env lab --json-skel sync_all_users.json
-    ```
-
-- Install CDE
-
-    ```bash
-    cdp de enable-service --generate-cli-skeleton > create_cde.json && \
-    python3 scripts/cde_mgmt.py --no-dryrun --action install-cde --env lab --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --json-skel create_cde.json
-    ```
-
-- Install CDE VC
-
-    ```bash
-    cdp de create-vc --generate-cli-skeleton > create_vc_cde.json && \
-    python3 scripts/vc_cde_mgmt.py --no-dryrun --action install-vc-cde --env lab --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --vc-cde-cluster-name ${DEVO_ENV_NAME}-cde01-vc01 --json-skel create_vc_cde.json
-
-    ```
-
-- Install CML
-
-    ```bash
-    cdp ml create-workspace --generate-cli-skeleton > create_cml.json && \
-    python3 scripts/cml_mgmt.py --no-dryrun --action install-cml --env lab --cdp-env-name ${DEVO_ENV_NAME} --cml-cluster-name ${DEVO_ENV_NAME}-cml01 --json-skel create_cml.json
-
-    ```
-
-- Install Impala CDW Virtual Warehouse 
-  TBD
-
-- Install Hive CDW Virtual Warehouse 
-TBD
 ## Steps for configuring a new CDP tenant
 
 - Assign the cdp roles to the admin groups
@@ -154,6 +72,82 @@ TBD
     python3 scripts/group_cdp_role_map.py --no-dryrun --env lab --action assign --json-skel asg_group_role.json
     ```
 
+## Installing a new CDP environment
+- The steps below show how to install CDP components(environment, datalake, CDE, CML, etc.) from scratch. 
+- Please follow the installation order below: CDP environment, CDP data lake, CDP experiences.
+- Please see the section called "Running the code" for exporting the proper environment variables
+
+- Create a new folder containing the CDP environment name in the `conf` folder following the convention `devo-<stage><env_number>`, e.g. `devo-lab04`.
+
+- Create the json configuration files corresponding to the CDP components in the previously mentioned folder. Please fill all the required details belonging to that environment (VPC ID, security groups, subnets, role names, public key, account id, etc.). You can use the `devo-lab04` folder as an example.
+
+
+### Create the credential for the environment
+
+```bash
+cdp environments create-aws-credential --generate-cli-skeleton > cred_create.json && \
+python3 scripts/cred_mgmt.py --no-dryrun --action create-cred --env lab --cdp-env-name ${DEVO_ENV_NAME} --json-skel cred_create.json
+```
+
+### Create the CDP environment
+```bash
+cdp environments create-aws-environment --generate-cli-skeleton > create_env.json && \
+python3 scripts/env_mgmt.py --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME} --action install-env --json-skel create_env.json
+```
+
+### Create ranger and idbroker mappings
+
+```bash
+cdp environments set-id-broker-mappings --generate-cli-skeleton > create_idbroker_mapping.json && \
+python3 scripts/idbroker_map.py  --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME} --json-skel create_idbroker_mapping.json
+```
+
+### Create data lake
+
+```bash
+cdp datalake create-aws-datalake --generate-cli-skeleton > create_dlake.json && \
+python3 scripts/cdl_mgmt.py --no-dryrun --action install --env lab --cdp-env-name ${DEVO_ENV_NAME} --json-skel create_dlake.json
+```
+
+### Sync idbroker mappings
+
+```bash
+cdp environments sync-id-broker-mappings --generate-cli-skeleton > sync_idbroker_mapping.json && \
+python3 scripts/idbroker_sync.py --no-dryrun --cdp-env-name ${DEVO_ENV_NAME} --json-skel sync_idbroker_mapping.json
+```
+
+### Assign CDP groups their CDP resource roles
+
+```bash
+cdp iam assign-group-resource-role --generate-cli-skeleton > asg_group_res_role.json && \
+python3 scripts/group_cdp_res_role_map.py --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME} --action assign --json-skel asg_group_res_role.json
+```
+### Sync CDP users to environment
+
+```bash
+cdp environments sync-all-users --generate-cli-skeleton > sync_all_users.json && \
+python3 scripts/user_sync.py --no-dryrun --env lab --json-skel sync_all_users.json
+```
+
+### Install CDE
+
+```bash
+cdp de enable-service --generate-cli-skeleton > create_cde.json && \
+python3 scripts/cde_mgmt.py --no-dryrun --action install --env lab --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --json-skel create_cde.json
+```
+
+### Install CDE VC
+```bash
+cdp de create-vc --generate-cli-skeleton > create_vc_cde.json && \
+python3 scripts/vc_cde_mgmt.py --no-dryrun --action install --env lab --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --vc-name ${DEVO_ENV_NAME}-cde01-vc01 --json-skel create_vc_cde.json
+```
+
+### Install CML
+
+```bash
+cdp ml create-workspace --generate-cli-skeleton > create_cml.json && \
+python3 scripts/cml_mgmt.py --no-dryrun --action install --env lab --cdp-env-name ${DEVO_ENV_NAME} --cml-cluster-name ${DEVO_ENV_NAME}-cml01 --json-skel create_cml.json
+```
 
 ## Enabling the CDW service
 For enabling the CDW service we are going to use the following procedure. This is only needed when enabling the CDW service; for installing the virtual warehouses you will use the standard automation part of this repo.
@@ -167,11 +161,11 @@ This procedure is based on the one here: https://docs.cloudera.com/data-warehous
 - Click Activate
 - Copy the CDW environment (e.g. `env-5frx9b`)
 - Go to the TF repo and paste the environment name in the environment's folder `main.tf` (e.g. `modules/devo-lab04/main.tf`) in the locals section: 
-`  cdw_env_name  = "env-5frx9b"`
+`cdw_env_name = "env-5frx9b"`
 - **Make sure that the following resource in the `modules/cdp-cdw-infra/main.tf` is commented. This is due to plenty of limitations (CDP CDW env name not known beforehand, TF not being able to cope with waiting for an EKS cluster to be provisioned, the ECB pipeline not allowing the AWS pipeline role to be impersonated)**
   
   ```bash
-  resource "kubectl_manifest" "example" {
+  resource "kubectl_manifest" "aws_auth_config" {
       ...
   }
   ```
@@ -180,10 +174,15 @@ This procedure is based on the one here: https://docs.cloudera.com/data-warehous
 - Once this is done, go back to the CDP MC Data Warehouse interface and then click on Copy Configurations and then Continue. Wait until the service is enabled and the Database Catalog provisioned.
 - Login to the JH and then enable the Cloudwatch logging for EKS:
 
-```bash
-➜  ~ aws eks update-cluster-config --name env-hk574w-dwx-stack-eks --logging '{"clusterLogging": [{"types": ["api","audit","authenticator","controllerManager","scheduler"],"enabled": true}]}'
-```
+    ```bash
+    ➜  ~ aws eks update-cluster-config --name env-hk574w-dwx-stack-eks --logging '{"clusterLogging": [{"types": ["api","audit","authenticator","controllerManager","scheduler"],"enabled": true}]}'
+    ```
 - Follow the steps for provisioning the virtual warehouses in the Installing a CDP environment section.
+
+## Install CDW Virtual Warehouse (Impala/Hive)
+```bash
+cdp dw create-vw --generate-cli-skeleton > create_vw.json && python3 scripts/vw_cdw_mgmt.py --no-dryrun --action install --env lab --cdp-env-name $DEVO_ENV_NAME --vw-name i03 --json-skel create_vw.json
+```
 
 ## Pipeline - work in progress for now
 

@@ -1,6 +1,6 @@
 import click
 import json
-from utils import show_progress, poll_for_status
+from utils import show_progress, poll_for_status, dump_json_dict
 from cdpv1sign import generate_headers
 import requests_ops
 
@@ -67,9 +67,7 @@ def dump_delete_json(json_skel):
 
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
-@click.option(
-    "--action", type=click.Choice(["install-cml", "delete-cml"]), required=True
-)
+@click.option("--action", type=click.Choice(["install", "delete"]), required=True)
 @click.option(
     "--env",
     type=click.Choice(["lab", "test", "dev", "acc", "prod"]),
@@ -106,20 +104,18 @@ def main(dryrun, env, cdp_env_name, cml_cluster_name, action, json_skel):
     cml_cluster_info = cml_clusters[cml_cluster_name]
     cml_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/ml"
 
-    if action == "install-cml":
+    if action == "install":
         click.echo(f"===Creating CML cluster {cml_cluster_name}===")
         cml_json = dump_install_json(
             cdp_env_name, json_skel, cml_cluster_name, cml_cluster_info
         )
         action_url = f"{cml_url}/createWorkspace"
-    elif action == "delete-cml":
+    elif action == "delete":
         click.echo(f"===Deleting CML cluster {cml_cluster_name}===")
         cml_json = dump_delete_json(json_skel)
         action_url = f"{cml_url}/deleteWorkspace"
 
-    click.echo("-------------------Generated JSON-----------------------------")
-    print(json.dumps(cml_json, indent=4, sort_keys=True))
-    click.echo("--------------------------------------------------------------")
+    dump_json_dict(cml_json)
 
     if not dryrun:
         requests_ops.send_http_request(
@@ -133,7 +129,7 @@ def main(dryrun, env, cdp_env_name, cml_cluster_name, action, json_skel):
 
         poll_url = f"{cml_url}/listWorkspaces"
 
-        if action == "install-cml":
+        if action == "install":
             elem_search_info = {
                 "root_index": "workspaces",
                 "expected_key_val": {
@@ -142,7 +138,7 @@ def main(dryrun, env, cdp_env_name, cml_cluster_name, action, json_skel):
                 },
                 "present": True,
             }
-        elif action == "delete-cml":
+        elif action == "delete":
             elem_search_info = {
                 "root_index": "workspaces",
                 "expected_key_val": {"instanceName": cml_cluster_name},

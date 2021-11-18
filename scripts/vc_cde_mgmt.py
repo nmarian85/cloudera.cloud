@@ -43,9 +43,7 @@ def dump_delete_json(cde_cluster_id, vc_name, vc_json):
 
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
-@click.option(
-    "--action", type=click.Choice(["install-vc-cde", "delete-vc-cde"]), required=True
-)
+@click.option("--action", type=click.Choice(["install", "delete"]), required=True)
 @click.option(
     "--env",
     type=click.Choice(["lab", "test", "dev", "acc", "prod"]),
@@ -91,11 +89,11 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, vc_name, action, json_skel
 
     cde_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/de"
 
-    if action == "install-vc-cde":
+    if action == "install":
         click.echo(f"===Installing virtual CDE cluster {vc_name}===")
         vc_json = dump_install_json(vc_name, vc_cde_info, cde_cluster_id, vc_json)
         action_url = f"{cde_url}/createVc"
-    elif action == "delete-vc-cde":
+    elif action == "delete":
         click.echo(f"===Deleting virtual CDE cluster {vc_name}===")
         vc_json = dump_delete_json(cde_cluster_id, vc_name, vc_json)
 
@@ -115,15 +113,15 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, vc_name, action, json_skel
 
         poll_url = f"{cde_url}/listVcs"
 
-        if action == "install-vc-cde":
+        if action == "install":
             elem_search_info = {
                 "root_index": "vcs",
                 "expected_key_val": {"vcName": vc_name, "status": "AppInstalled"},
                 "present": True,
             }
-        elif action == "delete-vc-cde":
+        elif action == "delete":
             elem_search_info = {
-                "root_index": "services",
+                "root_index": "vcs",
                 "expected_key_val": {"vcName": vc_name},
                 "present": False,
             }
