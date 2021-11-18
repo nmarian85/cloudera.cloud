@@ -143,13 +143,11 @@ The steps below show how to install CDP components(environment, datalake, CDE, C
 
     ```
 
-- Install Impala CDW Virtual Warehouse 
+- Install CDW Virtual Warehouse (Impala/Hive)
     ```bash
     cdp dw create-vw --generate-cli-skeleton > create_vw.json && python3 scripts/vw_cdw_mgmt.py --no-dryrun --action install --env lab --cdp-env-name $DEVO_ENV_NAME --vw-name i03 --json-skel create_vw.json
     ```
 
-- Install Hive CDW Virtual Warehouse 
-TBD
 ## Steps for configuring a new CDP tenant
 
 - Assign the cdp roles to the admin groups
@@ -158,7 +156,6 @@ TBD
     cdp iam assign-group-role --generate-cli-skeleton > asg_group_role.json && \
     python3 scripts/group_cdp_role_map.py --no-dryrun --env lab --action assign --json-skel asg_group_role.json
     ```
-
 
 ## Enabling the CDW service
 For enabling the CDW service we are going to use the following procedure. This is only needed when enabling the CDW service; for installing the virtual warehouses you will use the standard automation part of this repo.
