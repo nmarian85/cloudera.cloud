@@ -1,6 +1,6 @@
 import click
 import json
-from utils import show_progress, poll_for_status
+from utils import show_progress, poll_for_status, dump_json_dict
 from cdpv1sign import generate_headers
 import requests_ops
 
@@ -115,9 +115,7 @@ def main(dryrun, env, cdp_env_name, cml_cluster_name, action, json_skel):
         cml_json = dump_delete_json(json_skel)
         action_url = f"{cml_url}/deleteWorkspace"
 
-    click.echo("-------------------Generated JSON-----------------------------")
-    print(json.dumps(cml_json, indent=4, sort_keys=True))
-    click.echo("--------------------------------------------------------------")
+    dump_json_dict(cml_json)
 
     if not dryrun:
         requests_ops.send_http_request(
