@@ -40,9 +40,7 @@ def dump_delete_json(cred_info, json_skel):
 
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
-@click.option(
-    "--action", type=click.Choice(["create-cred", "delete-cred"]), required=True
-)
+@click.option("--action", type=click.Choice(["create", "delete"]), required=True)
 @click.option(
     "--env",
     type=click.Choice(["lab", "test", "dev", "acc", "prod"]),
@@ -74,13 +72,13 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     cred_info = None
     for cred, cred_info in cdp_env_info["credentials"].items():
         cred_name = cred_info["credential_name"]
-        if action == "create-cred":
+        if action == "create":
             click.echo(f"========Creating credential {cred_name}========")
             cdp_cred_json = dump_install_json(
                 cred_info, cdp_env_info["account_id"], cred_json_skel
             )
             action_url = f"{env_url}/createAWSCredential"
-        elif action == "delete-cred":
+        elif action == "delete":
             click.echo(f"========Deleting credential {cred_name}========")
             cdp_cred_json = dump_delete_json(cred_info, cred_json_skel)
             action_url = f"{env_url}/deleteCredential"
@@ -96,9 +94,9 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
             )
 
             click.echo(f"Waiting for {action} on credential {cred_name}")
-            if action == "create-cred":
+            if action == "create":
                 elem_present = True
-            elif action == "delete-cred":
+            elif action == "delete":
                 elem_present = False
 
             elem_search_info = {

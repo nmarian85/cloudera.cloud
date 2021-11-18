@@ -40,9 +40,7 @@ def dump_delete_json(cdl_cluster_name, json_skel):
 
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
-@click.option(
-    "--action", type=click.Choice(["install-cdl", "delete-cdl"]), required=True
-)
+@click.option("--action", type=click.Choice(["install", "delete"]), required=True)
 @click.option(
     "--env",
     type=click.Choice(["lab", "test", "dev", "acc", "prod"]),
@@ -76,7 +74,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     cdl_cluster_name = cdl_cluster_info["name"]
     cdl_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/datalake"
 
-    if action == "install-cdl":
+    if action == "install":
         click.echo(f"===Creating environment {cdp_env_name}===")
         cdl_json = dump_install_json(
             cdp_env_name,
@@ -86,7 +84,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
             json_skel,
         )
         action_url = f"{cdl_url}/createAWSDatalake"
-    elif action == "delete-cdl":
+    elif action == "delete":
         click.echo(f"===Deleting environment {cdp_env_name}===")
         cdl_json = dump_delete_json(cdl_cluster_name, json_skel)
         action_url = f"{cdl_url}/deleteDatalake"
@@ -105,7 +103,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
 
         poll_url = f"{cdl_url}/listDatalakes"
 
-        if action == "install-cdl":
+        if action == "install":
             elem_search_info = {
                 "root_index": "datalakes",
                 "expected_key_val": {
@@ -114,7 +112,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 },
                 "present": True,
             }
-        elif action == "delete-cdl":
+        elif action == "delete":
             elem_search_info = {
                 "root_index": "datalakes",
                 "expected_key_val": {"datalakeName": cdl_cluster_name},

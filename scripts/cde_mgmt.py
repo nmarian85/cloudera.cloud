@@ -54,9 +54,7 @@ def get_cde_cluster_id(cluster_name):
 
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
-@click.option(
-    "--action", type=click.Choice(["install-cde", "delete-cde"]), required=True
-)
+@click.option("--action", type=click.Choice(["install", "delete"]), required=True)
 @click.option(
     "--env",
     type=click.Choice(["lab", "test", "dev", "acc", "prod"]),
@@ -94,13 +92,13 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, action, json_skel):
 
     cde_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/de"
 
-    if action == "install-cde":
+    if action == "install":
         click.echo(f"===Installing CDE cluster {cde_cluster_name}===")
         cde_cluster_json = dump_install_json(
             cdp_env_name, cde_cluster_name, cde_cluster_info, json_skel
         )
         action_url = f"{cde_url}/enableService"
-    elif action == "delete-cde":
+    elif action == "delete":
         click.echo(f"===Deleting CDE cluster {cde_cluster_name}===")
         cde_cluster_json = dump_delete_json(
             get_cde_cluster_id(cde_cluster_name), json_skel
@@ -121,7 +119,7 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, action, json_skel):
 
         poll_url = f"{cde_url}/listServices"
 
-        if action == "install-cde":
+        if action == "install":
             elem_search_info = {
                 "root_index": "services",
                 "expected_key_val": {
@@ -130,7 +128,7 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, action, json_skel):
                 },
                 "present": True,
             }
-        elif action == "delete-cde":
+        elif action == "delete":
             elem_search_info = {
                 "root_index": "services",
                 "expected_key_val": {"name": cde_cluster_name},
