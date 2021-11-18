@@ -37,11 +37,11 @@ def dump_install_json(vw_name, cdw_vw_info, cdw_cluster_id, json_skel):
         "max_clusters"
     ]
 
-    ldap_groups = cdw_vw_info["config"]["ldap_groups"]
-    if len(ldap_groups) != 0:
-        cdw_vw_json["config"]["ldapGroups"] = ldap_groups
-    else:
-        del cdw_vw_json["config"]["ldapGroups"]
+    # ldap_groups = cdw_vw_info["config"]["ldap_groups"]
+    # if len(ldap_groups) != 0:
+    #     cdw_vw_json["config"]["ldapGroups"] = ldap_groups
+    # else:
+    #     del cdw_vw_json["config"]["ldapGroups"]
 
     image_version = cdw_vw_info["image_version"]
     if len(image_version) != 0:
@@ -76,9 +76,7 @@ def dump_delete_json(cdw_cluster_id, vw_name, json_skel):
 
 @click.command()
 @click.option("--dryrun/--no-dryrun", default=True)
-@click.option(
-    "--action", type=click.Choice(["install-vw-cdw", "delete-vw-cdw"]), required=True
-)
+@click.option("--action", type=click.Choice(["install", "delete"]), required=True)
 @click.option(
     "--env",
     type=click.Choice(["lab", "test", "dev", "acc", "prod"]),
@@ -118,11 +116,11 @@ def main(dryrun, env, cdp_env_name, vw_name, action, json_skel):
 
     cdw_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/dw"
 
-    if action == "install-vw-cdw":
+    if action == "install":
         click.echo(f"===Installing virtual warehouse {vw_name}===")
         vw_json = dump_install_json(vw_name, cdw_vw_info, cdw_cluster_id, json_skel)
         action_url = f"{cdw_url}/createVw"
-    elif action == "delete-vw-cdw":
+    elif action == "delete":
         click.echo(f"===Deleting virtual warehouse {vw_name}===")
         vw_json = dump_delete_json(cdw_cluster_id, vw_name, json_skel)
 
@@ -142,13 +140,13 @@ def main(dryrun, env, cdp_env_name, vw_name, action, json_skel):
 
         poll_url = f"{cdw_url}/listVws"
 
-        if action == "install-vw-cdw":
+        if action == "install":
             elem_search_info = {
                 "root_index": "vws",
                 "expected_key_val": {"name": vw_name, "status": "Running"},
                 "present": True,
             }
-        elif action == "delete-vw-cdw":
+        elif action == "delete":
             elem_search_info = {
                 "root_index": "vws",
                 "expected_key_val": {"name": vw_name},

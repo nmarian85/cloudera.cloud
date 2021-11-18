@@ -131,7 +131,7 @@ The steps below show how to install CDP components(environment, datalake, CDE, C
 
     ```bash
     cdp de create-vc --generate-cli-skeleton > create_vc_cde.json && \
-    python3 scripts/vc_cde_mgmt.py --no-dryrun --action install-vc-cde --env lab --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --vc-cde-cluster-name ${DEVO_ENV_NAME}-cde01-vc01 --json-skel create_vc_cde.json
+    python3 scripts/vc_cde_mgmt.py --no-dryrun --action install-vc-cde --env lab --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --vc-name ${DEVO_ENV_NAME}-cde01-vc01 --json-skel create_vc_cde.json
 
     ```
 

@@ -123,7 +123,7 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, vc_name, action, json_skel
             }
         elif action == "delete-vc-cde":
             elem_search_info = {
-                "root_index": "services",
+                "root_index": "vcs",
                 "expected_key_val": {"vcName": vc_name},
                 "present": False,
             }
