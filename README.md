@@ -96,7 +96,7 @@ The steps below show how to install CDP components(environment, datalake, CDE, C
 
     ```bash
     cdp datalake create-aws-datalake --generate-cli-skeleton > create_dlake.json && \
-    python3 scripts/cdl_mgmt.py --no-dryrun --action install-cdl --env lab --cdp-env-name ${DEVO_ENV_NAME} --json-skel create_dlake.json
+    python3 scripts/cdl_mgmt.py --no-dryrun --action install --env lab --cdp-env-name ${DEVO_ENV_NAME} --json-skel create_dlake.json
     ```
 
 - Sync idbroker mappings
@@ -124,14 +124,14 @@ The steps below show how to install CDP components(environment, datalake, CDE, C
 
     ```bash
     cdp de enable-service --generate-cli-skeleton > create_cde.json && \
-    python3 scripts/cde_mgmt.py --no-dryrun --action install-cde --env lab --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --json-skel create_cde.json
+    python3 scripts/cde_mgmt.py --no-dryrun --action install --env lab --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --json-skel create_cde.json
     ```
 
 - Install CDE VC
 
     ```bash
     cdp de create-vc --generate-cli-skeleton > create_vc_cde.json && \
-    python3 scripts/vc_cde_mgmt.py --no-dryrun --action install-vc-cde --env lab --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --vc-name ${DEVO_ENV_NAME}-cde01-vc01 --json-skel create_vc_cde.json
+    python3 scripts/vc_cde_mgmt.py --no-dryrun --action install --env lab --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --vc-name ${DEVO_ENV_NAME}-cde01-vc01 --json-skel create_vc_cde.json
 
     ```
 
@@ -139,12 +139,14 @@ The steps below show how to install CDP components(environment, datalake, CDE, C
 
     ```bash
     cdp ml create-workspace --generate-cli-skeleton > create_cml.json && \
-    python3 scripts/cml_mgmt.py --no-dryrun --action install-cml --env lab --cdp-env-name ${DEVO_ENV_NAME} --cml-cluster-name ${DEVO_ENV_NAME}-cml01 --json-skel create_cml.json
+    python3 scripts/cml_mgmt.py --no-dryrun --action install --env lab --cdp-env-name ${DEVO_ENV_NAME} --cml-cluster-name ${DEVO_ENV_NAME}-cml01 --json-skel create_cml.json
 
     ```
 
 - Install Impala CDW Virtual Warehouse 
-  TBD
+    ```bash
+    cdp dw create-vw --generate-cli-skeleton > create_vw.json && python3 scripts/vw_cdw_mgmt.py --no-dryrun --action install --env lab --cdp-env-name $DEVO_ENV_NAME --vw-name i03 --json-skel create_vw.json
+    ```
 
 - Install Hive CDW Virtual Warehouse 
 TBD
