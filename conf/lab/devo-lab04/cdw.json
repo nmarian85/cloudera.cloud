@@ -16,8 +16,8 @@
         "max_clusters": 5
       },
       "image_version": "",
-      "template": ["xsmall"],
-      "vw_type": ["impala"],
+      "template": "xsmall",
+      "vw_type": "impala",
       "dbc_name": "default",
       "config": {
         "application_configs": {},
@@ -25,10 +25,12 @@
         "enable_sso": "true",
         "ldap_groups": []
       },
-      "tags": {
-        "env": "lab",
-        "origin": "cdp"
-      }
+      "tags": [
+        {
+          "env": "lab",
+          "origin": "cdp"
+        }
+      ]
     }
   }
 }
