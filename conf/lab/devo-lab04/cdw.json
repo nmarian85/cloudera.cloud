@@ -22,7 +22,7 @@
       "config": {
         "application_configs": {},
         "common_configs": "",
-        "enable_sso": true,
+        "enable_sso": "true",
         "ldap_groups": []
       },
       "tags": {
