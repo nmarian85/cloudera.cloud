@@ -27,8 +27,12 @@
       },
       "tags": [
         {
-          "env": "lab",
-          "origin": "cdp"
+          "key": "env",
+          "value": "lab"
+        },
+        {
+          "key": "origin",
+          "value": "cdp"
         }
       ]
     }
