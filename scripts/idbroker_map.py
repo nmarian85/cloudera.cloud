@@ -2,7 +2,7 @@ import click
 import json
 from utils import show_progress, poll_for_status, dump_json_dict
 from env_mgmt import get_env_info
-from cdp_role_map import get_user_attr
+from cdp_res_role_map import get_user_attr
 from cdpv1sign import generate_headers
 import requests_ops
 
