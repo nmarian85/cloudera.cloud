@@ -5,7 +5,6 @@ from env_mgmt import get_env_info
 from cdp_res_role_map import get_user_attr
 from cdpv1sign import generate_headers
 import requests_ops
-import pathlib
 
 
 def dump_create_mapping_json(
@@ -65,8 +64,7 @@ def main(dryrun, env, cdp_env_name, json_skel):
     ranger_role_arn = f'{role_iam_arn}:role/{cdp_env_info["ranger_role"]}'
     idbroker_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
 
-    abs_path = pathlib.Path(__file__).parent.resolve()
-    with open(f"{abs_path}/../conf/{env}/{cdp_env_name}/users.json") as json_file:
+    with open(f"conf/{env}/{cdp_env_name}/users.json") as json_file:
         users = json.load(json_file)
 
     user_roles = {

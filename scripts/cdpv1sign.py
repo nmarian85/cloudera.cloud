@@ -26,6 +26,8 @@ from email.utils import formatdate
 import json
 import os
 from urllib.parse import urlparse
+from pathlib import Path
+import configparser
 
 from pure25519 import eddsa
 
@@ -117,12 +119,35 @@ def make_signature_header(method, uri, headers, access_key, private_key):
 def generate_headers(http_req_type, url):
     headers = {"Content-Type": "application/json"}
     headers["x-altus-date"] = formatdate(usegmt=True)
+    access_key_var = "CDP_ACCESS_KEY_ID"
+    secret_key_var = "CDP_PRIVATE_KEY"
+
+    access_key = os.getenv(access_key_var, "")
+    secret_key = os.getenv(secret_key_var, "")
+
+    if len(access_key) == 0 or len(secret_key) == 0:
+        home = str(Path.home())
+        config = configparser.ConfigParser()
+        with open(f"{home}/.cdp/credentials") as cred_file:
+            config.read_file(cred_file)
+
+            section = "default"
+            if config.has_option(section, access_key_var):
+                access_key = config.get("default", access_key_var)
+            else:
+                raise ValueError(
+                    f"Could not find {access_key_var} in {section} section"
+                )
+
+            if config.has_option(section, secret_key_var):
+                secret_key = config.get("default", secret_key_var)
+            else:
+                raise ValueError(
+                    f"Could not find {secret_key_var} in {section} section"
+                )
+
     headers["x-altus-auth"] = make_signature_header(
-        http_req_type,
-        url,
-        headers,
-        os.getenv("CDP_ACCESS_KEY_ID"),
-        os.getenv("CDP_PRIVATE_KEY"),
+        http_req_type, url, headers, access_key, secret_key,
     )
     return headers
     # for header_key, header_value in headers.items():
