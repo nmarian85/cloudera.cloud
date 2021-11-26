@@ -97,6 +97,7 @@ python3 scripts/env_mgmt.py --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME
 
 ### Create ranger and idbroker mappings
 
+**Please be aware that when you add new roles and run the script below, the users have to login first in CDP so that their `accessorCrn` gets populated**
 ```bash
 cdp environments set-id-broker-mappings --generate-cli-skeleton > create_idbroker_mapping.json && \
 python3 scripts/idbroker_map.py  --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME} --json-skel create_idbroker_mapping.json
