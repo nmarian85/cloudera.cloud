@@ -28,7 +28,9 @@ jumprole_entry = dict(
         "groups": dict({"system": "masters"}),
     },
 )
-y["data"]["mapRoles"].update(jumprole_entry)
+y["data"]["mapRoles"] = y["data"]["mapRoles"] + yaml.safe_dump(
+    jumprole_entry, default_flow_style=False, allow_unicode=True
+)
 print(yaml.safe_dump(y, default_flow_style=False, allow_unicode=True))
 
 # out_file = f"aws_auth_{devo_env_name}-{eks_cluster_type}.yaml"
