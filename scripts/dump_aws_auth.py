@@ -22,9 +22,11 @@ account_id = os.environ["ACCOUNT_ID"]
 
 jumprole_arn = f"arn:aws:iam::{account_id}:role/jumpserver-role"
 jumprole_entry = dict(
-    {"rolearn": jumprole_arn},
-    {"username": "kubernetes-admin-jumpserver-role"},
-    {"groups": dict({"system": "masters"})},
+    {
+        "rolearn": jumprole_arn,
+        "username": "kubernetes-admin-jumpserver-role",
+        "groups": dict({"system": "masters"}),
+    },
 )
 y["data"]["mapRoles"].update(jumprole_entry)
 print(yaml.safe_dump(y, default_flow_style=False, allow_unicode=True))
