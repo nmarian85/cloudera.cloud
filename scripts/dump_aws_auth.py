@@ -9,7 +9,6 @@ def str_presenter(dumper, data):
     return dumper.represent_scalar("tag:yaml.org,2002:str", data)
 
 
-# yaml.add_representer(str, str_presenter)
 yaml.representer.SafeRepresenter.add_representer(str, str_presenter)
 
 devo_env_name = os.environ["DEVO_ENV_NAME"]
