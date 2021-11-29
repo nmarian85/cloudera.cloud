@@ -26,15 +26,20 @@ jumprole_entry = dict(
 
 # Load configmap
 aws_auth_yaml = yaml.safe_load(sys.stdin.read())
+
+# Removing metadata since we do not need it at apply time
 del aws_auth_yaml["metadata"]
 
 # Load multistring value for mapRoles
 map_roles_yaml = yaml.safe_load(aws_auth_yaml["data"]["mapRoles"])
+
+# Adding the jumprole as a k8s admin
 map_roles_yaml.append(jumprole_entry)
 
-aws_auth_yaml["data"]["mapRoles"] = map_roles_yaml
+aws_auth_yaml["data"]["mapRoles"] = yaml.safe_dump(
+    map_roles_yaml, default_flow_style=False, allow_unicode=True
+)
 print(yaml.safe_dump(aws_auth_yaml, default_flow_style=False, allow_unicode=True))
-
 
 # y["data"]["mapRoles"] = y["data"]["mapRoles"] + yaml.safe_dump(
 #     jumprole_entry, default_flow_style=False, allow_unicode=True
