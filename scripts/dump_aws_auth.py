@@ -19,7 +19,7 @@ jumprole_arn = f"arn:aws:iam::{account_id}:role/jumpserver-role"
 jumprole_entry = {
     "rolearn": jumprole_arn,
     "username": "kubernetes-admin-jumpserver-role",
-    "groups": "system:masters",
+    "groups": ["system:masters"],
 }
 
 # Load configmap
