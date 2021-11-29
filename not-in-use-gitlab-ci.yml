@@ -3,16 +3,16 @@ variables:
   DOCKER_IMAGE_VERSION: "1.0"
   DOCKER_IMAGE_NAME: cdpcli-ddp
   DOCKER_IMAGE_URL: $DOCKER_REGISTRY/$ARTIFACTORY_REPOSITORY_NAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
-# install (installs a CDP environment and its attached datalake)
-# delete (deletes a CDP environment and its attached datalake)
-# start (starts a CDP environment and its attached datalake)
-# stop (stops environment and its attached datalake)
-# install_cml (installs CML cluster)
-# delete_cml (deletes a CML cluster)
-# install_cde (installs a CDE cluster)
-# delete_cde (deletes a CDE cluster)
-# install_cde_vc (installs a CDE VC cluster)
-# delete_cde_vc (deletes a CDE VC cluster)
+  # install (installs a CDP environment and its attached datalake)
+  # delete (deletes a CDP environment and its attached datalake)
+  # start (starts a CDP environment and its attached datalake)
+  # stop (stops environment and its attached datalake)
+  # install_cml (installs CML cluster)
+  # delete_cml (deletes a CML cluster)
+  # install_cde (installs a CDE cluster)
+  # delete_cde (deletes a CDE cluster)
+  # install_cde_vc (installs a CDE VC cluster)
+  # delete_cde_vc (deletes a CDE VC cluster)
   ACTION: delete_cde_vc
   CDP_ENV_NAME: devo-cdp-lab-env01
   ENV: lab
@@ -40,24 +40,22 @@ stages:
   - delete_cde_vc
 
 include:
-  - 'pipeline/install_cdp_env.yml'
-  - 'pipeline/install_cdp_dlake.yml'
-  - 'pipeline/delete_cdp_dlake.yml'
-  - 'pipeline/delete_cdp_env.yml'
+  - "pipeline/install_cdp_env.yml"
+  - "pipeline/install_cdp_dlake.yml"
+  - "pipeline/delete_cdp_dlake.yml"
+  - "pipeline/delete_cdp_env.yml"
   # - 'pipeline/start_cdp_env.yml'
-  - 'pipeline/stop_cdp_env.yml'
-  - 'pipeline/install_cml.yml'
-  - 'pipeline/delete_cml.yml'
+  - "pipeline/stop_cdp_env.yml"
+  - "pipeline/install_cml.yml"
+  - "pipeline/delete_cml.yml"
   # - 'pipeline/install_cde.yml'
-  - 'pipeline/install_cde_vc.yml'
-  - 'pipeline/delete_cde_vc.yml'
+  - "pipeline/install_cde_vc.yml"
+  - "pipeline/delete_cde_vc.yml"
   # - 'pipeline/delete_cde.yml'
 
-  #TODO: 
-    # Add 'grant access to admin/jumpserver role AWS IAM role EKS cluster control plane'
-    # Add access to kube api server for group; EKS sgs might need to be recreated via TF
-
-
+  #TODO:
+  # Add 'grant access to admin/jumpserver role AWS IAM role EKS cluster control plane'
+  # Add access to kube api server for group; EKS sgs might need to be recreated via TF
 # cde_delete:
 #   stage: delete
 #   before_script:
@@ -76,7 +74,4 @@ include:
 #   rules:
 #     - if: $CI_PIPELINE_SOURCE != "schedule" && $ACTION == "delete"
 #       when: manual
-
-
-
 
