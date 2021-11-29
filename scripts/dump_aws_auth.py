@@ -16,13 +16,11 @@ devo_env_name = os.environ["DEVO_ENV_NAME"]
 eks_cluster_type = os.environ["EKS_CLUSTER_TYPE"]
 account_id = os.environ["ACCOUNT_ID"]
 jumprole_arn = f"arn:aws:iam::{account_id}:role/jumpserver-role"
-jumprole_entry = dict(
-    {
-        "rolearn": jumprole_arn,
-        "username": "kubernetes-admin-jumpserver-role",
-        "groups": dict({"system": "masters"}),
-    }
-)
+jumprole_entry = {
+    "rolearn": jumprole_arn,
+    "username": "kubernetes-admin-jumpserver-role",
+    "groups": "system:masters",
+}
 
 # Load configmap
 aws_auth_yaml = yaml.safe_load(sys.stdin.read())
