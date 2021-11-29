@@ -29,15 +29,11 @@ aws_auth_yaml = yaml.safe_load(sys.stdin.read())
 del aws_auth_yaml["metadata"]
 
 # Load multistring value for mapRoles
-# map_roles_yaml = yaml.safe_load(
-#     yaml.safe_dump(
-#         aws_auth_yaml["data"]["mapRoles"], default_flow_style=False, allow_unicode=True
-#     )
-# )
 map_roles_yaml = yaml.safe_load(aws_auth_yaml["data"]["mapRoles"])
 map_roles_yaml.append(jumprole_entry)
 
-print(yaml.safe_dump(map_roles_yaml, default_flow_style=False, allow_unicode=True))
+aws_auth_yaml["data"]["mapRoles"] = map_roles_yaml
+print(yaml.safe_dump(aws_auth_yaml, default_flow_style=False, allow_unicode=True))
 
 
 # y["data"]["mapRoles"] = y["data"]["mapRoles"] + yaml.safe_dump(
