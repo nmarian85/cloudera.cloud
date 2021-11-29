@@ -35,7 +35,7 @@ del aws_auth_yaml["metadata"]
 #     )
 # )
 map_roles_yaml = yaml.safe_load(aws_auth_yaml["data"]["mapRoles"])
-map_roles_yaml.update(jumprole_entry)
+map_roles_yaml.append(jumprole_entry)
 
 print(yaml.safe_dump(map_roles_yaml, default_flow_style=False, allow_unicode=True))
 
