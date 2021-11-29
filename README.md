@@ -223,10 +223,9 @@ cdp dw create-vw --generate-cli-skeleton > create_vw.json && python3 scripts/vw_
   kubectl apply -f aws_auth_${DEVO_ENV_NAME}-${EKS_CLUSTER_TYPE}
   ```
 
-  - Test that it works by exiting and logging in again to the host. Then run
+  - Test that it works by exiting and logging in again to the host and running the commands below.
   ```bash
   export DEVO_ENV_NAME=devo-lab04
-  export EKS_CLUSTER_NAME=liftie-vmnc74m2
   export EKS_CLUSTER_TYPE=cde
   export KUBECONFIG=~/.kube/${DEVO_ENV_NAME}-${EKS_CLUSTER_TYPE}
   kubectl get po -A | head -5
