@@ -98,6 +98,7 @@ python3 scripts/env_mgmt.py --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME
 ### Create ranger and idbroker mappings
 
 **Please be aware that when you add new roles and run the script below, the users have to login first in CDP so that their `accessorCrn` gets populated**
+TODO: Populate users automatically
 ```bash
 cdp environments set-id-broker-mappings --generate-cli-skeleton > create_idbroker_mapping.json && \
 python3 scripts/idbroker_map.py  --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME} --json-skel create_idbroker_mapping.json
@@ -136,6 +137,8 @@ python3 scripts/user_sync.py --no-dryrun --env lab --json-skel sync_all_users.js
 cdp de enable-service --generate-cli-skeleton > create_cde.json && \
 python3 scripts/cde_mgmt.py --no-dryrun --action install --env lab --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --json-skel create_cde.json
 ```
+- Re-run the DEVO2 TF code for enabling https access to the EKS Control Plane. 
+- Allow the jumphost role admin access to the EKS CP.
 
 ### Install CDE VC
 ```bash
@@ -149,6 +152,9 @@ python3 scripts/vc_cde_mgmt.py --no-dryrun --action install --env lab --cdp-env-
 cdp ml create-workspace --generate-cli-skeleton > create_cml.json && \
 python3 scripts/cml_mgmt.py --no-dryrun --action install --env lab --cdp-env-name ${DEVO_ENV_NAME} --cml-cluster-name ${DEVO_ENV_NAME}-cml01 --json-skel create_cml.json
 ```
+- Re-run the DEVO2 TF code for enabling https access to the EKS Control Plane. 
+- Allow the jumphost role admin access to the EKS CP.
+  
 
 ## Enabling the CDW service
 For enabling the CDW service we are going to use the following procedure. This is only needed when enabling the CDW service; for installing the virtual warehouses you will use the standard automation part of this repo.
@@ -176,7 +182,7 @@ This procedure is based on the one here: https://docs.cloudera.com/data-warehous
 - Login to the JH and then enable the Cloudwatch logging for EKS:
 
     ```bash
-    ➜  ~ aws eks update-cluster-config --name env-hk574w-dwx-stack-eks --logging '{"clusterLogging": [{"types": ["api","audit","authenticator","controllerManager","scheduler"],"enabled": true}]}'
+    ➜  aws eks update-cluster-config --name env-hk574w-dwx-stack-eks --logging '{"clusterLogging": [{"types": ["api","audit","authenticator","controllerManager","scheduler"],"enabled": true}]}'
     ```
 - Follow the steps for provisioning the virtual warehouses in the Installing a CDP environment section.
 
@@ -185,6 +191,46 @@ This procedure is based on the one here: https://docs.cloudera.com/data-warehous
 cdp dw create-vw --generate-cli-skeleton > create_vw.json && python3 scripts/vw_cdw_mgmt.py --no-dryrun --action install --env lab --cdp-env-name $DEVO_ENV_NAME --vw-name i03 --json-skel create_vw.json
 ```
 
+## Allow the jumphost role admin access to the EKS CP for CDE or CML
+  - SSH to the jumphost
+  - Export the variables
+  ```bash
+  export DEVO_ENV_NAME=devo-lab04
+  export EKS_CLUSTER_NAME=liftie-sx44dbft
+  export EKS_CLUSTER_TYPE=cml
+  export ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+  ```
+  - Assume the crossaccount role
+  ```bash
+  cred=$(aws sts assume-role --role-arn arn:aws:iam::${ACCOUNT_ID}:role/${DEVO_ENV_NAME}-crossaccount-role  --role-session-name AWSCLI-Session | jq .Credentials)
+  export AWS_ACCESS_KEY_ID=$(echo $cred|jq .AccessKeyId|tr -d '"')
+  export AWS_SECRET_ACCESS_KEY=$(echo $cred|jq .SecretAccessKey|tr -d '"')
+  export AWS_SESSION_TOKEN=$(echo $cred|jq .SessionToken|tr -d '"')
+  ```
+  - Retrieve the kubeconfig file and export the `KUBECONFIG` variable
+  ```bash
+  aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --kubeconfig ~/.kube/${DEVO_ENV_NAME}-${EKS_CLUSTER_TYPE}
+  export KUBECONFIG=~/.kube/${DEVO_ENV_NAME}-${EKS_CLUSTER_TYPE}
+  ```
+  
+  - Create the aws-auth configmap file
+  ```bash
+  cd cdp-mgmt
+  kubectl get configmap aws-auth --namespace kube-system -o yaml | python3 scripts/dump_aws_auth.py > aws_auth_${DEVO_ENV_NAME}-${EKS_CLUSTER_TYPE}
+  ```
+  - Apply the configmap update
+  ```bash
+  kubectl apply -f aws_auth_${DEVO_ENV_NAME}-${EKS_CLUSTER_TYPE}
+  ```
+
+  - Test that it works by exiting and logging in again to the host. Then run
+  ```bash
+  export DEVO_ENV_NAME=devo-lab04
+  export EKS_CLUSTER_NAME=liftie-vmnc74m2
+  export EKS_CLUSTER_TYPE=cde
+  export KUBECONFIG=~/.kube/${DEVO_ENV_NAME}-${EKS_CLUSTER_TYPE}
+  kubectl get po -A | head -5
+  ```
 ## Pipeline - work in progress for now
 
 To a certain extent, we are abusing the traditional concept of a pipeline, since the pipeline does not contain the traditional stages (build/test/deploy). We are building a "poor man's" dynamic pipeline based on the environment variable `ACTION`. The action can be one of the following:
