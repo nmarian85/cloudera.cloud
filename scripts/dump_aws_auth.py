@@ -39,4 +39,3 @@ aws_auth_yaml["data"]["mapRoles"] = yaml.safe_dump(
     map_roles_yaml, default_flow_style=False, allow_unicode=True
 )
 print(yaml.safe_dump(aws_auth_yaml, default_flow_style=False, allow_unicode=True))
-
