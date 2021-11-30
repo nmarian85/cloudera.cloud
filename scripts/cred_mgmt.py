@@ -69,7 +69,8 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     cdp_env_info = get_env_info(env, cdp_env_name)
     env_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/environments2"
 
-    cred_info = None
+    print(cdp_env_info)
+
     for cred, cred_info in cdp_env_info["credentials"].items():
         cred_name = cred_info["credential_name"]
         if action == "create":
