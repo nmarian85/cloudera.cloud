@@ -1,43 +1,43 @@
 {
-    "ECBT1-IGAMFS-APP-DEVO-DEV-Admin": {
-        "resource_roles": [
-            "DEAdmin",
-            "DEUser",
-            "DFAdmin",
-            "DFFlowAdmin",
-            "DFFlowUser",
-            "DWAdmin",
-            "DWUser",
-            "DataSteward",
-            "EnvironmentAdmin",
-            "EnvironmentUser",
-            "MLAdmin",
-            "MLUser",
-            "MLBusinessUser",
-            "ODAdmin",
-            "ODUser"
-        ]
-    },
-    "ECBT1-IGAMFS-APP-DEVO-DEV-Expert": {
-        "resource_roles": [
-            "DEUser",
-            "DFFlowUser",
-            "DWUser",
-            "DataSteward",
-            "EnvironmentUser",
-            "MLUser",
-            "ODUser"
-        ]
-    },
-    "ECBT1-IGAMFS-APP-DEVO-DEV-User": {
-        "resource_roles": [
-            "DEUser",
-            "DFFlowUser",
-            "DWUser",
-            "DataSteward",
-            "EnvironmentUser",
-            "MLUser",
-            "ODUser"
-        ]
-    }
+  "ECBT1-IGAMFS-APP-DEVO-DEV-Admin": {
+    "resource_roles": [
+      "DEAdmin",
+      "DEUser",
+      "DFAdmin",
+      "DFFlowAdmin",
+      "DFFlowUser",
+      "DWAdmin",
+      "DWUser",
+      "DataSteward",
+      "EnvironmentAdmin",
+      "EnvironmentUser",
+      "MLAdmin",
+      "MLUser",
+      "MLBusinessUser",
+      "ODAdmin",
+      "ODUser"
+    ]
+  },
+  "ECBT1-IGAMFS-APP-DEVO-DEV-Expert": {
+    "resource_roles": [
+      "DEUser",
+      "DFFlowUser",
+      "DWUser",
+      "DataSteward",
+      "EnvironmentUser",
+      "MLUser",
+      "ODUser"
+    ]
+  },
+  "ECBT1-IGAMFS-APP-DEVO-DEV-User": {
+    "resource_roles": [
+      "DEUser",
+      "DFFlowUser",
+      "DWUser",
+      "DataSteward",
+      "EnvironmentUser",
+      "MLUser",
+      "ODUser"
+    ]
+  }
 }
