@@ -55,6 +55,12 @@ Please make sure that the IaC code was ran before continuing.
 **Important mention: CDW requires a specific way of provisioning which could not be fully automated. You will find the instructions for it at the end of this README**
 
 ## Running the code
+### Prerequisites
+- SSH to the DEVO2 jumphost
+- The jumphost should have already been configured for you via the https://gitlab.sofa.dev/ddp/devo/aws-ec2-setup, hence a Python environment is already available for you there.
+- For now, the SoFa pipeline is not ready, hence the code will be run from the jumphost.
+
+### Code
 - The python scripts have a `--dryrun` option so that nothing gets executed but you will be able to see all the actions that will be done together with the JSON that would be posted to the CDP REST API endpoint. Please use the `--no-dryrun` flag when initiating a "real" execution.
 
 - Export the CA bundle certificate location the environment name
