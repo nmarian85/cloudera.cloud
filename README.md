@@ -86,7 +86,7 @@ Please make sure that the IaC code was ran before continuing.
 
 ```bash
 cdp environments create-aws-credential --generate-cli-skeleton > cred_create.json && \
-python3 scripts/cred_mgmt.py --no-dryrun --action create-cred --env lab --cdp-env-name ${DEVO_ENV_NAME} --json-skel cred_create.json
+python3 scripts/cred_mgmt.py --no-dryrun --action create --env lab --cdp-env-name ${DEVO_ENV_NAME} --json-skel cred_create.json
 ```
 
 ### Create the CDP environment
