@@ -5,9 +5,6 @@ from cdpv1sign import generate_headers
 import requests_ops
 
 
-# TODO: add code to add jump server role access to EKS control plane
-
-
 def dump_install_json(cdp_env_name, cde_cluster_name, cde_cluster_info, json_skel):
     cde_json = dict(json_skel)
     cde_json["name"] = cde_cluster_name
