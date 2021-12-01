@@ -90,6 +90,7 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
                 req_type="post",
                 data=cdp_cred_json,
                 headers=generate_headers("POST", action_url),
+                ok_exception_str="already exists",
             )
 
             click.echo(f"Waiting for {action} on credential {cred_name}")
