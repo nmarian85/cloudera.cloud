@@ -123,8 +123,8 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, vc_name, action, json_skel
         elif action == "delete":
             elem_search_info = {
                 "root_index": "vcs",
-                "expected_key_val": {"vcName": vc_name},
-                "present": False,
+                "expected_key_val": {"vcName": vc_name, "status": "AppDeleted"},
+                "present": True,
             }
         poll_for_status(
             poll_url=poll_url,
