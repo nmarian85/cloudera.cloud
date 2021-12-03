@@ -143,9 +143,9 @@ python3 scripts/user_sync.py --no-dryrun --env lab --json-skel sync_all_users.js
 cdp de enable-service --generate-cli-skeleton > create_cde.json && \
 python3 scripts/cde_mgmt.py --no-dryrun --action install --env lab --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --json-skel create_cde.json
 ```
-#### Re-run the DEVO2 TF code for enabling https access to the EKS Control Plane. 
+- **Re-run the DEVO2 TF code for enabling https access to the EKS Control Plane.**
 Since no changes were performed in this repo then you need to do some dummy change (e.g. a comment) in one of the files of the repo in order to be able to issue a merge request.
-#### Allow the jumphost role admin access to the EKS CP.
+- **Allow the jumphost role admin access to the EKS CP.**
 Please see the **Allow the jumphost role admin access to the EKS CP.** section.
 
 ### Install CDE VC
@@ -160,9 +160,9 @@ python3 scripts/vc_cde_mgmt.py --no-dryrun --action install --env lab --cdp-env-
 cdp ml create-workspace --generate-cli-skeleton > create_cml.json && \
 python3 scripts/cml_mgmt.py --no-dryrun --action install --env lab --cdp-env-name ${DEVO_ENV_NAME} --cml-cluster-name ${DEVO_ENV_NAME}-cml01 --json-skel create_cml.json
 ```
-#### Re-run the DEVO2 TF code for enabling https access to the EKS Control Plane. 
+- **Re-run the DEVO2 TF code for enabling https access to the EKS Control Plane.**
 Since no changes were performed in this repo then you need to do some dummy change (e.g. a comment) in one of the files of the repo in order to be able to issue a merge request.
-#### Allow the jumphost role admin access to the EKS CP.
+- **Allow the jumphost role admin access to the EKS CP.**
 Please see the **Allow the jumphost role admin access to the EKS CP.** section.
   
 
