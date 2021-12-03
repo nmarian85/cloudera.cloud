@@ -166,25 +166,78 @@ python3 scripts/cml_mgmt.py --no-dryrun --action install --env lab --cdp-env-nam
 For enabling the CDW service we are going to use the following procedure. This is only needed when enabling the CDW service; for installing the virtual warehouses you will use the standard automation part of this repo.
 This procedure is based on the one here: https://docs.cloudera.com/data-warehouse/cloud/aws-environments/topics/dw-aws-reduced-perms-mode-activating-environments.html
 
-- Open the CDP MC (e.g. `https://t-igam.tadnet.eu/oamfed/idp/initiatesso?providerid=CDP`), click on Data Warehouse, click on the lighting bolt for the specific environment where you want to provision CDW then:
+- Open the CDP MC (e.g. `https://t-igam.tadnet.eu/oamfed/idp/initiatesso?providerid=CDP` for TADNET), click on Data Warehouse, click on the lighting bolt for the specific environment where you want to provision CDW then:
 - Choose only private subnets as Deployment Mode
 - Choose all 3 BE networks in the Private Subents area
 - Check use overlay nw
 - Click Activate and then check to activate environment with reduced permissions mode.
 - Click Activate
 - Copy the CDW environment (e.g. `env-5frx9b`)
-- Go to the TF repo and paste the environment name in the environment's folder `main.tf` (e.g. `modules/devo-lab04/main.tf`) in the locals section: 
-`cdw_env_name = "env-5frx9b"`
-- **Make sure that the following resource in the `modules/cdp-cdw-infra/main.tf` is commented. This is due to plenty of limitations (CDP CDW env name not known beforehand, TF not being able to cope with waiting for an EKS cluster to be provisioned, the ECB pipeline not allowing the AWS pipeline role to be impersonated)**
-  
-  ```bash
-  resource "kubectl_manifest" "aws_auth_config" {
-      ...
-  }
-  ```
-- Run the TF code.
-- Once the CDW cloud formation is deployed by the TF code you will need to uncomment the previous section, push it to the IaC Gitlab and then re-run the pipeline.
-- Once this is done, go back to the CDP MC Data Warehouse interface and then click on Copy Configurations and then Continue. Wait until the service is enabled and the Database Catalog provisioned.
+- **devo2-modules SoFa repo**
+  - Create a new branch in the `devo2-modules` SoFa repo
+    ```bash
+    git checkout -b feature/cdw-env-m9zq6b develop
+    ```
+  - Paste the environment name in the environment's folder `main.tf` (e.g. `envs/lab/devo-lab04/main.tf`) in the locals section: 
+  `cdw_env_name = "env-5frx9b"`
+  - Merge your branch to the branch that is being used in the TF code in the IaC pipeline in the `main.tf` (usually `develop`). E.g.: `"git::https://oauth2:UtHHpqCf1-1QDzU2_DBd@gitlab.sofa.dev/ddp/devo/devo2-modules.git//devo-discdata-s3-access-v2?ref=develop"`
+
+  - Please make sure that the modules listed below are commented/uncommented as per the example. **This is due to plenty of limitations (CDP CDW env name not known beforehand, TF not being able to cope with waiting for an EKS cluster to be provisioned, the ECB pipeline not allowing the AWS pipeline role to be impersonated)**
+    ```bash
+    module "cdp_cdw_infra" {
+      source          = "../../../cdp-cdw-infra"
+      this_account_id = var.this_account_id
+      cdw_env_name    = local.cdw_env_name
+      cdp_env_id      = local.cdp_env_id
+      cdp_actor_crn   = local.cdp_actor_crn
+      cdp_tenant_id   = local.cdp_tenant_id
+      cdp_env_name    = local.cdp_env
+      cdp_env_owner   = local.cdp_env_owner
+      dlake_s3_bucket = local.cdp_internal_buckets["cdp_data_bucket"]
+      cdw_policy_name = local.cdw_policy_name
+      cdw_policy_json = local.cdw_policy_json
+    }
+
+    # module "eks_post_config" {
+    #   source                  = "../../../eks-post-config"
+    #   eks_cluster_name        = module.cdp_cdw_infra.cdw_eks_cluster_name
+    #   node_instance_role_name = module.cdp_cdw_infra.cdw_instance_role_name
+    #   jumpserver_role         = var.jumpserver_role
+    #   crossaccount_role       = local.role_name["crossaccount"]
+    #   this_account_id         = var.this_account_id
+    # }
+
+    # module "eks_cp_access" {
+    #   source = "../../../eks-cp-access"
+    # }
+    ```
+
+- **devo2 IaC repo** Run TF pipeline
+- We are going to provision the cluster using the TF pipeline which uses a role that we cannot assume on the jumphost. For this reason we need to do the `kubectl apply` via TF, otherwise we will not be able to connect to the EKS cluster using the `jumpserver-role`.
+- **devo2-modules SoFa repo**: Once the CDW cloud formation is deployed by the TF code please do the following:
+  - Create a new branch in the `devo2-modules` SoFa repo
+    ```bash
+    git checkout -b feature/cdw-env-m9zq6b develop
+    ```
+  - Uncomment the following section in the environment directory (e.g. `envs/lab/devo-lab04/main.tf`) section
+    ```bash
+    module "eks_post_config" {
+      source                  = "../../../eks-post-config"
+      eks_cluster_name        = module.cdp_cdw_infra.cdw_eks_cluster_name
+      node_instance_role_name = module.cdp_cdw_infra.cdw_instance_role_name
+      jumpserver_role         = var.jumpserver_role
+      crossaccount_role       = local.role_name["crossaccount"]
+      this_account_id         = var.this_account_id
+    }
+
+    module "eks_cp_access" {
+      source = "../../../eks-cp-access"
+    }
+    ```
+  - Merge your branch to the branch that is being used in the TF code in the IaC pipeline in the `main.tf` (usually `develop`). E.g.: `"git::https://oauth2:UtHHpqCf1-1QDzU2_DBd@gitlab.sofa.dev/ddp/devo/devo2-modules.git//devo-discdata-s3-access-v2?ref=develop"`
+
+-  **devo2 IaC repo** Run TF pipeline. Since no changes were performed in this repo then you need to do some dummy change (e.g. a comment) in one of the files of the repo in order to be able to issue a merge request.
+- Once this is done, go back to the CDP MC Data Warehouse interface and then click on Copy Configurations, tick "Yes, Kubeconfig and AWS Auth configurations are applied" and then Continue. Wait until the service is enabled and the Database Catalog is provisioned.
 - Login to the JH and then enable the Cloudwatch logging for EKS:
 
     ```bash
