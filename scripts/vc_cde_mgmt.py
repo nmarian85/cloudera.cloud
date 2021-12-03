@@ -30,7 +30,7 @@ def dump_install_json(vc_name, vc_cde_info, cde_cluster_id, vc_json):
     # rsc = vc_cde_info["runtime_spot_component"]
     # if rsc == "DEFAULT":
     #     del cde_vc_json["runtimeSpotComponent"]
-    cde_vc_json["spark_version"] = vc_cde_info["sparkVersion"]
+    cde_vc_json["sparkVersion"] = vc_cde_info["spark_version"]
     return cde_vc_json
 
 
