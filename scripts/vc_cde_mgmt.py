@@ -31,6 +31,7 @@ def dump_install_json(vc_name, vc_cde_info, cde_cluster_id, vc_json):
     # if rsc == "DEFAULT":
     #     del cde_vc_json["runtimeSpotComponent"]
     cde_vc_json["sparkVersion"] = vc_cde_info["spark_version"]
+    cde_vc_json["aclUsers"] = vc_cde_info["acl_users"]
     return cde_vc_json
 
 

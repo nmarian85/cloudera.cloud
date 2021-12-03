@@ -24,7 +24,8 @@
           }
         ],
         "runtime_spot_component": "NONE",
-        "spark_version": "SPARK2"
+        "spark_version": "SPARK2",
+        "acl_users": "*"
       }
     }
   }
