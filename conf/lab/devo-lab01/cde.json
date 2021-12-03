@@ -23,7 +23,8 @@
             "overrides": "airflow.enabled:true"
           }
         ],
-        "runtime_spot_component": "NONE"
+        "runtime_spot_component": "NONE",
+        "spark_version": "SPARK2"
       }
     }
   }
