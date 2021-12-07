@@ -5,7 +5,6 @@
     "subnet-0d01ccd888602a535"
   ],
   "tags": {
-    "env": "lab",
     "origin": "cdp"
   },
   "dbcs": [{}],

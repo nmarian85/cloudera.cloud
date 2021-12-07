@@ -10,7 +10,6 @@
     "root_vol_size": 100,
     "use_ssd": false,
     "tags": {
-      "env": "lab",
       "origin": "cdp"
     },
     "vcs": {

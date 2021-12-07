@@ -5,7 +5,7 @@ from cdpv1sign import generate_headers
 import requests_ops
 
 
-def dump_install_json(cdp_env_name, cde_cluster_name, cde_cluster_info, json_skel):
+def dump_install_json(env, cdp_env_name, cde_cluster_name, cde_cluster_info, json_skel):
     cde_json = dict(json_skel)
     cde_json["name"] = cde_cluster_name
     cde_json["env"] = cdp_env_name
@@ -24,6 +24,8 @@ def dump_install_json(cdp_env_name, cde_cluster_name, cde_cluster_info, json_ske
     # we are using an internal load balancer
     cde_json["whitelistIps"] = []
     cde_json["tags"] = cde_cluster_info["tags"]
+    cde_json["tags"]["ecb_env"] = env
+    cde_json["tags"]["cdp_env"] = cdp_env_name
     return cde_json
 
 
@@ -92,7 +94,7 @@ def main(dryrun, env, cdp_env_name, cde_cluster_name, action, json_skel):
     if action == "install":
         click.echo(f"===Installing CDE cluster {cde_cluster_name}===")
         cde_cluster_json = dump_install_json(
-            cdp_env_name, cde_cluster_name, cde_cluster_info, json_skel
+            env, cdp_env_name, cde_cluster_name, cde_cluster_info, json_skel
         )
         action_url = f"{cde_url}/enableService"
     elif action == "delete":
