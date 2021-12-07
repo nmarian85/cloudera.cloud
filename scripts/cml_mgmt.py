@@ -5,7 +5,7 @@ from cdpv1sign import generate_headers
 import requests_ops
 
 
-def dump_install_json(cdp_env_name, json_skel, cml_cluster_name, cml_cluster_info):
+def dump_install_json(env, cdp_env_name, json_skel, cml_cluster_name, cml_cluster_info):
     cml_json = dict(json_skel)
 
     cml_json["environmentName"] = cdp_env_name
@@ -20,6 +20,9 @@ def dump_install_json(cdp_env_name, json_skel, cml_cluster_name, cml_cluster_inf
     cml_json["provisionK8sRequest"]["tags"] = [
         {"key": f"{k}", "value": f"{v}"} for k, v in cml_cluster_info["tags"].items()
     ]
+
+    cml_json["provisionK8sRequest"]["tags"]["ecb_env"] = env
+    cml_json["provisionK8sRequest"]["tags"]["cdp_env"] = cdp_env_name
     cml_json_ig = list(cml_json["provisionK8sRequest"]["instanceGroups"])
 
     # mlinfra
@@ -107,7 +110,7 @@ def main(dryrun, env, cdp_env_name, cml_cluster_name, action, json_skel):
     if action == "install":
         click.echo(f"===Creating CML cluster {cml_cluster_name}===")
         cml_json = dump_install_json(
-            cdp_env_name, json_skel, cml_cluster_name, cml_cluster_info
+            env, cdp_env_name, json_skel, cml_cluster_name, cml_cluster_info
         )
         action_url = f"{cml_url}/createWorkspace"
     elif action == "delete":

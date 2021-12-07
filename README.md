@@ -134,7 +134,7 @@ python3 scripts/group_cdp_res_role_map.py --no-dryrun --env lab --cdp-env-name $
 
 ```bash
 cdp environments sync-all-users --generate-cli-skeleton > sync_all_users.json && \
-python3 scripts/user_sync.py --no-dryrun --env lab --json-skel sync_all_users.json
+python3 scripts/user_sync.py --no-dryrun --json-skel sync_all_users.json
 ```
 
 ### Install CDE

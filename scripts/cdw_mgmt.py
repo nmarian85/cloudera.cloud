@@ -6,9 +6,6 @@ import requests_ops
 from env_mgmt import get_cdp_env_crn
 
 
-# TODO: Add role that can access the EKS CP
-
-
 def get_cdw_cluster_id(cdp_env_crn):
     action_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/dw/listClusters"
     response = requests_ops.send_http_request(
