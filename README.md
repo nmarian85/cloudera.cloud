@@ -182,71 +182,72 @@ This procedure is based on the one here: https://docs.cloudera.com/data-warehous
     ```bash
     git checkout -b feature/cdw-env-m9zq6b develop
     ```
-  - Paste the environment name in the environment's folder `main.tf` (e.g. `envs/lab/devo-lab04/main.tf`) in the locals section: 
-  `cdw_env_name = "env-5frx9b"`
-  - Merge your branch to the branch that is being used in the TF code in the IaC pipeline in the `main.tf` (usually `develop`). E.g.: `"git::https://oauth2:UtHHpqCf1-1QDzU2_DBd@gitlab.sofa.dev/ddp/devo/devo2-modules.git//devo-discdata-s3-access-v2?ref=develop"`
-
-  - Please make sure that the modules listed below are commented/uncommented as per the example. **This is due to plenty of limitations (CDP CDW env name not known beforehand, TF not being able to cope with waiting for an EKS cluster to be provisioned, the ECB pipeline not allowing the AWS pipeline role to be impersonated)**
+  - Make sure that the `cdp_cdw_infra` module is uncommented and the `eks_post_config` is.
     ```bash
-    module "cdp_cdw_infra" {
-      source          = "../../../cdp-cdw-infra"
-      this_account_id = var.this_account_id
-      cdw_env_name    = local.cdw_env_name
-      cdp_env_id      = local.cdp_env_id
-      cdp_actor_crn   = local.cdp_actor_crn
-      cdp_tenant_id   = local.cdp_tenant_id
-      cdp_env_name    = local.cdp_env
-      cdp_env_owner   = local.cdp_env_owner
-      dlake_s3_bucket = local.cdp_internal_buckets["cdp_data_bucket"]
-      cdw_policy_name = local.cdw_policy_name
-      cdw_policy_json = local.cdw_policy_json
+      # ---------------------------------------------------------------------------------------
+      # DEPLOY AND CONFIGURE CDW INFRA  
+      # ---------------------------------------------------------------------------------------
+      module "cdp_cdw_infra" {
+        source          = "../../../cdp-cdw-infra"
+        this_account_id = var.this_account_id
+        cdw_env_info    = local.cdw_env_info
+        cdp_env_name    = var.cdp_env
+        dlake_s3_bucket = local.cdp_internal_buckets["cdp_data_bucket"]
+        cdw_policy_name = local.cdw_policy_name
+        cdw_policy_json = local.cdw_policy_json
+      }
+
+      # module "eks_post_config" {
+      #   source                  = "../../../eks-post-config"
+      #   eks_cluster_name        = module.cdp_cdw_infra.cdw_eks_cluster_name
+      #   node_instance_role_name = module.cdp_cdw_infra.cdw_instance_role_name
+      #   jumpserver_role         = var.jumpserver_role
+      #   crossaccount_role       = local.role_name["crossaccount"]
+      #   this_account_id         = var.this_account_id
+      #   delete_cdw              = local.cdw_env_info["delete_cdw"]
+      # }
+  ```
+- **devo2 IaC repo**
+  - Fill in the following variables in the `env.tf` (e.g. `/devo2-lab/env.tf`) in the environment information section: `cdw_env_name` (from the CDW CDP console), `delete_cdw` (should be set to `false`).
+    ```bash
+    devo-lab04 = {
+      cdp_env_info    = local.cdp_env_info
+      liftie_env_info = local.liftie_env_info
+      # cdp environment names; the values are the cdw environment names; if there is no cdw configured for that environment please leave the value empty #
+      cdw_env_info = merge(
+        local.cdw_env_info,
+        { cdw_env_name = "env-hk574w",
+          delete_cdw   = false
+        }
+      )
     }
-
-    # module "eks_post_config" {
-    #   source                  = "../../../eks-post-config"
-    #   eks_cluster_name        = module.cdp_cdw_infra.cdw_eks_cluster_name
-    #   node_instance_role_name = module.cdp_cdw_infra.cdw_instance_role_name
-    #   jumpserver_role         = var.jumpserver_role
-    #   crossaccount_role       = local.role_name["crossaccount"]
-    #   this_account_id         = var.this_account_id
-    # }
-
-    # module "eks_cp_access" {
-    #   source = "../../../eks-cp-access"
-    # }
     ```
-
-- **devo2 IaC repo** Run TF pipeline
+    - Replace the branch name in all git URLs in the `main.tf` with the branch name you just created. E.g.: `"git::https://oauth2:UtHHpqCf1-1QDzU2_DBd@gitlab.sofa.dev/ddp/devo/devo2-modules.git//devo-discdata-s3-access-v2?ref=develop"`
+  - Run TF pipeline
 - We are going to provision the cluster using the TF pipeline which uses a role that we cannot assume on the jumphost. For this reason we need to do the `kubectl apply` via TF, otherwise we will not be able to connect to the EKS cluster using the `jumpserver-role`.
-- **devo2-modules SoFa repo**: Once the CDW cloud formation is deployed by the TF code please do the following:
-  - Create a new branch in the `devo2-modules` SoFa repo
-    ```bash
-    git checkout -b feature/cdw-env-m9zq6b develop
-    ```
+- **devo2-modules SoFa repo**: Once the CDW cloud formation is deployed by the TF code you should see that you are at Step 2 in the the CDP Data Warehouse interface. Please do the following:
   - Uncomment the following section in the environment directory (e.g. `envs/lab/devo-lab04/main.tf`) section
     ```bash
-    module "eks_post_config" {
-      source                  = "../../../eks-post-config"
-      eks_cluster_name        = module.cdp_cdw_infra.cdw_eks_cluster_name
-      node_instance_role_name = module.cdp_cdw_infra.cdw_instance_role_name
-      jumpserver_role         = var.jumpserver_role
-      crossaccount_role       = local.role_name["crossaccount"]
-      this_account_id         = var.this_account_id
-    }
-
-    module "eks_cp_access" {
-      source = "../../../eks-cp-access"
-    }
+      module "eks_post_config" {
+        source                  = "../../../eks-post-config"
+        eks_cluster_name        = module.cdp_cdw_infra.cdw_eks_cluster_name
+        node_instance_role_name = module.cdp_cdw_infra.cdw_instance_role_name
+        jumpserver_role         = var.jumpserver_role
+        crossaccount_role       = local.role_name["crossaccount"]
+        this_account_id         = var.this_account_id
+        delete_cdw              = local.cdw_env_info["delete_cdw"]
+      }
     ```
-  - Merge your branch to the branch that is being used in the TF code in the IaC pipeline in the `main.tf` (usually `develop`). E.g.: `"git::https://oauth2:UtHHpqCf1-1QDzU2_DBd@gitlab.sofa.dev/ddp/devo/devo2-modules.git//devo-discdata-s3-access-v2?ref=develop"`
 
 -  **devo2 IaC repo** Run TF pipeline. Since no changes were performed in this repo then you need to do some dummy change (e.g. a comment) in one of the files of the repo in order to be able to issue a merge request.
-- Once this is done, go back to the CDP MC Data Warehouse interface and then click on Copy Configurations, tick "Yes, Kubeconfig and AWS Auth configurations are applied" and then Continue. Wait until the service is enabled and the Database Catalog is provisioned.
+- Once this is done, go back to the CDP Data Warehouse interface and then click on Copy Configurations, tick `Yes, Kubeconfig and AWS Auth configurations are applied` and then Continue. Wait until the service is enabled and the Database Catalog is provisioned.
 - Login to the JH and then enable the Cloudwatch logging for EKS:
 
     ```bash
     ➜  aws eks update-cluster-config --name env-hk574w-dwx-stack-eks --logging '{"clusterLogging": [{"types": ["api","audit","authenticator","controllerManager","scheduler"],"enabled": true}]}'
     ```
+- **devo2-modules SoFa repo**: Merge your branch to the develop branch.
+- **devo2 IaC repo** : Replace the branch name in all git URLs in the `main.tf` with the branch name you just created and the push your code. No need to run the full TF pipeline.
 - Follow the steps for provisioning the virtual warehouses in the Installing a CDP environment section.
 
 ## Install CDW Virtual Warehouse (Impala/Hive)
