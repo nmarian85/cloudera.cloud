@@ -221,7 +221,7 @@ This procedure is based on the one here: https://docs.cloudera.com/data-warehous
     ```
   - Run TF pipeline
 - We are going to provision the cluster using the TF pipeline which uses a role that we cannot assume on the jumphost. For this reason we need to do the `kubectl apply` via TF, otherwise we will not be able to connect to the EKS cluster using the `jumpserver-role`.
-- **devo2-modules SoFa repo**: Once the CDW cloud formation is deployed by the TF code please do the following:
+- **devo2-modules SoFa repo**: Once the CDW cloud formation is deployed by the TF code you should see that you are at Step 2 in the the CDP Data Warehouse interface. Please do the following:
   - Create a new branch in the `devo2-modules` SoFa repo
     ```bash
     git checkout -b feature/cdw-env-m9zq6b develop
@@ -241,7 +241,7 @@ This procedure is based on the one here: https://docs.cloudera.com/data-warehous
   - Merge your branch to the branch that is being used in the TF code in the IaC pipeline in the `main.tf` (usually `develop`). E.g.: `"git::https://oauth2:UtHHpqCf1-1QDzU2_DBd@gitlab.sofa.dev/ddp/devo/devo2-modules.git//devo-discdata-s3-access-v2?ref=develop"`
 
 -  **devo2 IaC repo** Run TF pipeline. Since no changes were performed in this repo then you need to do some dummy change (e.g. a comment) in one of the files of the repo in order to be able to issue a merge request.
-- Once this is done, go back to the CDP Data Warehouse interface and then click on Copy Configurations, tick "Yes, Kubeconfig and AWS Auth configurations are applied" and then Continue. Wait until the service is enabled and the Database Catalog is provisioned.
+- Once this is done, go back to the CDP Data Warehouse interface and then click on Copy Configurations, tick `Yes, Kubeconfig and AWS Auth configurations are applied` and then Continue. Wait until the service is enabled and the Database Catalog is provisioned.
 - Login to the JH and then enable the Cloudwatch logging for EKS:
 
     ```bash
