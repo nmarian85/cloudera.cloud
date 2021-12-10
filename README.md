@@ -182,7 +182,7 @@ This procedure is based on the one here: https://docs.cloudera.com/data-warehous
     ```bash
     git checkout -b feature/cdw-env-m9zq6b develop
     ```
-  - Make sure that the `cdp_cdw_infra` module is uncommented and the `eks_post_config` is.
+  - Make sure that the `cdp_cdw_infra` module is uncommented and the `eks_post_config` is. Commit and push your changes.
     ```bash
       # ---------------------------------------------------------------------------------------
       # DEPLOY AND CONFIGURE CDW INFRA  
