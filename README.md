@@ -255,6 +255,10 @@ This procedure is based on the one here: https://docs.cloudera.com/data-warehous
 cdp dw create-vw --generate-cli-skeleton > create_vw.json && python3 scripts/vw_cdw_mgmt.py --no-dryrun --action install --env lab --cdp-env-name $DEVO_ENV_NAME --vw-name i03 --json-skel create_vw.json
 ```
 
+## Disabling the CDW service
+```bash
+cdp dw disable-service --generate-cli-skeleton > create_dw.json && python3 scripts/cdw_mgmt.py --no-dryrun --action delete --env lab --cdp-env-name $DEVO_ENV_NAME --json-skel create_dw.json
+```
 ## Allow the jumphost role admin access to the EKS CP for CDE or CML
   - SSH to the jumphost
   - Export the variables
