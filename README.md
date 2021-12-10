@@ -54,39 +54,30 @@ Before installing any CDP component we need to make sure that the underlying AWS
 Please make sure that the IaC code was ran before continuing. 
 **Important mention: CDW requires a specific way of provisioning which could not be fully automated. You will find the instructions for it at the end of this README**
 
-## Running the code
-### Prerequisites
-- SSH to the DEVO2 jumphost
-- The jumphost should have already been configured for you via the https://gitlab.sofa.dev/ddp/devo/aws-ec2-setup, hence a Python environment is already available for you there.
+## Prerequisites for running the code
+- SSH access to the DEVO2 jumphost is possible. Please check the https://gitlab.sofa.dev/ddp/devo/aws-jumphost-setup repo for more details.
+- The jumphost should have already been configured for you via the same repo., hence a Python environment is already available for you there.
 - For now, the SoFa pipeline is not ready, hence the code will be run from the jumphost.
-
-### Code
-- The python scripts have a `--dryrun` option so that nothing gets executed but you will be able to see all the actions that will be done together with the JSON that would be posted to the CDP REST API endpoint. Please use the `--no-dryrun` flag when initiating a "real" execution.
-
-- Export the CA bundle certificate location the environment name
-
+- **Important note**: The python scripts have a `--dryrun` option so that nothing gets executed but you will be able to see all the actions that will be done together with the JSON that would be posted to the CDP REST API endpoint. Please use the `--no-dryrun` flag when initiating a "real" execution.
+- When running the code examples below please export the CA bundle certificate location and the environment name.
     ```bash
     export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt
     export DEVO_ENV_NAME=devo-lab04
     ```
-## Steps for configuring a new CDP tenant
-
+- Please make sure that the cluster names you use as parameters are reflected in the `conf/<env>/<cdp_env>` corresponding folder. E.g.: the CML cluster you specify is defined in the `cml.json` file of that environment.
+## CDP Tenant configuration
 - Assign the cdp roles to the admin groups
-
     ```bash
     cdp iam assign-group-role --generate-cli-skeleton > asg_group_role.json && \
     python3 scripts/group_cdp_role_map.py --no-dryrun --env lab --action assign --json-skel asg_group_role.json
     ```
 
-## Installing a new CDP environment
-- The steps below show how to install CDP components(environment, datalake, CDE, CML, etc.) from scratch. 
-- Please follow the installation order below: CDP environment, CDP data lake, CDP experiences.
+## CDP environment actions
+### Prerequisites for installing a new CDP environment
+The steps below show how to install CDP components(environment, datalake, CDE, CML, etc.) from scratch. **Please follow the installation order below: CDP environment, CDP data lake, CDP experiences**.
 - Please see the section called "Running the code" for exporting the proper environment variables
-
-- Create a new folder containing the CDP environment name in the `conf` folder following the convention `devo-<stage><env_number>`, e.g. `devo-lab04`.
-
-- Create the json configuration files corresponding to the CDP components in the previously mentioned folder. Please fill all the required details belonging to that environment (VPC ID, security groups, subnets, role names, public key, account id, etc.). You can use the `devo-lab04` folder as an example.
-
+- When creating a new environment please create a new folder containing the CDP environment name in the `conf` folder following the convention `devo-<stage><env_number>`, e.g. `devo-lab04`.
+- Create the json configuration files corresponding to the CDP components in the previously mentioned folder (e.g. `cde.json`, `cml.json`, `cdw.json`, etc.). **Please fill all the required details belonging to that environment (VPC ID, security groups, subnets, role names, public key, account id, etc.)**. You can use one of the existing folders as an example.
 
 ### Create the credential for the environment
 
@@ -137,34 +128,36 @@ cdp environments sync-all-users --generate-cli-skeleton > sync_all_users.json &&
 python3 scripts/user_sync.py --no-dryrun --json-skel sync_all_users.json
 ```
 
+## CDE actions
 ### Install CDE
-
 ```bash
 cdp de enable-service --generate-cli-skeleton > create_cde.json && \
 python3 scripts/cde_mgmt.py --no-dryrun --action install --env lab --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --json-skel create_cde.json
 ```
-- **Re-run the DEVO2 TF code for enabling https access to the EKS Control Plane.**
-Since no changes were performed in this repo then you need to do some dummy change (e.g. a comment) in one of the files of the repo in order to be able to issue a merge request.
-- **Allow the jumphost role admin access to the EKS CP.**
-Please see the **Allow the jumphost role admin access to the EKS CP.** section.
+- **Allow the jumphost role admin access to the EKS CP**. Please see the **Allow the jumphost role admin access to the EKS CP.** section.
 
 ### Install CDE VC
 ```bash
 cdp de create-vc --generate-cli-skeleton > create_vc_cde.json && \
 python3 scripts/vc_cde_mgmt.py --no-dryrun --action install --env lab --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --vc-name ${DEVO_ENV_NAME}-cde01-vc01 --json-skel create_vc_cde.json
 ```
+### Delete CDE
+TODO: add example
+
+### Delete CDE VC
+TODO: add example
+
+## CML actions
 
 ### Install CML
-
 ```bash
 cdp ml create-workspace --generate-cli-skeleton > create_cml.json && \
 python3 scripts/cml_mgmt.py --no-dryrun --action install --env lab --cdp-env-name ${DEVO_ENV_NAME} --cml-cluster-name ${DEVO_ENV_NAME}-cml01 --json-skel create_cml.json
 ```
-- **Re-run the DEVO2 TF code for enabling https access to the EKS Control Plane.**
-Since no changes were performed in this repo then you need to do some dummy change (e.g. a comment) in one of the files of the repo in order to be able to issue a merge request.
-- **Allow the jumphost role admin access to the EKS CP.**
-Please see the **Allow the jumphost role admin access to the EKS CP.** section.
-  
+- **Allow the jumphost role admin access to the EKS CP**. Please see the **Allow the jumphost role admin access to the EKS CP.** section.
+
+### Delete CML
+TODO: add example
 
 ## Enabling the CDW service
 For enabling the CDW service we are going to use the following procedure. This is only needed when enabling the CDW service; for installing the virtual warehouses you will use the standard automation part of this repo.
@@ -354,6 +347,7 @@ cdp dw disable-service --generate-cli-skeleton > create_dw.json && python3 scrip
 - **devo2-modules SoFa repo**: Merge your branch to the `develop` branch.
 
 ## Allow the jumphost role admin access to the EKS CP for CDE or CML
+  - **devo2 IaC repo**: Re-run the DEVO2 TF code for enabling https access to the EKS Control Plane. Since no changes were performed in this repo then you need to do some dummy change (e.g. a comment) in one of the files of the repo in order to be able to issue a merge request.
   - SSH to the jumphost
   - Export the variables
   ```bash
