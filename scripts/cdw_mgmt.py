@@ -16,8 +16,9 @@ def get_cdw_cluster_id(cdp_env_crn):
     )
     for cdw_cluster_info in response["clusters"]:
         if (
-            cdw_cluster_info["environmentCrn"] == cdp_env_crn
-            and cdw_cluster_info["status"] == "Running"
+            cdw_cluster_info["environmentCrn"]
+            == cdp_env_crn
+            # and cdw_cluster_info["status"] == "Running"
         ):
             return cdw_cluster_info["id"]
 
