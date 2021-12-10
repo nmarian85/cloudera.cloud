@@ -16,8 +16,9 @@ def get_cdw_cluster_id(cdp_env_crn):
     )
     for cdw_cluster_info in response["clusters"]:
         if (
-            cdw_cluster_info["environmentCrn"] == cdp_env_crn
-            and cdw_cluster_info["status"] == "Running"
+            cdw_cluster_info["environmentCrn"]
+            == cdp_env_crn
+            # and cdw_cluster_info["status"] == "Running"
         ):
             return cdw_cluster_info["id"]
 
@@ -84,7 +85,6 @@ def main(dryrun, env, cdp_env_name, action, json_skel):
     cdw_url = f"{requests_ops.CDP_SERVICES_ENDPOINT}/dw"
 
     cdp_env_crn = get_cdp_env_crn(cdp_env_name)
-    print(cdp_env_crn)
     cluster_id = get_cdw_cluster_id(cdp_env_crn)
 
     if action == "install":
