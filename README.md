@@ -253,7 +253,7 @@ TODO: Add example
 
 ## Disabling the CDW service
 ```bash
-cdp dw disable-service --generate-cli-skeleton > create_dw.json && python3 scripts/cdw_mgmt.py --no-dryrun --action delete --env lab --cdp-env-name $DEVO_ENV_NAME --json-skel create_dw.json
+cdp dw delete-cluster --generate-cli-skeleton > create_dw.json && python3 scripts/cdw_mgmt.py --no-dryrun --action delete --env lab --cdp-env-name $DEVO_ENV_NAME --json-skel create_dw.json
 ```
 
 - **devo2-modules SoFa repo**
