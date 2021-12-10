@@ -250,7 +250,7 @@ This procedure is based on the one here: https://docs.cloudera.com/data-warehous
 - **devo2 IaC repo** : Replace the branch name in all git URLs in the `main.tf` with the branch name you just created and the push your code. No need to run the full TF pipeline.
 - Follow the steps for provisioning the virtual warehouses in the Installing a CDP environment section.
 
-## Install CDW Virtual Warehouse (Impala/Hive)
+### Install CDW Virtual Warehouse (Impala/Hive)
 ```bash
 cdp dw create-vw --generate-cli-skeleton > create_vw.json && python3 scripts/vw_cdw_mgmt.py --no-dryrun --action install --env lab --cdp-env-name $DEVO_ENV_NAME --vw-name i03 --json-skel create_vw.json
 ```
