@@ -199,7 +199,7 @@ This procedure is based on the one here: https://docs.cloudera.com/data-warehous
       #   this_account_id         = var.this_account_id
       #   delete_cdw              = local.cdw_env_info["delete_cdw"]
       # }
-  ```
+    ```
 - **devo2 IaC repo**
   - Fill in the following variables in the `env.tf` (e.g. `/devo2-lab/env.tf`) in the environment information section: `cdw_env_name` (from the CDW CDP console), `delete_cdw` (should be set to `false`).
     ```bash
@@ -247,6 +247,9 @@ This procedure is based on the one here: https://docs.cloudera.com/data-warehous
 ```bash
 cdp dw create-vw --generate-cli-skeleton > create_vw.json && python3 scripts/vw_cdw_mgmt.py --no-dryrun --action install --env lab --cdp-env-name $DEVO_ENV_NAME --vw-name i03 --json-skel create_vw.json
 ```
+
+### Delete CDW Virtual Warehouse (Impala/Hive)
+TODO: Add example
 
 ## Disabling the CDW service
 ```bash
