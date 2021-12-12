@@ -252,9 +252,18 @@ cdp dw create-vw --generate-cli-skeleton > create_vw.json && python3 scripts/vw_
 TODO: Add example
 
 ## Disabling the CDW service
-```bash
-cdp dw delete-cluster --generate-cli-skeleton > delete_dw.json && python3 scripts/cdw_mgmt.py --no-dryrun --action delete --env lab --cdp-env-name $DEVO_ENV_NAME --json-skel delete_dw.json
-```
+- Disable the CDW service via the CDP REST API
+  ```bash
+  cdp dw delete-cluster --generate-cli-skeleton > delete_dw.json && python3 scripts/cdw_mgmt.py --no-dryrun --action delete --env lab --cdp-env-name $DEVO_ENV_NAME --json-skel delete_dw.json
+  ```
+
+- SSH to the DEVO2 jumphost and run the following commands. This is required since the CDW ACM certificate is in use by an ELB. However, this ELB is not part of the CDW CF stack and it is created separately by EKS. For this reason, deleting the CF stack will fail without executing the steps below. 
+  ```bash
+  export DEVO_ENV_NAME=devo-lab04
+  export CRT_ARN=$(aws acm list-certificates --query 'CertificateSummaryList[].[CertificateArn,DomainName]' --output text | grep $DEVO_ENV_NAME | cut -f1)
+  export ALB_NAME=$(aws elb describe-load-balancers --query "LoadBalancerDescriptions[? ListenerDescriptions [? Listener.SSLCertificateId =='$CRT_ARN' ]]" | jq -r ".[0].LoadBalancerName")
+  aws elb delete-load-balancer-listeners --load-balancer-name $ALB_NAME --load-balancer-ports 443
+  ```
 
 - **devo2-modules SoFa repo**
   - Create a new branch in the `devo2-modules` SoFa repo
