@@ -160,8 +160,9 @@ python3 scripts/cml_mgmt.py --no-dryrun --action install --env lab --cdp-env-nam
 TODO: add example
 
 ## Enabling the CDW service
-For enabling the CDW service we are going to use the following procedure. This is only needed when enabling the CDW service; for installing the virtual warehouses you will use the standard automation part of this repo.
-This procedure is based on the one here: https://docs.cloudera.com/data-warehouse/cloud/aws-environments/topics/dw-aws-reduced-perms-mode-activating-environments.html
+- For enabling the CDW service we are going to use the following procedure. 
+- **This is only needed when enabling the CDW service**; for installing the virtual warehouses you will use the steps in the "Install CDW Virtual Warehouse" section.
+- This procedure is based on the official Cloudera one here: https://docs.cloudera.com/data-warehouse/cloud/aws-environments/topics/dw-aws-reduced-perms-mode-activating-environments.html
 
 - Please be aware that there is only one CDW service you can deploy per CDP environment. Please check that there is no CDW instance already running in your env in the CDP MC. If that is the case, please follow the steps in the "Disabling the CDW service" chapter below.  
 - Open the CDP MC (e.g. `https://t-igam.tadnet.eu/oamfed/idp/initiatesso?providerid=CDP` for TADNET), click on Data Warehouse, click on the lighting bolt for the specific environment where you want to provision CDW then:
