@@ -63,13 +63,14 @@ Please make sure that the IaC code was ran before continuing.
     ```bash
     export REQUESTS_CA_BUNDLE=/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt
     export DEVO_ENV_NAME=devo-lab04
+    export ECB_ENV=lab
     ```
 - Please make sure that the cluster names you use as parameters are reflected in the `conf/<env>/<cdp_env>` corresponding folder. E.g.: the CML cluster you specify is defined in the `cml.json` file of that environment.
 ## CDP Tenant configuration
 - Assign the cdp roles to the admin groups
     ```bash
     cdp iam assign-group-role --generate-cli-skeleton > asg_group_role.json && \
-    python3 scripts/group_cdp_role_map.py --no-dryrun --env lab --action assign --json-skel asg_group_role.json
+    python3 scripts/group_cdp_role_map.py --no-dryrun --env ${ECB_ENV} --action assign --json-skel asg_group_role.json
     ```
 
 ## CDP environment actions
@@ -83,13 +84,13 @@ The steps below show how to install CDP components(environment, datalake, CDE, C
 
 ```bash
 cdp environments create-aws-credential --generate-cli-skeleton > cred_create.json && \
-python3 scripts/cred_mgmt.py --no-dryrun --action create --env lab --cdp-env-name ${DEVO_ENV_NAME} --json-skel cred_create.json
+python3 scripts/cred_mgmt.py --no-dryrun --action create --env ${ECB_ENV} --cdp-env-name ${DEVO_ENV_NAME} --json-skel cred_create.json
 ```
 
 ### Create the CDP environment
 ```bash
 cdp environments create-aws-environment --generate-cli-skeleton > create_env.json && \
-python3 scripts/env_mgmt.py --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME} --action install-env --json-skel create_env.json
+python3 scripts/env_mgmt.py --no-dryrun --env ${ECB_ENV} --cdp-env-name ${DEVO_ENV_NAME} --action install-env --json-skel create_env.json
 ```
 
 ### Create ranger and idbroker mappings
@@ -98,14 +99,14 @@ python3 scripts/env_mgmt.py --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME
 TODO: Populate users automatically
 ```bash
 cdp environments set-id-broker-mappings --generate-cli-skeleton > create_idbroker_mapping.json && \
-python3 scripts/idbroker_map.py  --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME} --json-skel create_idbroker_mapping.json
+python3 scripts/idbroker_map.py  --no-dryrun --env ${ECB_ENV} --cdp-env-name ${DEVO_ENV_NAME} --json-skel create_idbroker_mapping.json
 ```
 
 ### Create data lake
 
 ```bash
 cdp datalake create-aws-datalake --generate-cli-skeleton > create_dlake.json && \
-python3 scripts/cdl_mgmt.py --no-dryrun --action install --env lab --cdp-env-name ${DEVO_ENV_NAME} --json-skel create_dlake.json
+python3 scripts/cdl_mgmt.py --no-dryrun --action install --env ${ECB_ENV} --cdp-env-name ${DEVO_ENV_NAME} --json-skel create_dlake.json
 ```
 
 ### Sync idbroker mappings
@@ -119,7 +120,7 @@ python3 scripts/idbroker_sync.py --no-dryrun --cdp-env-name ${DEVO_ENV_NAME} --j
 
 ```bash
 cdp iam assign-group-resource-role --generate-cli-skeleton > asg_group_res_role.json && \
-python3 scripts/group_cdp_res_role_map.py --no-dryrun --env lab --cdp-env-name ${DEVO_ENV_NAME} --action assign --json-skel asg_group_res_role.json
+python3 scripts/group_cdp_res_role_map.py --no-dryrun --env ${ECB_ENV} --cdp-env-name ${DEVO_ENV_NAME} --action assign --json-skel asg_group_res_role.json
 ```
 ### Sync CDP users to environment
 
@@ -132,14 +133,14 @@ python3 scripts/user_sync.py --no-dryrun --json-skel sync_all_users.json
 ### Install CDE
 ```bash
 cdp de enable-service --generate-cli-skeleton > create_cde.json && \
-python3 scripts/cde_mgmt.py --no-dryrun --action install --env lab --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --json-skel create_cde.json
+python3 scripts/cde_mgmt.py --no-dryrun --action install --env ${ECB_ENV} --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --json-skel create_cde.json
 ```
 - **Allow the jumphost role admin access to the EKS CP**. Please see the **Allow the jumphost role admin access to the EKS CP.** section.
 
 ### Install CDE VC
 ```bash
 cdp de create-vc --generate-cli-skeleton > create_vc_cde.json && \
-python3 scripts/vc_cde_mgmt.py --no-dryrun --action install --env lab --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --vc-name ${DEVO_ENV_NAME}-cde01-vc01 --json-skel create_vc_cde.json
+python3 scripts/vc_cde_mgmt.py --no-dryrun --action install --env ${ECB_ENV} --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --vc-name ${DEVO_ENV_NAME}-cde01-vc01 --json-skel create_vc_cde.json
 ```
 ### Delete CDE
 TODO: add example
@@ -152,7 +153,7 @@ TODO: add example
 ### Install CML
 ```bash
 cdp ml create-workspace --generate-cli-skeleton > create_cml.json && \
-python3 scripts/cml_mgmt.py --no-dryrun --action install --env lab --cdp-env-name ${DEVO_ENV_NAME} --cml-cluster-name ${DEVO_ENV_NAME}-cml01 --json-skel create_cml.json
+python3 scripts/cml_mgmt.py --no-dryrun --action install --env ${ECB_ENV} --cdp-env-name ${DEVO_ENV_NAME} --cml-cluster-name ${DEVO_ENV_NAME}-cml01 --json-skel create_cml.json
 ```
 - **Allow the jumphost role admin access to the EKS CP**. Please see the **Allow the jumphost role admin access to the EKS CP.** section.
 
@@ -247,7 +248,7 @@ TODO: add example
 
 ### Install CDW Virtual Warehouse (Impala/Hive)
 ```bash
-cdp dw create-vw --generate-cli-skeleton > create_vw.json && python3 scripts/vw_cdw_mgmt.py --no-dryrun --action install --env lab --cdp-env-name $DEVO_ENV_NAME --vw-name i03 --json-skel create_vw.json
+cdp dw create-vw --generate-cli-skeleton > create_vw.json && python3 scripts/vw_cdw_mgmt.py --no-dryrun --action install --env ${ECB_ENV} --cdp-env-name $DEVO_ENV_NAME --vw-name i03 --json-skel create_vw.json
 ```
 
 ### Delete CDW Virtual Warehouse (Impala/Hive)
@@ -256,7 +257,7 @@ TODO: Add example
 ## Disabling the CDW service
 - Disable the CDW service via the CDP REST API
   ```bash
-  cdp dw delete-cluster --generate-cli-skeleton > delete_dw.json && python3 scripts/cdw_mgmt.py --no-dryrun --action delete --env lab --cdp-env-name $DEVO_ENV_NAME --json-skel delete_dw.json
+  cdp dw delete-cluster --generate-cli-skeleton > delete_dw.json && python3 scripts/cdw_mgmt.py --no-dryrun --action delete --env ${ECB_ENV} --cdp-env-name $DEVO_ENV_NAME --json-skel delete_dw.json
   ```
 
 - SSH to the DEVO2 jumphost and run the following commands. This is required since the CDW ACM certificate is in use by an ELB. However, this ELB is not part of the CDW CF stack and it is created separately by EKS. For this reason, deleting the CF stack will fail without executing the steps below. 
