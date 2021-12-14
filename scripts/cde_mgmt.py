@@ -56,8 +56,8 @@ def get_cde_cluster_id(cluster_name):
 @click.option("--action", type=click.Choice(["install", "delete"]), required=True)
 @click.option(
     "--env",
-    type=click.Choice(["lab", "test", "dev", "acc", "prod"]),
-    help="ECB environment: lab, test, etc.",
+    type=click.Choice(["lab", "tst", "dev", "acc", "prd"]),
+    help="ECB environment: lab, tst, etc.",
     required=True,
 )
 @click.option(
