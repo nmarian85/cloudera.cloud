@@ -1,0 +1,12 @@
+{
+  "name": "devo-tst01-dl",
+  "data_bucket": "devo-tst01-adm-data-i7ijrnh8",
+  "idbroker_role_instance_profile": "devo-tst01-idbroker-role-instance-profile",
+  "tags": [
+    {
+      "key": "origin",
+      "value": "cdp"
+    }
+  ],
+  "scale": "LIGHT_DUTY"
+}
