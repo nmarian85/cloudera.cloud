@@ -79,6 +79,12 @@ The steps below show how to install CDP components(environment, datalake, CDE, C
 - Please see the section called "Running the code" for exporting the proper environment variables
 - When creating a new environment please create a new folder containing the CDP environment name in the `conf` folder following the convention `devo-<stage><env_number>`, e.g. `devo-lab04`.
 - Create the json configuration files corresponding to the CDP components in the previously mentioned folder (e.g. `cde.json`, `cml.json`, `cdw.json`, etc.). **Please fill all the required details belonging to that environment (VPC ID, security groups, subnets, role names, public key, account id, etc.)**. You can use one of the existing folders as an example.
+- If this is the first environment you create, there is no SSH key provisioned for being able to connect via SSH to the CDP hosts (e.g. datalake, FreeIPA, etc.). Hence we will have to create this first. Please see below an example how to create the key. **The  private key should have been generated on the bdaxm01 host and it should never leave this host**.
+  ```bash
+  (myenv) [sa_mariann@bdaxm01 ~]$ export ECB_ENV=tst
+  (myenv) [sa_mariann@bdaxm01 ~]$ mkdir ~/${ECB_ENV}_keys && ssh-keygen -t rsa -f ~/${ECB_ENV}_keys/cloudbreak_${ECB_ENV}_rsa -q -N "" && ls -l ~/${ECB_ENV}_keys/cloudbreak_${ECB_ENV}_rsa*
+  ```
+  - Please grab the public key and add it to the environment configuration JSON (e.g. `conf/lab/devo-lab04/env.json`). 
 
 ### Create the credential for the environment
 
