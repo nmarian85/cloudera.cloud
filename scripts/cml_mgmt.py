@@ -21,8 +21,9 @@ def dump_install_json(env, cdp_env_name, json_skel, cml_cluster_name, cml_cluste
         {"key": f"{k}", "value": f"{v}"} for k, v in cml_cluster_info["tags"].items()
     ]
 
-    cml_json["provisionK8sRequest"]["tags"]["ecb_env"] = env
-    cml_json["provisionK8sRequest"]["tags"]["cdp_env"] = cdp_env_name
+    cml_json["provisionK8sRequest"]["tags"].extend(
+        [{"key": "ecb_env", "value": env}, {"key": "cdp_env", "value": cdp_env_name}]
+    )
     cml_json_ig = list(cml_json["provisionK8sRequest"]["instanceGroups"])
 
     # mlinfra

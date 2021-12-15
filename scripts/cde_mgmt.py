@@ -24,6 +24,9 @@ def dump_install_json(env, cdp_env_name, cde_cluster_name, cde_cluster_info, jso
     # we are using an internal load balancer
     cde_json["whitelistIps"] = []
     cde_json["tags"] = cde_cluster_info["tags"]
+    # cde_json["tags"].extend(
+    #     [{"key": "ecb_env", "value": env}, {"key": "cdp_env", "value": cdp_env_name}]
+    # )
     cde_json["tags"]["ecb_env"] = env
     cde_json["tags"]["cdp_env"] = cdp_env_name
     return cde_json
