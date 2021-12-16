@@ -26,7 +26,8 @@ aws_auth_yaml = yaml.safe_load(sys.stdin.read())
 
 # Removing metadata since we do not need it at apply time
 for field in ["annotations", "creationTimestamp", "resourceVersion", "uid"]:
-    del aws_auth_yaml["metadata"][field]
+    if field in aws_auth_yaml["metadata"]:
+        del aws_auth_yaml["metadata"][field]
 
 # Load multistring value for mapRoles
 map_roles_yaml = yaml.safe_load(aws_auth_yaml["data"]["mapRoles"])
