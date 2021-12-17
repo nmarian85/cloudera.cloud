@@ -67,15 +67,17 @@ Please make sure that the IaC code was ran before continuing.
     ```
 - Please make sure that the cluster names you use as parameters are reflected in the `conf/<env>/<cdp_env>` corresponding folder. E.g.: the CML cluster you specify is defined in the `cml.json` file of that environment.
 ## CDP Tenant configuration
+This needs to be done only when configuring a new CDP tenant. 
 - Assign the cdp roles to the admin groups
     ```bash
     cdp iam assign-group-role --generate-cli-skeleton > asg_group_role.json && \
     python3 scripts/group_cdp_role_map.py --no-dryrun --env ${ECB_ENV} --action assign --json-skel asg_group_role.json
     ```
 
-## CDP environment actions
-### Prerequisites for installing a new CDP environment
-The steps below show how to install CDP components(environment, datalake, CDE, CML, etc.) from scratch. **Please follow the installation order below: CDP environment, CDP data lake, CDP experiences**.
+## CDP installation steps
+### Prerequisites
+The steps below show how to install CDP components(environment, datalake, CDE, CML, etc.) from scratch. 
+**Please follow the installation order as per the steps below: CDP environment, CDP data lake, CDP experiences**. The CDP experiences can be installed at the same time as there is no dependency between them.
 - Please see the section called "Running the code" for exporting the proper environment variables
 - When creating a new environment please create a new folder containing the CDP environment name in the `conf` folder following the convention `devo-<stage><env_number>`, e.g. `devo-lab04`.
 - Create the json configuration files corresponding to the CDP components in the previously mentioned folder (e.g. `cde.json`, `cml.json`, `cdw.json`, etc.). **Please fill all the required details belonging to that environment (VPC ID, security groups, subnets, role names, public key, account id, etc.)**. You can use one of the existing folders as an example.
@@ -108,7 +110,8 @@ python3 scripts/idbroker_map.py  --no-dryrun --env ${ECB_ENV} --cdp-env-name ${D
 cdp datalake create-aws-datalake --generate-cli-skeleton > create_dlake.json && \
 python3 scripts/cdl_mgmt.py --no-dryrun --action install --env ${ECB_ENV} --cdp-env-name ${DEVO_ENV_NAME} --json-skel create_dlake.json
 ```
-
+### Delete data lake
+TODO:
 ### Sync idbroker mappings
 
 ```bash
@@ -129,7 +132,6 @@ cdp environments sync-all-users --generate-cli-skeleton > sync_all_users.json &&
 python3 scripts/user_sync.py --no-dryrun --json-skel sync_all_users.json
 ```
 
-## CDE actions
 ### Install CDE
 ```bash
 cdp de enable-service --generate-cli-skeleton > create_cde.json && \
@@ -142,14 +144,6 @@ python3 scripts/cde_mgmt.py --no-dryrun --action install --env ${ECB_ENV} --cdp-
 cdp de create-vc --generate-cli-skeleton > create_vc_cde.json && \
 python3 scripts/vc_cde_mgmt.py --no-dryrun --action install --env ${ECB_ENV} --cdp-env-name ${DEVO_ENV_NAME} --cde-cluster-name ${DEVO_ENV_NAME}-cde01 --vc-name ${DEVO_ENV_NAME}-cde01-vc01 --json-skel create_vc_cde.json
 ```
-### Delete CDE
-TODO: add example
-
-### Delete CDE VC
-TODO: add example
-
-## CML actions
-
 ### Install CML
 ```bash
 cdp ml create-workspace --generate-cli-skeleton > create_cml.json && \
@@ -157,15 +151,15 @@ python3 scripts/cml_mgmt.py --no-dryrun --action install --env ${ECB_ENV} --cdp-
 ```
 - **Allow the jumphost role admin access to the EKS CP**. Please see the **Allow the jumphost role admin access to the EKS CP.** section.
 
-### Delete CML
-TODO: add example
-
-## Enabling the CDW service
+### Enabling the CDW service
 For enabling the CDW service we are going to use the following procedure. **This is only needed when enabling the CDW service; for installing the virtual warehouses you will use the steps in the "Install CDW Virtual Warehouse" section**.
-- Please make sure that you have followed the previous steps for creating a CDP environment and a datalake for it. 
-- This procedure is based on the official Cloudera one here: https://docs.cloudera.com/data-warehouse/cloud/aws-environments/topics/dw-aws-reduced-perms-mode-activating-environments.html
+This procedure is based on the official Cloudera one here: https://docs.cloudera.com/data-warehouse/cloud/aws-environments/topics/dw-aws-reduced-perms-mode-activating-environments.html
 
+#### Prerequisites
+- Please make sure that you have followed the previous steps for creating a CDP environment and a datalake for it.
 - Please be aware that there is only one CDW service you can deploy per CDP environment. Please check that there is no CDW instance already running in your env in the CDP MC. If that is the case, please follow the steps in the "Disabling the CDW service" chapter below.  
+
+#### CDW Installation
 - Open the CDP MC (e.g. `https://t-igam.tadnet.eu/oamfed/idp/initiatesso?providerid=CDP` for TADNET), click on Data Warehouse, click on the lighting bolt for the specific environment where you want to provision CDW then:
 - Choose only private subnets as Deployment Mode
 - Choose all 3 BE networks in the Private Subents area
@@ -173,7 +167,7 @@ For enabling the CDW service we are going to use the following procedure. **This
 - Click Activate and then check to activate environment with reduced permissions mode.
 - Click Activate
 - Copy the CDW environment (e.g. `env-5frx9b`)
-- **devo2-modules SoFa repo**: The module for provisioning CDW (`cdp_cdw_infra`) should be already in your `envs/<env_name>/main.tf` file from when you provisioned the CDP environment. In case you want to do development on this repo please create a feature branch (e.g. `feature/12345`).
+- **devo2-modules SoFa repo (optional)**: The module for provisioning CDW (`cdp_cdw_infra`) should be already in your `envs/<env_name>/main.tf` file from when you provisioned the CDP environment. In case you want to do development on this repo please create a feature branch (e.g. `feature/12345`).
 - **devo2 IaC repo**
   - Fill in the following variables in the `env.tf` (e.g. `devo2-lab/env.tf`) in the corresponding environment information section: 
     - `cdw_env_name` (the one you copied from the CDW CDP console), 
@@ -191,78 +185,30 @@ For enabling the CDW service we are going to use the following procedure. **This
       )
     }
     ```
-    - In case you are working with a custom branch in `devo2-modules` please replace the branch name in all git URLs in the `main.tf` with the branch name you just created. E.g.: `"git::https://oauth2:UtHHpqCf1-1QDzU2_DBd@gitlab.sofa.dev/ddp/devo/devo2-modules.git//devo-discdata-s3-access-v2?ref=feature/blabla"`. Otherwise just work with the `develop` branch and no changes are needed.
+    - Optional: In case you are working with a custom branch in `devo2-modules` please replace the branch name in all git URLs in the `main.tf` with the branch name you just created. E.g.: `"git::https://oauth2:UtHHpqCf1-1QDzU2_DBd@gitlab.sofa.dev/ddp/devo/devo2-modules.git//devo-discdata-s3-access-v2?ref=feature/blabla"`. Otherwise just work with the `develop` branch and no changes are needed.
   - Run TF pipeline
 - Once this is done, go back to the CDP Data Warehouse interface and then 
   - click on Copy Configurations, 
   - optionally copy the kubeconfig file contents (can be retrieved later via the `aws` cli)
   - tick `Yes, Kubeconfig and AWS Auth configurations are applied` and then Continue. 
   - Wait until the service is enabled and the Database Catalog is provisioned.
-- Login to the JH and then enable the Cloudwatch logging for EKS:
+- **devo2-modules SoFa repo (optional)**: In case you created a custom branch, merge your branch to the `develop` branch once you have finished work on that branch.
+- **devo2 IaC repo (optional)** : In case you created a custom branch in the `devo2-modules` repo, please replace the branch name in all git URLs in the `main.tf` with the `develop` branch.
 
+#### Post config
+- Login to the JH and then enable the Cloudwatch logging for EKS:
     ```bash
     ➜  aws eks update-cluster-config --name env-hk574w-dwx-stack-eks --logging '{"clusterLogging": [{"types": ["api","audit","authenticator","controllerManager","scheduler"],"enabled": true}]}'
     ```
-- **devo2-modules SoFa repo**: In case you created a custom branch, merge your branch to the `develop` branch once you have finished work on that branch.
-- **devo2 IaC repo** : In case you created a custom branch in the `devo2-modules` repo, please replace the branch name in all git URLs in the `main.tf` with the `develop` branch.
-- Follow the steps for provisioning the virtual warehouses in the "Installing a CDW Vitual Warehouse" section.
+- Follow the steps for provisioning the virtual warehouses in the "Installing a CDW Virtual Warehouse" section.
 
 ### Install CDW Virtual Warehouse (Impala/Hive)
 ```bash
 cdp dw create-vw --generate-cli-skeleton > create_vw.json && python3 scripts/vw_cdw_mgmt.py --no-dryrun --action install --env ${ECB_ENV} --cdp-env-name $DEVO_ENV_NAME --vw-name i03 --json-skel create_vw.json
 ```
 
-### Delete CDW Virtual Warehouse (Impala/Hive)
-TODO: Add example
-
-## Disabling the CDW service
-- Disable the CDW service via the CDP REST API
-  ```bash
-  cdp dw delete-cluster --generate-cli-skeleton > delete_dw.json && python3 scripts/cdw_mgmt.py --no-dryrun --action delete --env ${ECB_ENV} --cdp-env-name $DEVO_ENV_NAME --json-skel delete_dw.json
-  ```
-
-- SSH to the DEVO2 jumphost and run the following commands. This is required since the CDW ACM certificate is in use by an ELB. However, this ELB is not part of the CDW CF stack and it is created separately by EKS. For this reason, deleting the CF stack will fail without executing the steps below. 
-  ```bash
-  export DEVO_ENV_NAME=devo-lab04
-  export CRT_ARN=$(aws acm list-certificates --query 'CertificateSummaryList[].[CertificateArn,DomainName]' --output text | grep $DEVO_ENV_NAME | cut -f1)
-  export ALB_NAME=$(aws elb describe-load-balancers --query "LoadBalancerDescriptions[? ListenerDescriptions [? Listener.SSLCertificateId =='$CRT_ARN' ]]" | jq -r ".[0].LoadBalancerName")
-  aws elb delete-load-balancer-listeners --load-balancer-name $ALB_NAME --load-balancer-ports 443
-  ```
-- **devo2 IaC repo**
-  - Please set the `delete_cdw` to `true`in the `env.tf` (e.g. `devo2-lab/env.tf`)
-    ```bash
-    devo-lab04 = {
-      cdp_env_info    = local.cdp_env_info
-      liftie_env_info = local.liftie_env_info
-      # cdp environment names; the values are the cdw environment names; if there is no cdw configured for that environment please leave the value empty #
-      cdw_env_info = merge(
-        local.cdw_env_info,
-        { 
-          cdw_env_name = "env-hk574w",
-          delete_cdw   = true
-        }
-      )
-    }
-    ```
-  - Run TF pipeline
-
-- **devo2 IaC repo**
-  - Please set the `cdw_env_name` to "" in the `env.tf` (e.g. `/devo2-lab/env.tf`)
-    ```bash
-    devo-lab04 = {
-      cdp_env_info    = local.cdp_env_info
-      liftie_env_info = local.liftie_env_info
-      # cdp environment names; the values are the cdw environment names; if there is no cdw configured for that environment please leave the value empty #
-      cdw_env_info = merge(
-        local.cdw_env_info,
-        { cdw_env_name = "",
-          delete_cdw   = true
-        }
-      )
-    }
-    ```
-  - Commit and push your changes.
-## Allow the jumphost role admin access to the EKS CP for CDE or CML
+## Allow the jumphost role admin access to the EKS CP for CDE or CML 
+**TODO**: This step can be now implemented in the IaC pipeline but currently it was not done.
   - **devo2 IaC repo**: Re-run the DEVO2 TF code for enabling https access to the EKS Control Plane. Since no changes were performed in this repo then you need to do some dummy change (e.g. a comment) in one of the files of the repo in order to be able to issue a merge request.
   - SSH to the jumphost
   - Export the variables
@@ -302,6 +248,105 @@ TODO: Add example
   export KUBECONFIG=~/.kube/${DEVO_ENV_NAME}-${EKS_CLUSTER_TYPE}
   kubectl get po -A | head -5
   ```
+
+## CDP Deletion steps
+### Prerequisites
+The steps below show how to delete CDP components(environment, datalake, CDE, CML, etc.) from scratch. 
+**For deleting please follow the order of below: CDP experiences, CDP data lake, CDP environment, credentials, etc.**. The experiences can be delete in parallel as there is no dependency between them.
+- Please see the section called "Running the code" for exporting the proper environment variables
+
+### Delete CDW Virtual Warehouse (Impala/Hive)
+TODO: Add example
+
+### Disabling the CDW service
+- Disable the CDW service via the CDP REST API
+  ```bash
+  cdp dw delete-cluster --generate-cli-skeleton > delete_dw.json && python3 scripts/cdw_mgmt.py --no-dryrun --action delete --env ${ECB_ENV} --cdp-env-name $DEVO_ENV_NAME --json-skel delete_dw.json
+  ```
+
+- SSH to the DEVO2 jumphost and run the following commands. This is required since the CDW ACM certificate is in use by an ELB. However, this ELB is not part of the CDW CF stack and it is created separately by EKS. For this reason, deleting the CF stack will fail without executing the steps below. 
+  ```bash
+  export DEVO_ENV_NAME=devo-lab04
+  export CRT_ARN=$(aws acm list-certificates --query 'CertificateSummaryList[].[CertificateArn,DomainName]' --output text | grep $DEVO_ENV_NAME | cut -f1)
+  export ALB_NAME=$(aws elb describe-load-balancers --query "LoadBalancerDescriptions[? ListenerDescriptions [? Listener.SSLCertificateId =='$CRT_ARN' ]]" | jq -r ".[0].LoadBalancerName")
+  aws elb delete-load-balancer-listeners --load-balancer-name $ALB_NAME --load-balancer-ports 443
+  ```
+- **devo2 IaC repo**
+  - Please set the `delete_cdw` to `true`in the `env.tf` (e.g. `devo2-lab/env.tf`)
+    ```bash
+    devo-lab04 = {
+      cdp_env_info    = local.cdp_env_info
+      liftie_env_info = local.liftie_env_info
+      cdw_env_info = merge(
+        local.cdw_env_info,
+        { 
+          cdw_env_name = "env-hk574w",
+          delete_cdw   = true
+        }
+      )
+    }
+    ```
+  - Run TF pipeline
+
+- **devo2 IaC repo**
+  - Please set the `cdw_env_name` to "" in the `env.tf` (e.g. `/devo2-lab/env.tf`)
+    ```bash
+    devo-lab04 = {
+      cdp_env_info    = local.cdp_env_info
+      liftie_env_info = local.liftie_env_info
+      cdw_env_info = merge(
+        local.cdw_env_info,
+        { cdw_env_name = "",
+          delete_cdw   = true
+        }
+      )
+    }
+    ```
+  - Commit and push your changes. No need to run the full TF pipeline.
+
+
+### Delete CDE VC
+TODO: add python command example
+### Delete CDE
+TODO: add python command example
+### Delete CML
+TODO: add python command example
+
+### Delete CDP datalake
+TODO: add python command example
+
+### Delete CDP environment
+TODO: add python command example
+Once the CDP environment has been deleted please proceed with the next steps.
+- **devo2 IaC repo**
+  - Remove the corresponding CDP environment TF module in the `main.tf`. E.g.
+    ```bash
+    module devo-lab04 {
+      ...
+    }
+    ```
+  - Run TF pipeline
+  - Remove the environment entry in the `env.tf` (e.g. `devo2-lab/env.tf`)
+    ```bash
+    devo-lab04 = {
+      cdp_env_info    = local.cdp_env_info
+      liftie_env_info = local.liftie_env_info
+      cdw_env_info = merge(
+        local.cdw_env_info,
+        { cdw_env_name = "",
+          delete_cdw   = true
+        }
+      )
+    }
+    ```
+  - Commit and push your changes. No need to run the full TF pipeline.
+- **devo2-modules SoFa repo**: 
+  - Please create a feature branch (e.g. `feature/delete-cdp-env-name`).
+  - Remove the correspondent environment folder (e.g. `envs/lab/devo-lab04`)
+  - Commit, push and MR to `develop` branch.
+
+### Delete credential
+TODO: add python command example
 ## Pipeline - work in progress for now
 
 To a certain extent, we are abusing the traditional concept of a pipeline, since the pipeline does not contain the traditional stages (build/test/deploy). We are building a "poor man's" dynamic pipeline based on the environment variable `ACTION`. The action can be one of the following:
