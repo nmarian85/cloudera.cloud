@@ -161,8 +161,8 @@ python3 scripts/cml_mgmt.py --no-dryrun --action install --env ${ECB_ENV} --cdp-
 TODO: add example
 
 ## Enabling the CDW service
-- For enabling the CDW service we are going to use the following procedure. 
-- **This is only needed when enabling the CDW service**; for installing the virtual warehouses you will use the steps in the "Install CDW Virtual Warehouse" section.
+For enabling the CDW service we are going to use the following procedure. **This is only needed when enabling the CDW service; for installing the virtual warehouses you will use the steps in the "Install CDW Virtual Warehouse" section**.
+- Please make sure that you have followed the previous steps for creating a CDP environment and a datalake for it. 
 - This procedure is based on the official Cloudera one here: https://docs.cloudera.com/data-warehouse/cloud/aws-environments/topics/dw-aws-reduced-perms-mode-activating-environments.html
 
 - Please be aware that there is only one CDW service you can deploy per CDP environment. Please check that there is no CDW instance already running in your env in the CDP MC. If that is the case, please follow the steps in the "Disabling the CDW service" chapter below.  
@@ -173,78 +173,39 @@ TODO: add example
 - Click Activate and then check to activate environment with reduced permissions mode.
 - Click Activate
 - Copy the CDW environment (e.g. `env-5frx9b`)
-- **devo2-modules SoFa repo**
-  - Create a new branch in the `devo2-modules` SoFa repo
-    ```bash
-    git checkout -b feature/cdw-env-m9zq6b develop
-    ```
-  - Make sure that the `cdp_cdw_infra` module is uncommented and the `eks_post_config` is. Commit and push your changes.
-    ```bash
-      # ---------------------------------------------------------------------------------------
-      # DEPLOY AND CONFIGURE CDW INFRA  
-      # ---------------------------------------------------------------------------------------
-      module "cdp_cdw_infra" {
-        source          = "../../../cdp-cdw-infra"
-        this_account_id = var.this_account_id
-        cdw_env_info    = local.cdw_env_info
-        cdp_env_name    = var.cdp_env
-        dlake_s3_bucket = local.cdp_internal_buckets["cdp_data_bucket"]
-        cdw_policy_name = local.cdw_policy_name
-        cdw_policy_json = local.cdw_policy_json
-      }
-
-      # module "eks_post_config" {
-      #   source                  = "../../../eks-post-config"
-      #   eks_cluster_name        = module.cdp_cdw_infra.cdw_eks_cluster_name
-      #   node_instance_role_name = module.cdp_cdw_infra.cdw_instance_role_name
-      #   jumpserver_role         = var.jumpserver_role
-      #   crossaccount_role       = local.role_name["crossaccount"]
-      #   this_account_id         = var.this_account_id
-      #   delete_cdw              = local.cdw_env_info["delete_cdw"]
-      # }
-    ```
+- **devo2-modules SoFa repo**: The module for provisioning CDW (`cdp_cdw_infra`) should be already in your `envs/<env_name>/main.tf` file from when you provisioned the CDP environment. In case you want to do development on this repo please create a feature branch (e.g. `feature/12345`).
 - **devo2 IaC repo**
-  - Fill in the following variables in the `env.tf` (e.g. `/devo2-lab/env.tf`) in the environment information section: `cdw_env_name` (from the CDW CDP console), `delete_cdw` (should be set to `false`).
+  - Fill in the following variables in the `env.tf` (e.g. `devo2-lab/env.tf`) in the corresponding environment information section: 
+    - `cdw_env_name` (the one you copied from the CDW CDP console), 
+    - `delete_cdw` (should be set to `false`).
     ```bash
     devo-lab04 = {
       cdp_env_info    = local.cdp_env_info
       liftie_env_info = local.liftie_env_info
-      # cdp environment names; the values are the cdw environment names; if there is no cdw configured for that environment please leave the value empty #
       cdw_env_info = merge(
         local.cdw_env_info,
-        { cdw_env_name = "env-hk574w",
+        { 
+          cdw_env_name = "env-hk574w",
           delete_cdw   = false
         }
       )
     }
     ```
-    - Replace the branch name in all git URLs in the `main.tf` with the branch name you just created. E.g.: `"git::https://oauth2:UtHHpqCf1-1QDzU2_DBd@gitlab.sofa.dev/ddp/devo/devo2-modules.git//devo-discdata-s3-access-v2?ref=develop"`
+    - In case you are working with a custom branch in `devo2-modules` please replace the branch name in all git URLs in the `main.tf` with the branch name you just created. E.g.: `"git::https://oauth2:UtHHpqCf1-1QDzU2_DBd@gitlab.sofa.dev/ddp/devo/devo2-modules.git//devo-discdata-s3-access-v2?ref=feature/blabla"`. Otherwise just work with the `develop` branch and no changes are needed.
   - Run TF pipeline
-- We are going to provision the cluster using the TF pipeline which uses a role that we cannot assume on the jumphost. For this reason we need to do the `kubectl apply` via TF, otherwise we will not be able to connect to the EKS cluster using the `jumpserver-role`.
-- **devo2-modules SoFa repo**: Once the CDW cloud formation is deployed by the TF code you should see that you are at Step 2 in the the CDP Data Warehouse interface. Please do the following:
-  - Uncomment the following section in the environment directory (e.g. `envs/lab/devo-lab04/main.tf`) section
-    ```bash
-      module "eks_post_config" {
-        source                  = "../../../eks-post-config"
-        eks_cluster_name        = module.cdp_cdw_infra.cdw_eks_cluster_name
-        node_instance_role_name = module.cdp_cdw_infra.cdw_instance_role_name
-        jumpserver_role         = var.jumpserver_role
-        crossaccount_role       = local.role_name["crossaccount"]
-        this_account_id         = var.this_account_id
-        delete_cdw              = local.cdw_env_info["delete_cdw"]
-      }
-    ```
-
--  **devo2 IaC repo** Run TF pipeline. Since no changes were performed in this repo then you need to do some dummy change (e.g. a comment) in one of the files of the repo in order to be able to issue a merge request.
-- Once this is done, go back to the CDP Data Warehouse interface and then click on Copy Configurations, tick `Yes, Kubeconfig and AWS Auth configurations are applied` and then Continue. Wait until the service is enabled and the Database Catalog is provisioned.
+- Once this is done, go back to the CDP Data Warehouse interface and then 
+  - click on Copy Configurations, 
+  - optionally copy the kubeconfig file contents (can be retrieved later via the `aws` cli)
+  - tick `Yes, Kubeconfig and AWS Auth configurations are applied` and then Continue. 
+  - Wait until the service is enabled and the Database Catalog is provisioned.
 - Login to the JH and then enable the Cloudwatch logging for EKS:
 
     ```bash
     ➜  aws eks update-cluster-config --name env-hk574w-dwx-stack-eks --logging '{"clusterLogging": [{"types": ["api","audit","authenticator","controllerManager","scheduler"],"enabled": true}]}'
     ```
-- **devo2-modules SoFa repo**: Merge your branch to the `develop` branch.
-- **devo2 IaC repo** : Replace the branch name in all git URLs in the `main.tf` with the branch name you just created and the push your code. No need to run the full TF pipeline.
-- Follow the steps for provisioning the virtual warehouses in the Installing a CDP environment section.
+- **devo2-modules SoFa repo**: In case you created a custom branch, merge your branch to the `develop` branch once you have finished work on that branch.
+- **devo2 IaC repo** : In case you created a custom branch in the `devo2-modules` repo, please replace the branch name in all git URLs in the `main.tf` with the `develop` branch.
+- Follow the steps for provisioning the virtual warehouses in the "Installing a CDW Vitual Warehouse" section.
 
 ### Install CDW Virtual Warehouse (Impala/Hive)
 ```bash
@@ -267,40 +228,8 @@ TODO: Add example
   export ALB_NAME=$(aws elb describe-load-balancers --query "LoadBalancerDescriptions[? ListenerDescriptions [? Listener.SSLCertificateId =='$CRT_ARN' ]]" | jq -r ".[0].LoadBalancerName")
   aws elb delete-load-balancer-listeners --load-balancer-name $ALB_NAME --load-balancer-ports 443
   ```
-
-- **devo2-modules SoFa repo**
-  - Create a new branch in the `devo2-modules` SoFa repo
-    ```bash
-    git checkout -b feature/cdw-env-m9zq6b develop
-    ```
-  - Make sure that the `cdp_cdw_infra` and `eks_post_config` modules are uncommented. Commit and push your changes.
-    ```bash
-      # ---------------------------------------------------------------------------------------
-      # DEPLOY AND CONFIGURE CDW INFRA  
-      # ---------------------------------------------------------------------------------------
-      module "cdp_cdw_infra" {
-        source          = "../../../cdp-cdw-infra"
-        this_account_id = var.this_account_id
-        cdw_env_info    = local.cdw_env_info
-        cdp_env_name    = var.cdp_env
-        dlake_s3_bucket = local.cdp_internal_buckets["cdp_data_bucket"]
-        cdw_policy_name = local.cdw_policy_name
-        cdw_policy_json = local.cdw_policy_json
-      }
-
-      module "eks_post_config" {
-        source                  = "../../../eks-post-config"
-        eks_cluster_name        = module.cdp_cdw_infra.cdw_eks_cluster_name
-        node_instance_role_name = module.cdp_cdw_infra.cdw_instance_role_name
-        jumpserver_role         = var.jumpserver_role
-        crossaccount_role       = local.role_name["crossaccount"]
-        this_account_id         = var.this_account_id
-        delete_cdw              = local.cdw_env_info["delete_cdw"]
-      }
-  ```
-
 - **devo2 IaC repo**
-  - Please set the `delete_cdw` to `true`in the `env.tf` (e.g. `/devo2-lab/env.tf`)
+  - Please set the `delete_cdw` to `true`in the `env.tf` (e.g. `devo2-lab/env.tf`)
     ```bash
     devo-lab04 = {
       cdp_env_info    = local.cdp_env_info
@@ -308,41 +237,15 @@ TODO: Add example
       # cdp environment names; the values are the cdw environment names; if there is no cdw configured for that environment please leave the value empty #
       cdw_env_info = merge(
         local.cdw_env_info,
-        { cdw_env_name = "env-hk574w",
+        { 
+          cdw_env_name = "env-hk574w",
           delete_cdw   = true
         }
       )
     }
     ```
-    - Replace the branch name in all git URLs in the `main.tf` with the branch name you just created. E.g.: `"git::https://oauth2:UtHHpqCf1-1QDzU2_DBd@gitlab.sofa.dev/ddp/devo/devo2-modules.git//devo-discdata-s3-access-v2?ref=develop"`
   - Run TF pipeline
 
-- **devo2-modules SoFa repo**
-  - Make sure that the `cdp_cdw_infra` and `eks_post_config` modules are commented. Commit and push your changes.
-    ```bash
-      # ---------------------------------------------------------------------------------------
-      # DEPLOY AND CONFIGURE CDW INFRA  
-      # ---------------------------------------------------------------------------------------
-      # module "cdp_cdw_infra" {
-      #  source          = "../../../cdp-cdw-infra"
-      #  this_account_id = var.this_account_id
-      #  cdw_env_info    = local.cdw_env_info
-      #  cdp_env_name    = var.cdp_env
-      #  dlake_s3_bucket = local.cdp_internal_buckets["cdp_data_bucket"]
-      #  cdw_policy_name = local.cdw_policy_name
-      #  cdw_policy_json = local.cdw_policy_json
-      # }
-
-      # module "eks_post_config" {
-      #  source                  = "../../../eks-post-config"
-      #  eks_cluster_name        = module.cdp_cdw_infra.cdw_eks_cluster_name
-      #  node_instance_role_name = module.cdp_cdw_infra.cdw_instance_role_name
-      #  jumpserver_role         = var.jumpserver_role
-      #  crossaccount_role       = local.role_name["crossaccount"]
-      #  this_account_id         = var.this_account_id
-      #  delete_cdw              = local.cdw_env_info["delete_cdw"]
-      # }
-    ```
 - **devo2 IaC repo**
   - Please set the `cdw_env_name` to "" in the `env.tf` (e.g. `/devo2-lab/env.tf`)
     ```bash
@@ -358,9 +261,7 @@ TODO: Add example
       )
     }
     ```
-  - Run TF pipeline
-- **devo2-modules SoFa repo**: Merge your branch to the `develop` branch.
-
+  - Commit and push your changes.
 ## Allow the jumphost role admin access to the EKS CP for CDE or CML
   - **devo2 IaC repo**: Re-run the DEVO2 TF code for enabling https access to the EKS Control Plane. Since no changes were performed in this repo then you need to do some dummy change (e.g. a comment) in one of the files of the repo in order to be able to issue a merge request.
   - SSH to the jumphost
