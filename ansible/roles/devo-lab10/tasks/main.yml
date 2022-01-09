@@ -52,4 +52,4 @@
   cloudera.cloud.iam_group:
     name: "{{ item.key }}"
     resource_roles: "{{ item.value }}"
-  with_dict: "{{ tenant_groups }}"
+    loop: "{{ tenant_groups|dict2items }}"
