@@ -41,5 +41,3 @@
 # cdl_scale: MEDIUM_DUTY_HA
 # cdl_tags: { "env": "{{ env }}", "origin": "cdp" }
 
-- include_vars:
-    dir: vars
