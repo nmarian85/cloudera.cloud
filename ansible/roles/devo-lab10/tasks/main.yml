@@ -48,7 +48,21 @@
     name: "ECBT1-IGAMFS-APP-DEVO-DEV-Admin"
     resource_roles: "{{ item }}"
   with_items:
-    - admin_group
+    - "DEAdmin"
+    - "DEUser"
+    - "DFAdmin"
+    - "DFFlowAdmin"
+    - "DFFlowUser"
+    - "DWAdmin"
+    - "DWUser"
+    - "DataSteward"
+    - "EnvironmentAdmin"
+    - "EnvironmentUser"
+    - "MLAdmin"
+    - "MLUser"
+    - "MLBusinessUser"
+    - "ODAdmin"
+    - "ODUser"
 
 - name: Assign CDP resource roles to ECB CDP tenant groups
   cloudera.cloud.iam_group:
