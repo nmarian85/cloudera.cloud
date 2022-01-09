@@ -19,7 +19,7 @@
     cloud: aws
     region: "{{ env_region }}"
     log_location: "{{ env_log_bucket }}"
-    log_identity: "{{ env_log_role }}"
+    log_identity: "{{ env_log_role_instance_profile }}"
     public_key_text: "{{ env_public_key }}"
     default_sg: "{{ env_sg }}"
     knox_sg: "{{ env_sg }}"
