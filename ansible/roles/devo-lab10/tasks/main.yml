@@ -46,8 +46,9 @@
 - name: Assign CDP resource roles to ECB CDP tenant groups
   cloudera.cloud.iam_group:
     name: "ECBT1-IGAMFS-APP-DEVO-DEV-Admin"
-    resource_roles: "{{ tenant_groups['ECBT1-IGAMFS-APP-DEVO-DEV-Admin'] }}"
-  # with_dict: "{{ tenant_groups }}"
+    resource_roles: "{{ item }}"
+  with_items:
+    - tenant_groups['ECBT1-IGAMFS-APP-DEVO-DEV-Admin']
 
 - name: Assign CDP resource roles to ECB CDP tenant groups
   cloudera.cloud.iam_group:
