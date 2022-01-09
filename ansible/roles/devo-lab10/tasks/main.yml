@@ -26,6 +26,7 @@
     subnet_ids: "{{ env_subnets }}"
     workload_analytics: "{{ env_workload_analytics }}"
     tags: "{{ env_tags }}"
+    tunnel: false
 
 - name: Create data access mappings for ID Broker
   cloudera.cloud.env_idbroker:
