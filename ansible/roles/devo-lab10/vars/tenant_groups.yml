@@ -39,3 +39,22 @@ tenant_groups:
         "ODUser",
       ],
   }
+
+admin_group:
+  [
+    "DEAdmin",
+    "DEUser",
+    "DFAdmin",
+    "DFFlowAdmin",
+    "DFFlowUser",
+    "DWAdmin",
+    "DWUser",
+    "DataSteward",
+    "EnvironmentAdmin",
+    "EnvironmentUser",
+    "MLAdmin",
+    "MLUser",
+    "MLBusinessUser",
+    "ODAdmin",
+    "ODUser",
+  ]
