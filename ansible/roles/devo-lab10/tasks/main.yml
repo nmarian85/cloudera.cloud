@@ -9,7 +9,6 @@
 #     name: "{{ env_credential['credential_name'] }}"
 #     description: "{{ env_credential['description'] }}"
 #     role: "{{ env_credential['role_arn'] }}"
-
 # - name: Install environment
 #   cloudera.cloud.env:
 #     name: "{{ env_name }}"
@@ -27,13 +26,11 @@
 #     workload_analytics: "{{ env_workload_analytics }}"
 #     tags: "{{ env_tags }}"
 #     tunnel: false
-
 # - name: Create data access mappings for ID Broker
 #   cloudera.cloud.env_idbroker:
 #     name: "{{ env_name }}"
 #     data_access: "{{ env_data_access_role }}"
 #     ranger_audit: "{{ env_ranger_audit_role }}"
-
 # - name: Install datalake
 #   cloudera.cloud.datalake:
 #     name: "{{ cdl_name }}"
@@ -43,16 +40,14 @@
 #     storage: "{{ cdl_storage_bucket }}"
 #     scale: "{{ cdl_scale }}"
 #     tags: "{{ cdl_tags }}"
-
 # - name: Sync idbroker mappings
 #   cloudera.cloud.env_user_sync:
 #     name: "{{ env_name }}"
-
 - name: Assign CDP resource roles to ECB CDP tenant groups
   cloudera.cloud.iam_group:
     name: "ECBT1-IGAMFS-APP-DEVO-DEV-Admin"
     resource_roles: "{{ tenant_groups['ECBT1-IGAMFS-APP-DEVO-DEV-Admin'] }}"
-  with_dict: "{{ tenant_groups }}"
+  # with_dict: "{{ tenant_groups }}"
 
 - name: Assign CDP resource roles to ECB CDP tenant groups
   cloudera.cloud.iam_group:
