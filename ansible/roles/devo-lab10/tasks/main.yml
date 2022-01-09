@@ -2,51 +2,51 @@
 - include_vars:
     dir: vars
 
-- name: Create credential
-  cloudera.cloud.env_cred:
-    state: present
-    cloud: aws
-    name: "{{ env_credential['credential_name'] }}"
-    description: "{{ env_credential['description'] }}"
-    role: "{{ env_credential['role_arn'] }}"
+# - name: Create credential
+#   cloudera.cloud.env_cred:
+#     state: present
+#     cloud: aws
+#     name: "{{ env_credential['credential_name'] }}"
+#     description: "{{ env_credential['description'] }}"
+#     role: "{{ env_credential['role_arn'] }}"
 
-- name: Install environment
-  cloudera.cloud.env:
-    name: "{{ env_name }}"
-    state: present
-    vpc_id: "{{ env_vpc_id }}"
-    credential: "{{ env_credential['credential_name'] }}"
-    cloud: aws
-    region: "{{ env_region }}"
-    log_location: "{{ env_log_bucket }}"
-    log_identity: "{{ env_log_role_instance_profile }}"
-    public_key_text: "{{ env_public_key }}"
-    default_sg: "{{ env_sg }}"
-    knox_sg: "{{ env_sg }}"
-    subnet_ids: "{{ env_subnets }}"
-    workload_analytics: "{{ env_workload_analytics }}"
-    tags: "{{ env_tags }}"
-    tunnel: false
+# - name: Install environment
+#   cloudera.cloud.env:
+#     name: "{{ env_name }}"
+#     state: present
+#     vpc_id: "{{ env_vpc_id }}"
+#     credential: "{{ env_credential['credential_name'] }}"
+#     cloud: aws
+#     region: "{{ env_region }}"
+#     log_location: "{{ env_log_bucket }}"
+#     log_identity: "{{ env_log_role_instance_profile }}"
+#     public_key_text: "{{ env_public_key }}"
+#     default_sg: "{{ env_sg }}"
+#     knox_sg: "{{ env_sg }}"
+#     subnet_ids: "{{ env_subnets }}"
+#     workload_analytics: "{{ env_workload_analytics }}"
+#     tags: "{{ env_tags }}"
+#     tunnel: false
 
-- name: Create data access mappings for ID Broker
-  cloudera.cloud.env_idbroker:
-    name: "{{ env_name }}"
-    data_access: "{{ env_data_access_role }}"
-    ranger_audit: "{{ env_ranger_audit_role }}"
+# - name: Create data access mappings for ID Broker
+#   cloudera.cloud.env_idbroker:
+#     name: "{{ env_name }}"
+#     data_access: "{{ env_data_access_role }}"
+#     ranger_audit: "{{ env_ranger_audit_role }}"
 
-- name: Install datalake
-  cloudera.cloud.datalake:
-    name: "{{ cdl_name }}"
-    state: present
-    environment: "{{ env_name }}"
-    instance_profile: "{{ cdl_idbroker_instance_profile }}"
-    storage: "{{ cdl_storage_bucket }}"
-    scale: "{{ cdl_scale }}"
-    tags: "{{ cdl_tags }}"
+# - name: Install datalake
+#   cloudera.cloud.datalake:
+#     name: "{{ cdl_name }}"
+#     state: present
+#     environment: "{{ env_name }}"
+#     instance_profile: "{{ cdl_idbroker_instance_profile }}"
+#     storage: "{{ cdl_storage_bucket }}"
+#     scale: "{{ cdl_scale }}"
+#     tags: "{{ cdl_tags }}"
 
-- name: Sync idbroker mappings
-  cloudera.cloud.env_user_sync:
-    name: "{{ env_name }}"
+# - name: Sync idbroker mappings
+#   cloudera.cloud.env_user_sync:
+#     name: "{{ env_name }}"
 
 - name: Assign CDP resource roles to ECB CDP tenant groups
   cloudera.cloud.iam_group:
