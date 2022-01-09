@@ -1,4 +1,7 @@
 ---
+- include_vars:
+    dir: vars
+
 - name: Create credential
   cloudera.cloud.env_cred:
     state: present
