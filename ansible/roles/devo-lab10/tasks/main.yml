@@ -49,7 +49,7 @@
     name: "{{ env_name }}"
 
 - name: Assign CDP resource roles to ECB CDP tenant groups
-- cloudera.cloud.iam_group:
+  cloudera.cloud.iam_group:
     name: "{{ item.key }}"
     resource_roles: "{{ item.value }}"
   with_dict: "{{ tenant_groups }}"
