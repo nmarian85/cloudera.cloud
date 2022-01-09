@@ -32,7 +32,7 @@
         workload_analytics: "{{ env_workload_analytics }}"
         tags: "{{ env_tags }}"
 
-    - name: Create a fresh set of data access mappings for ID Broker
+    - name: Create data access mappings for ID Broker
       cloudera.cloud.env_idbroker:
         name: "{{ env_name }}"
         data_access: "{{ env_data_access_role }}"
