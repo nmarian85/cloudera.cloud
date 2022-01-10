@@ -52,7 +52,7 @@
     msg: "{{ env_info_out['environments'][0]['crn'] }}"
 
 - debug:
-    msg: "{{ group_vars }}"
+    msg: "{{ group_names }}"
 # - debug:
 #     msg: "{{ ansible_python_interpreter }}"
 # - name: Assign CDP resource roles to ECB CDP tenant groups
