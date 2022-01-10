@@ -1,7 +1,4 @@
 ---
-- include_vars:
-    dir: vars
-
 # - name: Create credential
 #   cloudera.cloud.env_cred:
 #     state: present
@@ -43,10 +40,27 @@
 # - name: Sync idbroker mappings
 #   cloudera.cloud.env_user_sync:
 #     name: "{{ env_name }}"
+
+- name: Get environment CRN
+  cloudera.cloud.env_info:
+    name: "{{ env_name }}"
+  register: env_info
+
+- debug:
+    msg: "{{ env_info['environments']['crn'] }}"
+
 - name: Assign CDP resource roles to ECB CDP tenant groups
   cloudera.cloud.iam_group:
-    name: ECBT1-IGAMFS-APP-DEVO-DEV-Admin
-    resource_roles: "{{ dict_role }}"
+    name: "{{ item.key }}"
+    resource_roles:
+      - {
+          "resource": "{{ env_info['environments']['crn'] }}",
+          "role": "{{ tenant_iam_crn }}/resourceRole:{{ item.value }}",
+        }
+  with_dict:
+    - tenant_groups
+# "crn:cdp:environments:us-west-1:0e62c9c8-e9cd-483b-81b3-651fe7a22deb:environment:035c47a6-6689-43fb-8929-ef8956b03206"
+# "role": "crn:altus:iam:us-west-1:altus:resourceRole:DEAdmin",
 # - name: Assign CDP resource roles to ECB CDP tenant groups
 #   cloudera.cloud.iam_group:
 #     name: "{{ item.key }}"
