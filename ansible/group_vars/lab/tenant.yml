@@ -1,4 +1,4 @@
-tenant_groups:
+tenant_admin_group:
   {
     "ECBT1-IGAMFS-APP-DEVO-DEV-Admin":
       [
@@ -18,6 +18,9 @@ tenant_groups:
         "ODAdmin",
         "ODUser",
       ],
+  }
+tenant_expert_group:
+  {
     "ECBT1-IGAMFS-APP-DEVO-DEV-Expert":
       [
         "DEUser",
@@ -28,6 +31,10 @@ tenant_groups:
         "MLUser",
         "ODUser",
       ],
+  }
+
+tenant_user_group:
+  {
     "ECBT1-IGAMFS-APP-DEVO-DEV-User":
       [
         "DEUser",
