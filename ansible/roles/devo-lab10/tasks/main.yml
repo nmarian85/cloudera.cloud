@@ -65,7 +65,7 @@
     resource_roles:
       - {
           "resource": "{{ env_info_out['environments'][0]['crn'] }}",
-          "role": "{{ tenant_iam_crn }}/resourceRole:{{ item.1 }}",
+          "role": "{{ tenant_iam_crn }}:resourceRole:{{ item.1 }}",
         }
   with_subelements:
     - "{{ tenant_groups }}"
