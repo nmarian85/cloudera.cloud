@@ -2,7 +2,8 @@
 - include_vars:
     dir: vars
 
-# - include_vars:
+- include_vars:
+    dir: "../../group_vars/{{ ecb_env }}"
 
 - name: Create credential
   cloudera.cloud.env_cred:
