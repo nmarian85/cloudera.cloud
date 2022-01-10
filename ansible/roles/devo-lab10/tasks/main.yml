@@ -49,14 +49,15 @@
   register: env_info_out
 
 - debug:
-    msg: "{{ env_info_out['environments'][0]['crn'] }}"
+    # msg: "{{ env_info_out['environments'][0]['crn'] }}"
+    msg: "{{ tenant_groups }}"
 
 - name: Assign CDP resource roles to ECB CDP tenant groups
   cloudera.cloud.iam_group:
     name: "{{ item.key }}"
     resource_roles:
       - {
-          "resource": "{{ env_info_out['environments']['crn'] }}",
+          "resource": "{{ env_info_out['environments'][0]['crn'] }}",
           "role": "{{ tenant_iam_crn }}/resourceRole:{{ item.value }}",
         }
   with_dict:
