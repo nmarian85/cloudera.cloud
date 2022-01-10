@@ -2,6 +2,8 @@
 - include_vars:
     dir: vars
 
+- include_vars:
+
 - name: Create credential
   cloudera.cloud.env_cred:
     state: present
@@ -52,7 +54,7 @@
 - debug:
     # msg: "{{ env_info_out['environments'][0]['crn'] }}"
     # msg: "{{ tenant_groups }}"
-    msg: "{{ groups }}"
+    msg: "{{ tenant_groups }}"
 
 - name: Assign CDP resource roles to ECB CDP tenant groups
   cloudera.cloud.iam_group:
