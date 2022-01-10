@@ -44,10 +44,10 @@
 - name: Get environment CRN
   cloudera.cloud.env_info:
     name: "{{ env_name }}"
-  register: env_info
+  register: env_info_out
 
 - debug:
-    msg: "{{ env_info['environments']['crn'] }}"
+    msg: "{{ env_info_out['environments']['crn'] }}"
 
 - name: Assign CDP resource roles to ECB CDP tenant groups
   cloudera.cloud.iam_group:
