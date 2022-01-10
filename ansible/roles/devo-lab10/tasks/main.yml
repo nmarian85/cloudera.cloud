@@ -54,7 +54,7 @@
     name: "{{ item.key }}"
     resource_roles:
       - {
-          "resource": "{{ env_info['environments']['crn'] }}",
+          "resource": "{{ env_info_out['environments']['crn'] }}",
           "role": "{{ tenant_iam_crn }}/resourceRole:{{ item.value }}",
         }
   with_dict:
