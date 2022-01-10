@@ -1,51 +1,53 @@
-tenant_admin_group:
-  {
-    "ECBT1-IGAMFS-APP-DEVO-DEV-Admin":
-      [
-        "DEAdmin",
-        "DEUser",
-        "DFAdmin",
-        "DFFlowAdmin",
-        "DFFlowUser",
-        "DWAdmin",
-        "DWUser",
-        "DataSteward",
-        "EnvironmentAdmin",
-        "EnvironmentUser",
-        "MLAdmin",
-        "MLUser",
-        "MLBusinessUser",
-        "ODAdmin",
-        "ODUser",
-      ],
-  }
-tenant_expert_group:
-  {
-    "ECBT1-IGAMFS-APP-DEVO-DEV-Expert":
-      [
-        "DEUser",
-        "DFFlowUser",
-        "DWUser",
-        "DataSteward",
-        "EnvironmentUser",
-        "MLUser",
-        "ODUser",
-      ],
-  }
-
-tenant_user_group:
-  {
-    "ECBT1-IGAMFS-APP-DEVO-DEV-User":
-      [
-        "DEUser",
-        "DFFlowUser",
-        "DWUser",
-        "DataSteward",
-        "EnvironmentUser",
-        "MLUser",
-        "ODUser",
-      ],
-  }
+tenant_groups:
+  [
+    {
+      "group_name": "ECBT1-IGAMFS-APP-DEVO-DEV-Admin",
+      "resource_roles":
+        [
+          "DEAdmin",
+          "DEUser",
+          "DFAdmin",
+          "DFFlowAdmin",
+          "DFFlowUser",
+          "DWAdmin",
+          "DWUser",
+          "DataSteward",
+          "EnvironmentAdmin",
+          "EnvironmentUser",
+          "MLAdmin",
+          "MLUser",
+          "MLBusinessUser",
+          "ODAdmin",
+          "ODUser",
+        ],
+    },
+    {
+      "group_name": "ECBT1-IGAMFS-APP-DEVO-DEV-Expert",
+      "resource_roles":
+        [
+          "DEUser",
+          "DFFlowUser",
+          "DWUser",
+          "DataSteward",
+          "EnvironmentUser",
+          "MLUser",
+          "ODUser",
+        ],
+    },
+    {
+      "group_name": "ECBT1-IGAMFS-APP-DEVO-DEV-User",
+      "resource_roles":
+        [
+          "DEUser",
+          "DFFlowUser",
+          "DWUser",
+          "DataSteward",
+          "EnvironmentUser",
+          "MLUser",
+          "ODUser",
+        ],
+    },
+  ]
 
 tenant_region: us-west-1
 tenant_iam_crn: "crn:altus:iam:{{ tenant_region }}:altus"
