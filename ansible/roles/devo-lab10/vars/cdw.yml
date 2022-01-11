@@ -11,7 +11,7 @@ cdw_vw_impala01:
     "max_nodes": 5,
     "template": "xsmall",
     "vw_type": "impala",
-    "dbc_name": "default",
+    "catalog_id": "default",
     "config": { "enable_sso": "true" },
     "tags":
       { "env": "{{ ecb_env }}", "cdp_env": "{{ env_name }}", "origin": "cdp" },

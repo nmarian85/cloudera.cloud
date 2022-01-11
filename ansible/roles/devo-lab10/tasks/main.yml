@@ -90,5 +90,6 @@
     template: "{{ cdw_vw_impala01['template'] }}"
     autoscaling_min_nodes: "{{ cdw_vw_impala01['min_nodes'] }}"
     autoscaling_max_nodes: "{{ cdw_vw_impala01['max_nodes'] }}"
+    catalog_id: "{{ cdw_vw_impala01['catalog_id'] }}"
     tags: "{{ cdw_vw_impala01['tags'] }}"
     enable_sso: true
