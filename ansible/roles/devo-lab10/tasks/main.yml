@@ -74,3 +74,23 @@
 - name: Sync environment users
   cloudera.cloud.env_user_sync:
     name: "{{ env_name }}"
+
+- name: Retrieve cluster id for CDW cluster
+  cloudera.cloud.dw_cluster_info:
+    env: "{{ env_name }}"
+  register: cdw_cluster_info
+
+- debug:
+    msg: "{{ cdw_cluster_info }}"
+# - name: Install CDW virtual warehouse
+#   cloudera.cloud.dw_virtual_warehouse:
+#     cluster_id: example-cluster-id
+#     name: example-virtual-warehouse
+#     type: hive
+#     template: xsmall
+#     autoscaling_min_nodes: 3
+#     autoscaling_max_nodes: 19
+#     tags:
+#       some_key: "some value"
+#     enable_sso: true
+#     ldap_groups: ["group1", "group2", "group3"]
