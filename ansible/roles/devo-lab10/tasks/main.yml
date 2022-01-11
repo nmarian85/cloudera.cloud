@@ -80,6 +80,12 @@
     env: "{{ env_name }}"
   register: cdw_cluster_info
 
+- name: Get catalog id based on cluster id and catalog name
+  cloudera.cloud.dw_database_catalog_info:
+    name: "{{ cdw_vw_impala01['catalog_id'] }}"
+    cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
+  register: catalog_id_out
+
 # - debug:
 #     msg: "{{ cdw_cluster_info }}"
 - name: Install CDW virtual warehouse
@@ -90,6 +96,6 @@
     template: "{{ cdw_vw_impala01['template'] }}"
     autoscaling_min_nodes: "{{ cdw_vw_impala01['min_nodes'] }}"
     autoscaling_max_nodes: "{{ cdw_vw_impala01['max_nodes'] }}"
-    catalog_id: "{{ cdw_vw_impala01['catalog_id'] }}"
+    catalog_id: "{{ catalog_id_out['database_catalogs'][0]['id'] }}"
     tags: "{{ cdw_vw_impala01['tags'] }}"
     enable_sso: true
