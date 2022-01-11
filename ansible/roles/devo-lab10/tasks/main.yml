@@ -72,5 +72,5 @@
 #     - resource_roles
 
 - name: Sync environment users
-- cloudera.cloud.env_user_sync:
+  cloudera.cloud.env_user_sync:
     name: "{{ env_name }}"
