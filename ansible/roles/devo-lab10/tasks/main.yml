@@ -71,9 +71,9 @@
 #     - "{{ tenant_groups }}"
 #     - resource_roles
 
-- name: Sync environment users
-  cloudera.cloud.env_user_sync:
-    name: "{{ env_name }}"
+# - name: Sync environment users
+#   cloudera.cloud.env_user_sync:
+#     name: "{{ env_name }}"
 
 - name: Retrieve cluster id for CDW cluster
   cloudera.cloud.dw_cluster_info:
