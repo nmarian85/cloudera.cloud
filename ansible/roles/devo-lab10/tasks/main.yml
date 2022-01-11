@@ -80,17 +80,15 @@
     env: "{{ env_name }}"
   register: cdw_cluster_info
 
-- debug:
-    msg: "{{ cdw_cluster_info }}"
-# - name: Install CDW virtual warehouse
-#   cloudera.cloud.dw_virtual_warehouse:
-#     cluster_id: example-cluster-id
-#     name: example-virtual-warehouse
-#     type: hive
-#     template: xsmall
-#     autoscaling_min_nodes: 3
-#     autoscaling_max_nodes: 19
-#     tags:
-#       some_key: "some value"
-#     enable_sso: true
-#     ldap_groups: ["group1", "group2", "group3"]
+# - debug:
+#     msg: "{{ cdw_cluster_info }}"
+- name: Install CDW virtual warehouse
+  cloudera.cloud.dw_virtual_warehouse:
+    cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
+    name: "{{ cdw_vw_impala01['name'] }}"
+    type: "{{ cdw_vw_impala01['vw_type'] }}"
+    template: "{{ cdw_vw_impala01['template'] }}"
+    autoscaling_min_nodes: "{{ cdw_vw_impala01['min_nodes'] }}"
+    autoscaling_max_nodes: "{{ cdw_vw_impala01['max_nodes'] }}"
+    tags: "{{ cdw_vw_impala01['tags'] }}"
+    enable_sso: true
