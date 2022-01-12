@@ -88,7 +88,7 @@
 
 # - debug:
 #     msg: "{{ cdw_cluster_info }}"
-- name: Install CDW virtual warehouse
+- name: Install Impala CDW virtual warehouse
   cloudera.cloud.dw_virtual_warehouse:
     cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
     name: "{{ cdw_vw_impala01['name'] }}"
@@ -99,3 +99,21 @@
     catalog_id: "{{ catalog_id_out['database_catalogs'][0]['id'] }}"
     tags: "{{ cdw_vw_impala01['tags'] }}"
     enable_sso: true
+
+- name: Install Hive CDW virtual warehouse
+  cloudera.cloud.dw_virtual_warehouse:
+    cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
+    name: "{{ cdw_vw_hive01['name'] }}"
+    type: "{{ cdw_vw_hive01['vw_type'] }}"
+    template: "{{ cdw_vw_hive01['template'] }}"
+    autoscaling_min_nodes: "{{ cdw_vw_hive01['min_nodes'] }}"
+    autoscaling_max_nodes: "{{ cdw_vw_hive01['max_nodes'] }}"
+    catalog_id: "{{ catalog_id_out['database_catalogs'][0]['id'] }}"
+    tags: "{{ cdw_vw_hive01['tags'] }}"
+    enable_sso: true
+# Add CDE and CML installation before since the CDW VW installation will fail because the CDW cluster needs to be provisioned beforehand
+# An idea would be to use tags per component?
+
+# Add CDE and CML installation before since the CDW VW installation will fail because the CDW cluster needs to be provisioned beforehand
+# An idea would be to use tags per component?
+
