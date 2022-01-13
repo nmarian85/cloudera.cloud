@@ -7,6 +7,34 @@
 - include_vars:
     dir: "../../../group_vars/{{ ecb_env }}"
 
+- name: CML clusters to provision
+  set_fact:
+    cml_cluster_names: ["{{ env_name }}-cml01"]
+
+- name: Remove ML workspaces
+  cloudera.cloud.ml:
+    name: "{{ item }}"
+    env: "{{ env_name }}"
+    wait: yes
+    debug: true
+    state: absent
+  with_items: "{{ cml_cluster_names }}"
+
+- name: Remove datalake
+  cloudera.cloud.datalake:
+    name: "{{ cdl_name }}"
+    state: absent
+    environment: "{{ env_name }}"
+
+- name: Remove environment
+  cloudera.cloud.env:
+    name: "{{ env_name }}"
+    state: absent
+
+- name: Remove credential
+  cloudera.cloud.env_cred:
+    state: absent
+    name: "{{ env_credential['credential_name'] }}"
 # - name: Create credential
 #   cloudera.cloud.env_cred:
 #     state: present
@@ -14,37 +42,11 @@
 #     name: "{{ env_credential['credential_name'] }}"
 #     description: "{{ env_credential['description'] }}"
 #     role: "{{ env_credential['role_arn'] }}"
-# - name: Install environment
-#   cloudera.cloud.env:
-#     name: "{{ env_name }}"
-#     state: present
-#     vpc_id: "{{ env_vpc_id }}"
-#     credential: "{{ env_credential['credential_name'] }}"
-#     cloud: aws
-#     region: "{{ env_region }}"
-#     log_location: "{{ env_log_bucket }}"
-#     log_identity: "{{ env_log_role_instance_profile }}"
-#     public_key_text: "{{ env_public_key }}"
-#     default_sg: "{{ env_sg }}"
-#     knox_sg: "{{ env_sg }}"
-#     subnet_ids: "{{ env_subnets }}"
-#     workload_analytics: "{{ env_workload_analytics }}"
-#     tags: "{{ env_tags }}"
-#     tunnel: true
 # - name: Create data access mappings for ID Broker
 #   cloudera.cloud.env_idbroker:
 #     name: "{{ env_name }}"
 #     data_access: "{{ env_data_access_role }}"
 #     ranger_audit: "{{ env_ranger_audit_role }}"
-# - name: Install datalake
-#   cloudera.cloud.datalake:
-#     name: "{{ cdl_name }}"
-#     state: present
-#     environment: "{{ env_name }}"
-#     instance_profile: "{{ cdl_idbroker_instance_profile }}"
-#     storage: "{{ cdl_storage_bucket }}"
-#     scale: "{{ cdl_scale }}"
-#     tags: "{{ cdl_tags }}"
 # - name: Sync idbroker mappings
 #   cloudera.cloud.env_user_sync:
 #     name: "{{ env_name }}"
@@ -75,53 +77,15 @@
 #   cloudera.cloud.env_user_sync:
 #     name: "{{ env_name }}"
 
-# Create a ML Workspace (in AWS) with a custom Kubernetes request configuration
-
-- name: CML clusters to provision
-  set_fact:
-    cml_cluster_names: ["{{ env_name }}-cml01"]
-
-- name: Install ML workspaces
-  cloudera.cloud.ml:
-    name: "{{ item }}"
-    env: "{{ env_name }}"
-    k8s_request:
-      environmentName: "{{ env_name }}"
-      instanceGroups:
-        - name: default_settings
-          autoscaling:
-            maxInstances: "{{ cml_clusters[item]['ml_infra']['max_instances'] }}"
-            minInstances: "{{ cml_clusters[item]['ml_infra']['min_instances'] }}"
-          instanceType: "{{ cml_clusters[item]['ml_infra']['instance_type'] }}"
-          instanceTier: "{{ cml_clusters[item]['ml_infra']['instance_tier'] }}"
-          rootVolume:
-            size: "{{ cml_clusters[item]['ml_infra']['root_volume'] }}"
-        - name: cpu_settings
-          autoscaling:
-            maxInstances: "{{ cml_clusters[item]['ml_worker']['max_instances'] }}"
-            minInstances: "{{ cml_clusters[item]['ml_worker']['min_instances'] }}"
-          instanceType: "{{ cml_clusters[item]['ml_worker']['instance_type'] }}"
-          instanceTier: "{{ cml_clusters[item]['ml_worker']['instance_tier'] }}"
-          rootVolume:
-            size: "{{ cml_clusters[item]['ml_worker']['root_volume'] }}"
-    governance: "{{ cml_clusters[item]['enable_governance'] }}"
-    wait: yes
-    debug: true
-    public_loadbalancer: false
-    monitoring: true
-    ip_addresses: []
-  with_items:
-    "{{ cml_cluster_names }}"
-
-    # - name: gpu_settings
-    #   autoscaling:
-    #     maxInstances: 1
-    #     minInstances: 0
-    #   instanceCount: 0
-    #   instanceTier: "ON_DEMAND"
-    #   instanceType: "p2.8xlarge"
-    #   rootVolume:
-    #     size: 40
+# - name: gpu_settings
+#   autoscaling:
+#     maxInstances: 1
+#     minInstances: 0
+#   instanceCount: 0
+#   instanceTier: "ON_DEMAND"
+#   instanceType: "p2.8xlarge"
+#   rootVolume:
+#     size: 40
 # - name: Retrieve cluster id for CDW cluster
 #   cloudera.cloud.dw_cluster_info:
 #     env: "{{ env_name }}"
