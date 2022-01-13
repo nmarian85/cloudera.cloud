@@ -104,18 +104,19 @@
           instanceTier: "{{ cml_clusters[item]['ml_worker']['instance_tier'] }}"
           rootVolume:
             size: "{{ cml_clusters[item]['ml_worker']['root_volume'] }}"
-        # - name: gpu_settings
-        #   autoscaling:
-        #     maxInstances: 1
-        #     minInstances: 0
-        #   instanceCount: 0
-        #   instanceTier: "ON_DEMAND"
-        #   instanceType: "p2.8xlarge"
-        #   rootVolume:
-        #     size: 40
       wait: yes
   with_items:
-    - cml_cluster_names
+    "{{ cml_cluster_names }}"
+
+    # - name: gpu_settings
+    #   autoscaling:
+    #     maxInstances: 1
+    #     minInstances: 0
+    #   instanceCount: 0
+    #   instanceTier: "ON_DEMAND"
+    #   instanceType: "p2.8xlarge"
+    #   rootVolume:
+    #     size: 40
 # - name: Retrieve cluster id for CDW cluster
 #   cloudera.cloud.dw_cluster_info:
 #     env: "{{ env_name }}"
