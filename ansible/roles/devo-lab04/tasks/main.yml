@@ -19,22 +19,21 @@
     debug: true
     state: absent
   with_items: "{{ cml_cluster_names }}"
+# - name: Remove datalake
+#   cloudera.cloud.datalake:
+#     name: "{{ cdl_name }}"
+#     state: absent
+#     environment: "{{ env_name }}"
 
-- name: Remove datalake
-  cloudera.cloud.datalake:
-    name: "{{ cdl_name }}"
-    state: absent
-    environment: "{{ env_name }}"
+# - name: Remove environment
+#   cloudera.cloud.env:
+#     name: "{{ env_name }}"
+#     state: absent
 
-- name: Remove environment
-  cloudera.cloud.env:
-    name: "{{ env_name }}"
-    state: absent
-
-- name: Remove credential
-  cloudera.cloud.env_cred:
-    state: absent
-    name: "{{ env_credential['credential_name'] }}"
+# - name: Remove credential
+#   cloudera.cloud.env_cred:
+#     state: absent
+#     name: "{{ env_credential['credential_name'] }}"
 # - name: Create credential
 #   cloudera.cloud.env_cred:
 #     state: present
