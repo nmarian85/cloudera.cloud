@@ -15,7 +15,7 @@
   cloudera.cloud.ml:
     name: "{{ item }}"
     env: "{{ env_name }}"
-    wait: yes
+    # wait: yes
     debug: true
     state: absent
   with_items: "{{ cml_cluster_names }}"
