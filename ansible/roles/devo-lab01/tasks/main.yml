@@ -1,0 +1,131 @@
+---
+# in vars folder apparently only the main.yml is verified and we would like to separate the vars per cdp component
+- include_vars:
+    dir: vars
+
+# we cannot use the inventory since we are running the playbook on localhost
+- include_vars:
+    dir: "../../../group_vars/{{ ecb_env }}"
+
+- name: CML clusters to provision
+  set_fact:
+    cml_cluster_names: ["{{ env_name }}-cml01"]
+
+- name: Remove ML workspaces
+  cloudera.cloud.ml:
+    name: "{{ item }}"
+    env: "{{ env_name }}"
+    # wait: no
+    # force: true
+    debug: true
+    state: absent
+  with_items: "{{ cml_cluster_names }}"
+# - name: Remove datalake
+#   cloudera.cloud.datalake:
+#     name: "{{ cdl_name }}"
+#     state: absent
+#     environment: "{{ env_name }}"
+
+# - name: Remove environment
+#   cloudera.cloud.env:
+#     name: "{{ env_name }}"
+#     state: absent
+
+# - name: Remove credential
+#   cloudera.cloud.env_cred:
+#     state: absent
+#     name: "{{ env_credential['credential_name'] }}"
+# - name: Create credential
+#   cloudera.cloud.env_cred:
+#     state: present
+#     cloud: aws
+#     name: "{{ env_credential['credential_name'] }}"
+#     description: "{{ env_credential['description'] }}"
+#     role: "{{ env_credential['role_arn'] }}"
+# - name: Create data access mappings for ID Broker
+#   cloudera.cloud.env_idbroker:
+#     name: "{{ env_name }}"
+#     data_access: "{{ env_data_access_role }}"
+#     ranger_audit: "{{ env_ranger_audit_role }}"
+# - name: Sync idbroker mappings
+#   cloudera.cloud.env_user_sync:
+#     name: "{{ env_name }}"
+
+# - name: Get environment CRN
+#   cloudera.cloud.env_info:
+#     name: "{{ env_name }}"
+#   register: env_info_out
+
+# - debug:
+#     # msg: "{{ env_info_out['environments'][0]['crn'] }}"
+#     # msg: "{{ tenant_groups }}"
+#     msg: "{{ tenant_groups }}"
+
+# - name: Assign CDP resource roles to ECB CDP tenant groups
+#   cloudera.cloud.iam_group:
+#     name: "{{ item.0.group_name }}"
+#     resource_roles:
+#       - {
+#           "resource": "{{ env_info_out['environments'][0]['crn'] }}",
+#           "role": "{{ tenant_iam_crn }}:resourceRole:{{ item.1 }}",
+#         }
+#   with_subelements:
+#     - "{{ tenant_groups }}"
+#     - resource_roles
+
+# - name: Sync environment users
+#   cloudera.cloud.env_user_sync:
+#     name: "{{ env_name }}"
+
+# - name: gpu_settings
+#   autoscaling:
+#     maxInstances: 1
+#     minInstances: 0
+#   instanceCount: 0
+#   instanceTier: "ON_DEMAND"
+#   instanceType: "p2.8xlarge"
+#   rootVolume:
+#     size: 40
+# - name: Retrieve cluster id for CDW cluster
+#   cloudera.cloud.dw_cluster_info:
+#     env: "{{ env_name }}"
+#   register: cdw_cluster_info
+
+# - name: Get catalog id based on cluster id and catalog name
+#   cloudera.cloud.dw_database_catalog_info:
+#     name: "{{ cdw_vw_impala01['catalog_id'] }}"
+#     cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
+#   register: catalog_id_out
+
+# # - debug:
+# #     msg: "{{ cdw_cluster_info }}"
+# - name: Install Impala CDW virtual warehouse
+#   cloudera.cloud.dw_virtual_warehouse:
+#     cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
+#     name: "{{ cdw_vw_impala01['name'] }}"
+#     type: "{{ cdw_vw_impala01['vw_type'] }}"
+#     template: "{{ cdw_vw_impala01['template'] }}"
+#     autoscaling_min_nodes: "{{ cdw_vw_impala01['min_nodes'] }}"
+#     autoscaling_max_nodes: "{{ cdw_vw_impala01['max_nodes'] }}"
+#     catalog_id: "{{ catalog_id_out['database_catalogs'][0]['id'] }}"
+#     tags: "{{ cdw_vw_impala01['tags'] }}"
+#     enable_sso: true
+
+# - name: Install Hive CDW virtual warehouse
+#   cloudera.cloud.dw_virtual_warehouse:
+#     cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
+#     name: "{{ cdw_vw_hive01['name'] }}"
+#     type: "{{ cdw_vw_hive01['vw_type'] }}"
+#     template: "{{ cdw_vw_hive01['template'] }}"
+#     autoscaling_min_nodes: "{{ cdw_vw_hive01['min_nodes'] }}"
+#     autoscaling_max_nodes: "{{ cdw_vw_hive01['max_nodes'] }}"
+#     catalog_id: "{{ catalog_id_out['database_catalogs'][0]['id'] }}"
+#     tags: "{{ cdw_vw_hive01['tags'] }}"
+#     enable_sso: true
+# Add CDE and CML installation before since the CDW VW installation will fail because the CDW cluster needs to be provisioned beforehand
+# An idea would be to use tags per component?
+
+# Add CDE and CML installation before since the CDW VW installation will fail because the CDW cluster needs to be provisioned beforehand
+# An idea would be to use tags per component?
+
+## ADDD DEBUG "debug: true" to all compoonents
