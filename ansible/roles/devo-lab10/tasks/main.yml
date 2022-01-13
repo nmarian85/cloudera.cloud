@@ -104,7 +104,12 @@
           instanceTier: "{{ cml_clusters[item]['ml_worker']['instance_tier'] }}"
           rootVolume:
             size: "{{ cml_clusters[item]['ml_worker']['root_volume'] }}"
-      wait: yes
+    governance: "{{ cml_clusters[item]['enable_governance'] }}"
+    wait: yes
+    debug: true
+    public_loadbalancer: false
+    monitoring: true
+    ip_addresses: []
   with_items:
     "{{ cml_cluster_names }}"
 
@@ -159,3 +164,4 @@
 # Add CDE and CML installation before since the CDW VW installation will fail because the CDW cluster needs to be provisioned beforehand
 # An idea would be to use tags per component?
 
+## ADDD DEBUG "debug: true" to all compoonents

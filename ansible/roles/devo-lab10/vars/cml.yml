@@ -28,5 +28,6 @@ cml_clusters:
           },
         "enable_governance": "true",
         "authorized_ip_ranges": [""],
+        "storage": true,
       },
   }
