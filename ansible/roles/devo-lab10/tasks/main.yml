@@ -75,42 +75,83 @@
 #   cloudera.cloud.env_user_sync:
 #     name: "{{ env_name }}"
 
-- name: Retrieve cluster id for CDW cluster
-  cloudera.cloud.dw_cluster_info:
+# Create a ML Workspace (in AWS) with a custom Kubernetes request configuration
+
+- name: CML clusters to provision
+  set_fact:
+    cml_cluster_names: ["{{ env_name }}-cml01"]
+
+- name: Install ML workspaces
+  cloudera.cloud.ml:
+    name: "{{ item }}"
     env: "{{ env_name }}"
-  register: cdw_cluster_info
+    k8s_request:
+      environmentName: "{{ env_name }}"
+      instanceGroups:
+        - name: default_settings
+          autoscaling:
+            maxInstances: "{{ cml_clusters[item]['ml_infra']['max_instances'] }}"
+            minInstances: "{{ cml_clusters[item]['ml_infra']['min_instances'] }}"
+          instanceType: "{{ cml_clusters[item]['ml_infra']['instance_type'] }}"
+          instanceTier: "{{ cml_clusters[item]['ml_infra']['instance_tier'] }}"
+          rootVolume:
+            size: "{{ cml_clusters[item]['ml_infra']['root_volume'] }}"
+        - name: cpu_settings
+          autoscaling:
+            maxInstances: "{{ cml_clusters[item]['ml_worker']['max_instances'] }}"
+            minInstances: "{{ cml_clusters[item]['ml_worker']['min_instances'] }}"
+          instanceType: "{{ cml_clusters[item]['ml_worker']['instance_type'] }}"
+          instanceTier: "{{ cml_clusters[item]['ml_worker']['instance_tier'] }}"
+          rootVolume:
+            size: "{{ cml_clusters[item]['ml_worker']['root_volume'] }}"
+        # - name: gpu_settings
+        #   autoscaling:
+        #     maxInstances: 1
+        #     minInstances: 0
+        #   instanceCount: 0
+        #   instanceTier: "ON_DEMAND"
+        #   instanceType: "p2.8xlarge"
+        #   rootVolume:
+        #     size: 40
+      wait: yes
+  with_items:
+    - cml_cluster_names
+# - name: Retrieve cluster id for CDW cluster
+#   cloudera.cloud.dw_cluster_info:
+#     env: "{{ env_name }}"
+#   register: cdw_cluster_info
 
-- name: Get catalog id based on cluster id and catalog name
-  cloudera.cloud.dw_database_catalog_info:
-    name: "{{ cdw_vw_impala01['catalog_id'] }}"
-    cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
-  register: catalog_id_out
+# - name: Get catalog id based on cluster id and catalog name
+#   cloudera.cloud.dw_database_catalog_info:
+#     name: "{{ cdw_vw_impala01['catalog_id'] }}"
+#     cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
+#   register: catalog_id_out
 
-# - debug:
-#     msg: "{{ cdw_cluster_info }}"
-- name: Install Impala CDW virtual warehouse
-  cloudera.cloud.dw_virtual_warehouse:
-    cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
-    name: "{{ cdw_vw_impala01['name'] }}"
-    type: "{{ cdw_vw_impala01['vw_type'] }}"
-    template: "{{ cdw_vw_impala01['template'] }}"
-    autoscaling_min_nodes: "{{ cdw_vw_impala01['min_nodes'] }}"
-    autoscaling_max_nodes: "{{ cdw_vw_impala01['max_nodes'] }}"
-    catalog_id: "{{ catalog_id_out['database_catalogs'][0]['id'] }}"
-    tags: "{{ cdw_vw_impala01['tags'] }}"
-    enable_sso: true
+# # - debug:
+# #     msg: "{{ cdw_cluster_info }}"
+# - name: Install Impala CDW virtual warehouse
+#   cloudera.cloud.dw_virtual_warehouse:
+#     cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
+#     name: "{{ cdw_vw_impala01['name'] }}"
+#     type: "{{ cdw_vw_impala01['vw_type'] }}"
+#     template: "{{ cdw_vw_impala01['template'] }}"
+#     autoscaling_min_nodes: "{{ cdw_vw_impala01['min_nodes'] }}"
+#     autoscaling_max_nodes: "{{ cdw_vw_impala01['max_nodes'] }}"
+#     catalog_id: "{{ catalog_id_out['database_catalogs'][0]['id'] }}"
+#     tags: "{{ cdw_vw_impala01['tags'] }}"
+#     enable_sso: true
 
-- name: Install Hive CDW virtual warehouse
-  cloudera.cloud.dw_virtual_warehouse:
-    cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
-    name: "{{ cdw_vw_hive01['name'] }}"
-    type: "{{ cdw_vw_hive01['vw_type'] }}"
-    template: "{{ cdw_vw_hive01['template'] }}"
-    autoscaling_min_nodes: "{{ cdw_vw_hive01['min_nodes'] }}"
-    autoscaling_max_nodes: "{{ cdw_vw_hive01['max_nodes'] }}"
-    catalog_id: "{{ catalog_id_out['database_catalogs'][0]['id'] }}"
-    tags: "{{ cdw_vw_hive01['tags'] }}"
-    enable_sso: true
+# - name: Install Hive CDW virtual warehouse
+#   cloudera.cloud.dw_virtual_warehouse:
+#     cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
+#     name: "{{ cdw_vw_hive01['name'] }}"
+#     type: "{{ cdw_vw_hive01['vw_type'] }}"
+#     template: "{{ cdw_vw_hive01['template'] }}"
+#     autoscaling_min_nodes: "{{ cdw_vw_hive01['min_nodes'] }}"
+#     autoscaling_max_nodes: "{{ cdw_vw_hive01['max_nodes'] }}"
+#     catalog_id: "{{ catalog_id_out['database_catalogs'][0]['id'] }}"
+#     tags: "{{ cdw_vw_hive01['tags'] }}"
+#     enable_sso: true
 # Add CDE and CML installation before since the CDW VW installation will fail because the CDW cluster needs to be provisioned beforehand
 # An idea would be to use tags per component?
 
