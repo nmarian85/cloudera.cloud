@@ -15,7 +15,7 @@
   cloudera.cloud.ml:
     name: "{{ item }}"
     env: "{{ env_name }}"
-    wait: no
+    # wait: no
     force: true
     debug: true
     state: absent
