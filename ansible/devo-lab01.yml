@@ -1,8 +1,8 @@
 - hosts: localhost
-  connection: local
-  gather_facts: no
+  # connection: local
+  # gather_facts: no
 
   collections:
     - cloudera.cloud
   roles:
-    - devo-lab01
+    - cred

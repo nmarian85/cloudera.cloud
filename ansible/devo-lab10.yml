@@ -1,8 +1,10 @@
 - hosts: localhost
-  connection: local
-  gather_facts: no
+  # connection: local
+  # gather_facts: no
+  vars:
+    action: install
 
   collections:
     - cloudera.cloud
   roles:
-    - devo-lab10
+    - cred

@@ -1,0 +1,37 @@
+- name: Install ML workspace
+  cloudera.cloud.ml:
+    name: "{{ item }}"
+    env: "{{ env_name }}"
+    k8s_request:
+      environmentName: "{{ env_name }}"
+      instanceGroups:
+        - name: default_settings
+          autoscaling:
+            maxInstances: "{{ cml_clusters[item]['ml_infra']['max_instances'] }}"
+            minInstances: "{{ cml_clusters[item]['ml_infra']['min_instances'] }}"
+          instanceType: "{{ cml_clusters[item]['ml_infra']['instance_type'] }}"
+          instanceTier: "{{ cml_clusters[item]['ml_infra']['instance_tier'] }}"
+          rootVolume:
+            size: "{{ cml_clusters[item]['ml_infra']['root_volume'] }}"
+        - name: cpu_settings
+          autoscaling:
+            maxInstances: "{{ cml_clusters[item]['ml_worker']['max_instances'] }}"
+            minInstances: "{{ cml_clusters[item]['ml_worker']['min_instances'] }}"
+          instanceType: "{{ cml_clusters[item]['ml_worker']['instance_type'] }}"
+          instanceTier: "{{ cml_clusters[item]['ml_worker']['instance_tier'] }}"
+          rootVolume:
+            size: "{{ cml_clusters[item]['ml_worker']['root_volume'] }}"
+    governance: "{{ cml_clusters[item]['enable_governance'] }}"
+    wait: yes
+    public_loadbalancer: false
+    monitoring: true
+    ip_addresses: []
+    tags: "{{ cml_clusters[item]['tags'] }}"
+  when: action == 'install'
+
+- name: Install ML workspace
+  cloudera.cloud.ml:
+    name: "{{ item }}"
+    env: "{{ env_name }}"
+    state: absent
+  when: action == 'delete'
