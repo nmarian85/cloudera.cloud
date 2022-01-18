@@ -5,10 +5,8 @@
   vars:
     action: install
   vars_files:
-    # in vars folder apparently only the main.yml is verified and we would like to separate the vars per cdp component
-    - ../vars/*.yml
-    # we cannot use the inventory since we are running the playbook on localhost
-    - ../../group_vars/{{ ecb_env }}
+    - cdp_envs/{{ ecb_env }}/{{ env_name }}*.yml
+    - cdp_envs/{{ ecb_env }}/*.yml
 
   collections:
     - cloudera.cloud
