@@ -1,12 +1,12 @@
 ---
 - hosts: localhost
-  connection: local
+  # connection: local
   # gather_facts: no
   vars:
     action: install
-  vars_files:
-    - cdp_envs/{{ ecb_env }}/{{ env_name }}/*.yml
-    - cdp_envs/{{ ecb_env }}/*.yml
+  # vars_files:
+  #   - cdp_envs/{{ ecb_env }}/{{ env_name }}/*.yml
+  #   - cdp_envs/{{ ecb_env }}/*.yml
 
   collections:
     - cloudera.cloud
