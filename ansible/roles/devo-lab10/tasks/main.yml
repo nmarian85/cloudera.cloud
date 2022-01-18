@@ -1,185 +1,199 @@
 ---
-# in vars folder apparently only the main.yml is verified and we would like to separate the vars per cdp component
-- include_vars:
-    dir: vars
+- hosts: localhost
+  # connection: local
+  # gather_facts: no
+  vars:
+    action: install
+  vars_files:
+    # in vars folder apparently only the main.yml is verified and we would like to separate the vars per cdp component
+    - ../vars/*.yml
+    # we cannot use the inventory since we are running the playbook on localhost
+    - ../../group_vars/{{ ecb_env }}
 
-# we cannot use the inventory since we are running the playbook on localhost
-- include_vars:
-    dir: "../../../group_vars/{{ ecb_env }}"
+  collections:
+    - cloudera.cloud
+  roles:
+    - cred
+# # in vars folder apparently only the main.yml is verified and we would like to separate the vars per cdp component
+# - include_vars:
+#     dir: vars
 
-- name: Create credential
-  cloudera.cloud.env_cred:
-    state: present
-    cloud: aws
-    name: "{{ env_credential['credential_name'] }}"
-    description: "{{ env_credential['description'] }}"
-    role: "{{ env_credential['role_arn'] }}"
+# # we cannot use the inventory since we are running the playbook on localhost
+# - include_vars:
+#     dir: "../../../group_vars/{{ ecb_env }}"
+# # - name: Create credential
+# #   cloudera.cloud.env_cred:
+# #     state: present
+# #     cloud: aws
+# #     name: "{{ env_credential['credential_name'] }}"
+# #     description: "{{ env_credential['description'] }}"
+# #     role: "{{ env_credential['role_arn'] }}"
 
-- name: Install environment
-  cloudera.cloud.env:
-    name: "{{ env_name }}"
-    state: present
-    vpc_id: "{{ env_vpc_id }}"
-    credential: "{{ env_credential['credential_name'] }}"
-    cloud: aws
-    region: "{{ env_region }}"
-    log_location: "{{ env_log_bucket }}"
-    log_identity: "{{ env_log_role_instance_profile }}"
-    public_key_text: "{{ env_public_key }}"
-    default_sg: "{{ env_sg }}"
-    knox_sg: "{{ env_sg }}"
-    subnet_ids: "{{ env_subnets }}"
-    workload_analytics: "{{ env_workload_analytics }}"
-    tags: "{{ env_tags }}"
-    tunnel: true
-    endpoint_access_scheme: "PRIVATE"
+# # - name: Install environment
+# #   cloudera.cloud.env:
+# #     name: "{{ env_name }}"
+# #     state: present
+# #     vpc_id: "{{ env_vpc_id }}"
+# #     credential: "{{ env_credential['credential_name'] }}"
+# #     cloud: aws
+# #     region: "{{ env_region }}"
+# #     log_location: "{{ env_log_bucket }}"
+# #     log_identity: "{{ env_log_role_instance_profile }}"
+# #     public_key_text: "{{ env_public_key }}"
+# #     default_sg: "{{ env_sg }}"
+# #     knox_sg: "{{ env_sg }}"
+# #     subnet_ids: "{{ env_subnets }}"
+# #     workload_analytics: "{{ env_workload_analytics }}"
+# #     tags: "{{ env_tags }}"
+# #     tunnel: true
+# #     endpoint_access_scheme: "PRIVATE"
 
-- name: Create data access mappings for ID Broker
-  cloudera.cloud.env_idbroker:
-    name: "{{ env_name }}"
-    data_access: "{{ env_data_access_role }}"
-    ranger_audit: "{{ env_ranger_audit_role }}"
+# # - name: Create data access mappings for ID Broker
+# #   cloudera.cloud.env_idbroker:
+# #     name: "{{ env_name }}"
+# #     data_access: "{{ env_data_access_role }}"
+# #     ranger_audit: "{{ env_ranger_audit_role }}"
 
-- name: Install datalake
-  cloudera.cloud.datalake:
-    name: "{{ cdl_name }}"
-    state: present
-    environment: "{{ env_name }}"
-    instance_profile: "{{ cdl_idbroker_instance_profile }}"
-    storage: "{{ cdl_storage_bucket }}"
-    scale: "{{ cdl_scale }}"
-    tags: "{{ cdl_tags }}"
+# # - name: Install datalake
+# #   cloudera.cloud.datalake:
+# #     name: "{{ cdl_name }}"
+# #     state: present
+# #     environment: "{{ env_name }}"
+# #     instance_profile: "{{ cdl_idbroker_instance_profile }}"
+# #     storage: "{{ cdl_storage_bucket }}"
+# #     scale: "{{ cdl_scale }}"
+# #     tags: "{{ cdl_tags }}"
 
-# - name: Sync idbroker mappings
-#   cloudera.cloud.env_user_sync:
-#     name: "{{ env_name }}"
+# # # - name: Sync idbroker mappings
+# # #   cloudera.cloud.env_user_sync:
+# # #     name: "{{ env_name }}"
 
-- name: Get environment CRN
-  cloudera.cloud.env_info:
-    name: "{{ env_name }}"
-  register: env_info_out
+# # - name: Get environment CRN
+# #   cloudera.cloud.env_info:
+# #     name: "{{ env_name }}"
+# #   register: env_info_out
 
-- debug:
-    # msg: "{{ env_info_out['environments'][0]['crn'] }}"
-    # msg: "{{ tenant_groups }}"
-    msg: "{{ tenant_groups }}"
+# # - debug:
+# #     # msg: "{{ env_info_out['environments'][0]['crn'] }}"
+# #     # msg: "{{ tenant_groups }}"
+# #     msg: "{{ tenant_groups }}"
 
-- name: Assign CDP resource roles to ECB CDP tenant groups
-  cloudera.cloud.iam_group:
-    name: "{{ item.0.group_name }}"
-    resource_roles:
-      - {
-          "resource": "{{ env_info_out['environments'][0]['crn'] }}",
-          "role": "{{ tenant_iam_crn }}:resourceRole:{{ item.1 }}",
-        }
-  with_subelements:
-    - "{{ tenant_groups }}"
-    - resource_roles
+# # - name: Assign CDP resource roles to ECB CDP tenant groups
+# #   cloudera.cloud.iam_group:
+# #     name: "{{ item.0.group_name }}"
+# #     resource_roles:
+# #       - {
+# #           "resource": "{{ env_info_out['environments'][0]['crn'] }}",
+# #           "role": "{{ tenant_iam_crn }}:resourceRole:{{ item.1 }}",
+# #         }
+# #   with_subelements:
+# #     - "{{ tenant_groups }}"
+# #     - resource_roles
 
-- name: Sync environment users
-  cloudera.cloud.env_user_sync:
-    name: "{{ env_name }}"
+# # - name: Sync environment users
+# #   cloudera.cloud.env_user_sync:
+# #     name: "{{ env_name }}"
 
-- name: CDE clusters to provision
-  set_fact:
-    cde_cluster_names: ["{{ env_name }}-cde01"]
+# # - name: CDE clusters to provision
+# #   set_fact:
+# #     cde_cluster_names: ["{{ env_name }}-cde01"]
 
-- name: Enable CDE service
-  cloudera.cloud.de:
-    name: "{{ item }}"
-    env: "{{ env_name }}"
-    use_ssd: "{{ cde_clusters[item]['use_ssd'] }}"
-    root_volume_size: "{{ cde_clusters[item]['root_vol_size'] }}"
-    initial_spot_instances: "{{ cde_clusters[item]['initial_spot_instances'] }}"
-    maximum_spot_instances: "{{ cde_clusters[item]['max_spot_instances'] }}"
-    minimum_spot_instances: "{{ cde_clusters[item]['min_spot_instances'] }}"
-    instance_type: "{{ cde_clusters[item]['instance_type'] }}"
-    initial_instances: "{{ cde_clusters[item]['initial_instances'] }}"
-    minimum_instances: "{{ cde_clusters[item]['min_instances'] }}"
-    maximum_instances: "{{ cde_clusters[item]['max_instances'] }}"
-    enable_workload_analytics: false
-    enable_public_endpoint: false
-    wait: yes
-    tags: "{{ cde_clusters[item]['tags'] }}"
-  with_items: "{{ cde_cluster_names }}"
+# # - name: Enable CDE service
+# #   cloudera.cloud.de:
+# #     name: "{{ item }}"
+# #     env: "{{ env_name }}"
+# #     use_ssd: "{{ cde_clusters[item]['use_ssd'] }}"
+# #     root_volume_size: "{{ cde_clusters[item]['root_vol_size'] }}"
+# #     initial_spot_instances: "{{ cde_clusters[item]['initial_spot_instances'] }}"
+# #     maximum_spot_instances: "{{ cde_clusters[item]['max_spot_instances'] }}"
+# #     minimum_spot_instances: "{{ cde_clusters[item]['min_spot_instances'] }}"
+# #     instance_type: "{{ cde_clusters[item]['instance_type'] }}"
+# #     initial_instances: "{{ cde_clusters[item]['initial_instances'] }}"
+# #     minimum_instances: "{{ cde_clusters[item]['min_instances'] }}"
+# #     maximum_instances: "{{ cde_clusters[item]['max_instances'] }}"
+# #     enable_workload_analytics: false
+# #     enable_public_endpoint: false
+# #     wait: yes
+# #     tags: "{{ cde_clusters[item]['tags'] }}"
+# #   with_items: "{{ cde_cluster_names }}"
 
-- name: CML clusters to provision
-  set_fact:
-    cml_cluster_names: ["{{ env_name }}-cml01"]
+# # - name: CML clusters to provision
+# #   set_fact:
+# #     cml_cluster_names: ["{{ env_name }}-cml01"]
 
-- name: Install ML workspaces
-  cloudera.cloud.ml:
-    name: "{{ item }}"
-    env: "{{ env_name }}"
-    k8s_request:
-      environmentName: "{{ env_name }}"
-      instanceGroups:
-        - name: default_settings
-          autoscaling:
-            maxInstances: "{{ cml_clusters[item]['ml_infra']['max_instances'] }}"
-            minInstances: "{{ cml_clusters[item]['ml_infra']['min_instances'] }}"
-          instanceType: "{{ cml_clusters[item]['ml_infra']['instance_type'] }}"
-          instanceTier: "{{ cml_clusters[item]['ml_infra']['instance_tier'] }}"
-          rootVolume:
-            size: "{{ cml_clusters[item]['ml_infra']['root_volume'] }}"
-        - name: cpu_settings
-          autoscaling:
-            maxInstances: "{{ cml_clusters[item]['ml_worker']['max_instances'] }}"
-            minInstances: "{{ cml_clusters[item]['ml_worker']['min_instances'] }}"
-          instanceType: "{{ cml_clusters[item]['ml_worker']['instance_type'] }}"
-          instanceTier: "{{ cml_clusters[item]['ml_worker']['instance_tier'] }}"
-          rootVolume:
-            size: "{{ cml_clusters[item]['ml_worker']['root_volume'] }}"
-    governance: "{{ cml_clusters[item]['enable_governance'] }}"
-    wait: yes
-    public_loadbalancer: false
-    monitoring: true
-    ip_addresses: []
-    tags: "{{ cml_clusters[item]['tags'] }}"
-  with_items:
-    "{{ cml_cluster_names }}"
+# # - name: Install ML workspaces
+# #   cloudera.cloud.ml:
+# #     name: "{{ item }}"
+# #     env: "{{ env_name }}"
+# #     k8s_request:
+# #       environmentName: "{{ env_name }}"
+# #       instanceGroups:
+# #         - name: default_settings
+# #           autoscaling:
+# #             maxInstances: "{{ cml_clusters[item]['ml_infra']['max_instances'] }}"
+# #             minInstances: "{{ cml_clusters[item]['ml_infra']['min_instances'] }}"
+# #           instanceType: "{{ cml_clusters[item]['ml_infra']['instance_type'] }}"
+# #           instanceTier: "{{ cml_clusters[item]['ml_infra']['instance_tier'] }}"
+# #           rootVolume:
+# #             size: "{{ cml_clusters[item]['ml_infra']['root_volume'] }}"
+# #         - name: cpu_settings
+# #           autoscaling:
+# #             maxInstances: "{{ cml_clusters[item]['ml_worker']['max_instances'] }}"
+# #             minInstances: "{{ cml_clusters[item]['ml_worker']['min_instances'] }}"
+# #           instanceType: "{{ cml_clusters[item]['ml_worker']['instance_type'] }}"
+# #           instanceTier: "{{ cml_clusters[item]['ml_worker']['instance_tier'] }}"
+# #           rootVolume:
+# #             size: "{{ cml_clusters[item]['ml_worker']['root_volume'] }}"
+# #     governance: "{{ cml_clusters[item]['enable_governance'] }}"
+# #     wait: yes
+# #     public_loadbalancer: false
+# #     monitoring: true
+# #     ip_addresses: []
+# #     tags: "{{ cml_clusters[item]['tags'] }}"
+# #   with_items:
+# #     "{{ cml_cluster_names }}"
 
-    # - name: gpu_settings
-    #   autoscaling:
-    #     maxInstances: 1
-    #     minInstances: 0
-    #   instanceCount: 0
-    #   instanceTier: "ON_DEMAND"
-    #   instanceType: "p2.8xlarge"
-    #   rootVolume:
-    #     size: 40
-#TODO: Add variable so that CDW part is not run unless the IaC pipeline has been already run and the EKS cluster provisioned
-# - name: Retrieve cluster id for CDW cluster
-#   cloudera.cloud.dw_cluster_info:
-#     env: "{{ env_name }}"
-#   register: cdw_cluster_info
+# # - name: gpu_settings
+# #   autoscaling:
+# #     maxInstances: 1
+# #     minInstances: 0
+# #   instanceCount: 0
+# #   instanceTier: "ON_DEMAND"
+# #   instanceType: "p2.8xlarge"
+# #   rootVolume:
+# #     size: 40
+# #TODO: Add variable so that CDW part is not run unless the IaC pipeline has been already run and the EKS cluster provisioned
+# # - name: Retrieve cluster id for CDW cluster
+# #   cloudera.cloud.dw_cluster_info:
+# #     env: "{{ env_name }}"
+# #   register: cdw_cluster_info
 
-# - name: Get catalog id based on cluster id and catalog name
-#   cloudera.cloud.dw_database_catalog_info:
-#     name: "{{ cdw_vw_impala01['catalog_id'] }}"
-#     cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
-#   register: catalog_id_out
+# # - name: Get catalog id based on cluster id and catalog name
+# #   cloudera.cloud.dw_database_catalog_info:
+# #     name: "{{ cdw_vw_impala01['catalog_id'] }}"
+# #     cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
+# #   register: catalog_id_out
 
-# - name: Install Impala CDW virtual warehouse
-#   cloudera.cloud.dw_virtual_warehouse:
-#     cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
-#     name: "{{ cdw_vw_impala01['name'] }}"
-#     type: "{{ cdw_vw_impala01['vw_type'] }}"
-#     template: "{{ cdw_vw_impala01['template'] }}"
-#     autoscaling_min_nodes: "{{ cdw_vw_impala01['min_nodes'] }}"
-#     autoscaling_max_nodes: "{{ cdw_vw_impala01['max_nodes'] }}"
-#     catalog_id: "{{ catalog_id_out['database_catalogs'][0]['id'] }}"
-#     tags: "{{ cdw_vw_impala01['tags'] }}"
-#     enable_sso: true
+# # - name: Install Impala CDW virtual warehouse
+# #   cloudera.cloud.dw_virtual_warehouse:
+# #     cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
+# #     name: "{{ cdw_vw_impala01['name'] }}"
+# #     type: "{{ cdw_vw_impala01['vw_type'] }}"
+# #     template: "{{ cdw_vw_impala01['template'] }}"
+# #     autoscaling_min_nodes: "{{ cdw_vw_impala01['min_nodes'] }}"
+# #     autoscaling_max_nodes: "{{ cdw_vw_impala01['max_nodes'] }}"
+# #     catalog_id: "{{ catalog_id_out['database_catalogs'][0]['id'] }}"
+# #     tags: "{{ cdw_vw_impala01['tags'] }}"
+# #     enable_sso: true
 
-# - name: Install Hive CDW virtual warehouse
-#   cloudera.cloud.dw_virtual_warehouse:
-#     cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
-#     name: "{{ cdw_vw_hive01['name'] }}"
-#     type: "{{ cdw_vw_hive01['vw_type'] }}"
-#     template: "{{ cdw_vw_hive01['template'] }}"
-#     autoscaling_min_nodes: "{{ cdw_vw_hive01['min_nodes'] }}"
-#     autoscaling_max_nodes: "{{ cdw_vw_hive01['max_nodes'] }}"
-#     catalog_id: "{{ catalog_id_out['database_catalogs'][0]['id'] }}"
-#     tags: "{{ cdw_vw_hive01['tags'] }}"
-#     enable_sso: true
+# # - name: Install Hive CDW virtual warehouse
+# #   cloudera.cloud.dw_virtual_warehouse:
+# #     cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
+# #     name: "{{ cdw_vw_hive01['name'] }}"
+# #     type: "{{ cdw_vw_hive01['vw_type'] }}"
+# #     template: "{{ cdw_vw_hive01['template'] }}"
+# #     autoscaling_min_nodes: "{{ cdw_vw_hive01['min_nodes'] }}"
+# #     autoscaling_max_nodes: "{{ cdw_vw_hive01['max_nodes'] }}"
+# #     catalog_id: "{{ catalog_id_out['database_catalogs'][0]['id'] }}"
+# #     tags: "{{ cdw_vw_hive01['tags'] }}"
+# #     enable_sso: true
