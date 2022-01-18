@@ -6,8 +6,8 @@
     action: install
     ecb_env: "{{ lookup('env', 'ECB_ENV') }}"
     env_name: "{{ lookup('env', 'CDP_ENV_NAME') }}"
-  # vars_files:
-  #   - cdp_envs/{{ ecb_env }}/{{ env_name }}/*.yml
+  vars_files:
+    - cdp_envs/{{ ecb_env }}/{{ env_name }}/env.yml
   #   - cdp_envs/{{ ecb_env }}/*.yml
 
   collections:
