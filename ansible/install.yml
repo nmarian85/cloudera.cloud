@@ -4,6 +4,7 @@
   # gather_facts: no
   vars:
     action: install
+    ecb_env: "{{ lookup('env', 'ECB_ENV') }}"
   # vars_files:
   #   - cdp_envs/{{ ecb_env }}/{{ env_name }}/*.yml
   #   - cdp_envs/{{ ecb_env }}/*.yml
