@@ -26,7 +26,7 @@
     - include_role:
         name: cde
       vars:
-        cde_cluster: "{{ cde_cluster_names[item] }}"
+        cde_cluster: "{{ cde_clusters[item] }}"
         cde_cluster_name: "{{ item }}"
       with_items: "{{ cde_cluster_names }}"
 # # - name: CDE clusters to provision
