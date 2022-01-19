@@ -24,13 +24,10 @@
   #   - cdl
   tasks:
     - include_role:
-        # - cred
-        # - env
-        # - cdl
         name: cde
-        vars:
-          cde_cluster: "{{ cde_cluster_names[item] }}"
-          cde_cluster_name: "{{ item }}"
+      vars:
+        cde_cluster: "{{ cde_cluster_names[item] }}"
+        cde_cluster_name: "{{ item }}"
       with_items:
         - cde_cluster_names
 # # - name: CDE clusters to provision
