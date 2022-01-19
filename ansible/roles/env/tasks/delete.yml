@@ -1,0 +1,4 @@
+- name: Delete environment
+  cloudera.cloud.env:
+    name: "{{ env_name }}"
+    state: absent

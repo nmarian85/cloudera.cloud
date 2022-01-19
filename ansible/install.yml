@@ -12,6 +12,7 @@
     - cloudera.cloud
   roles:
     - cred
+    - env
 # # in vars folder apparently only the main.yml is verified and we would like to separate the vars per cdp component
 # - include_vars:
 #     dir: vars
