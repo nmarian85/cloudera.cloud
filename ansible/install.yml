@@ -16,7 +16,7 @@
 
     # CDW
     # we need this variable since we enable the CDW service in reduced permission mode and that can only be done via GUI
-    cdw_ready: false
+    cdw_ready: true
     cdw_vw_names: ["impala01", "hive01"]
 
   vars_files:
@@ -35,14 +35,14 @@
   #   - env
   #   - cdl
   tasks:
-    # - import_role:
+    # - include_role:
     #     name: cde
     #   vars:
     #     cde_cluster: "{{ cde_clusters[item] }}"
     #     cde_cluster_name: "{{ item }}"
     #   with_items: "{{ cde_cluster_names }}"
 
-    - import_role:
+    - include_role:
         name: cdw_vw
       vars:
         cdw_vw: "{{ cdw_vws[item] }}"
