@@ -35,14 +35,14 @@
   #   - env
   #   - cdl
   tasks:
-    # - include_role:
+    # - import_role:
     #     name: cde
     #   vars:
     #     cde_cluster: "{{ cde_clusters[item] }}"
     #     cde_cluster_name: "{{ item }}"
     #   with_items: "{{ cde_cluster_names }}"
 
-    - include_role:
+    - import_role:
         name: cdw_vw
       vars:
         cdw_vw: "{{ cdw_vws[item] }}"
