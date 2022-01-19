@@ -29,9 +29,9 @@
           instanceTier: "{{ cml_cluster['ml_worker_gpu']['instance_tier'] }}"
           rootVolume:
             size: "{{ cml_cluster['ml_worker_gpu']['root_volume'] }}"
+      tags: "{{ cml_cluster['tags'] }}"
     governance: "{{ cml_cluster['enable_governance'] }}"
     wait: yes
     public_loadbalancer: false
     monitoring: true
     ip_addresses: []
-    tags: "{{ cml_cluster['tags'] }}"
