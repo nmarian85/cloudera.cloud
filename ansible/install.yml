@@ -1,14 +1,12 @@
 ---
 - hosts: localhost
-  # connection: local
-  # gather_facts: no
   vars:
-    work: install
+    work: "{{ lookup('env', 'WORK') | default('install') }}"
     ecb_env: "{{ lookup('env', 'ECB_ENV') }}"
     env_name: "{{ lookup('env', 'CDP_ENV_NAME') }}"
   vars_files:
     - "cdp_envs/{{ ecb_env }}/{{ env_name }}/env.yml"
-  #   - cdp_envs/{{ ecb_env }}/*.yml
+    - "cdp_envs/{{ ecb_env }}/tenant.yml"
 
   collections:
     - cloudera.cloud
