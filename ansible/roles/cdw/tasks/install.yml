@@ -6,4 +6,4 @@
 - name: Enable the Cloudwatch logging for EKS
   shell: 'aws eks update-cluster-config --name {{ cdw_cluster_info[''clusters''][0][''id''] }}-dwx-stack-eks --logging ''{"clusterLogging": [{"types": ["api","audit","authenticator","controllerManager","scheduler"],"enabled": true}]}'''
   register: eks_out
-  failed_when: eks_out.rc != 0 and "InvalidParameterException" not in eks.stdout
+  failed_when: eks_out.rc != 0 and " No changes needed for the logging config provided" not in eks.stdout
