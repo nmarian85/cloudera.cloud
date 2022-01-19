@@ -7,6 +7,9 @@
     env_name: "{{ lookup('env', 'CDP_ENV_NAME') }}"
   vars_files:
     - "cdp_envs/{{ ecb_env }}/{{ env_name }}/env.yml"
+    - "cdp_envs/{{ ecb_env }}/{{ env_name }}/cdl.yml"
+    - "cdp_envs/{{ ecb_env }}/{{ env_name }}/cde.yml"
+    - "cdp_envs/{{ ecb_env }}/{{ env_name }}/cml.yml"
     - "cdp_envs/{{ ecb_env }}/tenant.yml"
 
   collections:
@@ -15,36 +18,6 @@
     - cred
     - env
     - cdl
-# # # - name: Sync idbroker mappings
-# # #   cloudera.cloud.env_user_sync:
-# # #     name: "{{ env_name }}"
-
-# # - name: Get environment CRN
-# #   cloudera.cloud.env_info:
-# #     name: "{{ env_name }}"
-# #   register: env_info_out
-
-# # - debug:
-# #     # msg: "{{ env_info_out['environments'][0]['crn'] }}"
-# #     # msg: "{{ tenant_groups }}"
-# #     msg: "{{ tenant_groups }}"
-
-# # - name: Assign CDP resource roles to ECB CDP tenant groups
-# #   cloudera.cloud.iam_group:
-# #     name: "{{ item.0.group_name }}"
-# #     resource_roles:
-# #       - {
-# #           "resource": "{{ env_info_out['environments'][0]['crn'] }}",
-# #           "role": "{{ tenant_iam_crn }}:resourceRole:{{ item.1 }}",
-# #         }
-# #   with_subelements:
-# #     - "{{ tenant_groups }}"
-# #     - resource_roles
-
-# # - name: Sync environment users
-# #   cloudera.cloud.env_user_sync:
-# #     name: "{{ env_name }}"
-
 # # - name: CDE clusters to provision
 # #   set_fact:
 # #     cde_cluster_names: ["{{ env_name }}-cde01"]
