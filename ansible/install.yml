@@ -17,13 +17,19 @@
 
   collections:
     - cloudera.cloud
-  include_role:
-    # - cred
-    # - env
-    # - cdl
-    name: cde
-  with_items:
-    - cde_cluster_names
+
+  # roles:
+  #   - cred
+  #   - env
+  #   - cdl
+  tasks:
+    - include_role:
+        # - cred
+        # - env
+        # - cdl
+        name: cde
+      with_items:
+        - cde_cluster_names
 # # - name: CDE clusters to provision
 # #   set_fact:
 # #     cde_cluster_names: ["{{ env_name }}-cde01"]
