@@ -4,4 +4,4 @@
   register: cdw_cluster_info
 
 - name: Enable the Cloudwatch logging for EKS
-  shell: 'aws eks update-cluster-config --name {{ cdw_cluster_info[''clusters''][0][''id''] }}-dwx-stack-eks --logging ''{"clusterLogging": [{"types": ["api","audit","authenticator","controllerManager","scheduler"],"enabled": true}]}'
+  shell: 'aws eks update-cluster-config --name {{ cdw_cluster_info[''clusters''][0][''id''] }}-dwx-stack-eks --logging ''{"clusterLogging": [{"types": ["api","audit","authenticator","controllerManager","scheduler"],"enabled": true}]}'''
