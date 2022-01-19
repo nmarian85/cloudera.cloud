@@ -1,0 +1,5 @@
+- name: Disable CDE service
+  cloudera.cloud.de:
+    name: "{{ cde_cluster_name }}"
+    env: "{{ env_name }}"
+    state: absent

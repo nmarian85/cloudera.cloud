@@ -1,0 +1,17 @@
+- name: Enable CDE service
+  cloudera.cloud.de:
+    name: "{{ cde_cluster_name }}"
+    env: "{{ env_name }}"
+    use_ssd: "{{ cde_cluster['use_ssd'] }}"
+    root_volume_size: "{{ cde_cluster['root_vol_size'] }}"
+    initial_spot_instances: "{{ cde_cluster['initial_spot_instances'] }}"
+    maximum_spot_instances: "{{ cde_cluster['max_spot_instances'] }}"
+    minimum_spot_instances: "{{ cde_cluster['min_spot_instances'] }}"
+    instance_type: "{{ cde_cluster['instance_type'] }}"
+    initial_instances: "{{ cde_cluster['initial_instances'] }}"
+    minimum_instances: "{{ cde_cluster['min_instances'] }}"
+    maximum_instances: "{{ cde_cluster['max_instances'] }}"
+    enable_workload_analytics: false
+    enable_public_endpoint: false
+    wait: yes
+    tags: "{{ cde_cluster['tags'] }}"

@@ -5,6 +5,9 @@
     work: "{{ lookup('env', 'WORK') | default('install', true) }}"
     ecb_env: "{{ lookup('env', 'ECB_ENV') }}"
     env_name: "{{ lookup('env', 'CDP_ENV_NAME') }}"
+    cde_cluster_names: ["{{ env_name }}-cde01"]
+    # cde_vc_names: ["{{ env_name }}-cde01"]
+    cml_cluster_names: ["{{ env_name }}-cml01"]
   vars_files:
     - "cdp_envs/{{ ecb_env }}/{{ env_name }}/env.yml"
     - "cdp_envs/{{ ecb_env }}/{{ env_name }}/cdl.yml"
@@ -14,10 +17,13 @@
 
   collections:
     - cloudera.cloud
-  roles:
+  include_role:
     # - cred
     # - env
-    - cdl
+    # - cdl
+    name: cde
+  with_items:
+    - cde_cluster_names
 # # - name: CDE clusters to provision
 # #   set_fact:
 # #     cde_cluster_names: ["{{ env_name }}-cde01"]
