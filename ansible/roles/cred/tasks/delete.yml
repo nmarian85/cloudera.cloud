@@ -2,3 +2,4 @@
   cloudera.cloud.env_cred:
     state: absent
     name: "{{ env_credential['credential_name'] }}"
+    debug: true

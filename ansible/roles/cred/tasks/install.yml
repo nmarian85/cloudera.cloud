@@ -5,3 +5,4 @@
     name: "{{ env_credential['credential_name'] }}"
     description: "{{ env_credential['description'] }}"
     role: "{{ env_credential['role_arn'] }}"
+    debug: true

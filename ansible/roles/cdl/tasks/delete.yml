@@ -2,3 +2,4 @@
   cloudera.cloud.datalake:
     name: "{{ cdl_name }}"
     state: absent
+    debug: true

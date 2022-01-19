@@ -2,3 +2,4 @@
   cloudera.cloud.env:
     name: "{{ env_name }}"
     state: absent
+    debug: true

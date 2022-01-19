@@ -16,6 +16,7 @@
     tags: "{{ env_tags }}"
     tunnel: true
     endpoint_access_scheme: "PRIVATE"
+    debug: true
 
 - name: Create data access mappings for ID Broker
   cloudera.cloud.env_idbroker:
