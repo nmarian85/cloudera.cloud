@@ -1,0 +1,37 @@
+- name: Install ML workspace
+  cloudera.cloud.ml:
+    name: "{{ cml_cluster_name }}"
+    env: "{{ env_name }}"
+    k8s_request:
+      environmentName: "{{ env_name }}"
+      instanceGroups:
+        - name: default_settings
+          autoscaling:
+            maxInstances: "{{ cml_cluster['ml_infra']['max_instances'] }}"
+            minInstances: "{{ cml_cluster['ml_infra']['min_instances'] }}"
+          instanceType: "{{ cml_cluster['ml_infra']['instance_type'] }}"
+          instanceTier: "{{ cml_cluster['ml_infra']['instance_tier'] }}"
+          rootVolume:
+            size: "{{ cml_cluster['ml_infra']['root_volume'] }}"
+        - name: cpu_settings
+          autoscaling:
+            maxInstances: "{{ cml_cluster['ml_worker']['max_instances'] }}"
+            minInstances: "{{ cml_cluster['ml_worker']['min_instances'] }}"
+          instanceType: "{{ cml_cluster['ml_worker']['instance_type'] }}"
+          instanceTier: "{{ cml_cluster['ml_worker']['instance_tier'] }}"
+          rootVolume:
+            size: "{{ cml_cluster['ml_worker']['root_volume'] }}"
+        - name: gpu_settings
+          autoscaling:
+            maxInstances: "{{ cml_cluster['ml_worker_gpu']['max_instances'] }}"
+            minInstances: "{{ cml_cluster['ml_worker_gpu']['min_instances'] }}"
+          instanceType: "{{ cml_cluster['ml_worker_gpu']['instance_type'] }}"
+          instanceTier: "{{ cml_cluster['ml_worker_gpu']['instance_tier'] }}"
+          rootVolume:
+            size: "{{ cml_cluster['ml_worker_gpu']['root_volume'] }}"
+    governance: "{{ cml_cluster['enable_governance'] }}"
+    wait: yes
+    public_loadbalancer: false
+    monitoring: true
+    ip_addresses: []
+    tags: "{{ cml_cluster['tags'] }}"

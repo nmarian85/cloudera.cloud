@@ -43,9 +43,16 @@
     #   with_items: "{{ cde_cluster_names }}"
 
     - include_role:
-        name: cdw_vw
+        name: cml
       vars:
-        cdw_vw: "{{ cdw_vws[item] }}"
-        cdw_vw_name: "{{ item }}"
-      with_items: "{{ cdw_vw_names }}"
-      when: cdw_ready
+        cml_cluster: "{{ cml_clusters[item] }}"
+        cml_cluster_name: "{{ item }}"
+      with_items: "{{ cml_cluster_names }}"
+
+    # - include_role:
+    #     name: cdw_vw
+    #   vars:
+    #     cdw_vw: "{{ cdw_vws[item] }}"
+    #     cdw_vw_name: "{{ item }}"
+    #   with_items: "{{ cdw_vw_names }}"
+    #   when: cdw_ready

@@ -1,0 +1,5 @@
+- name: Delete ML workspace
+  cloudera.cloud.ml:
+    name: "{{ cml_cluster_name }}"
+    env: "{{ env_name }}"
+    state: absent
