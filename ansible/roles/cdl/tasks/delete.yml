@@ -1,0 +1,4 @@
+- name: Delete datalake
+  cloudera.cloud.datalake:
+    name: "{{ cdl_name }}"
+    state: absent

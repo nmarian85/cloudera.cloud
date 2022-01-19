@@ -1,18 +1,2 @@
-- name: Install datalake
-  block:
-    - name: Install datalake
-      cloudera.cloud.datalake:
-        name: "{{ cdl_name }}"
-        state: present
-        environment: "{{ env_name }}"
-        instance_profile: "{{ cdl_idbroker_instance_profile }}"
-        storage: "{{ cdl_storage_bucket }}"
-        scale: "{{ cdl_scale }}"
-        tags: "{{ cdl_tags }}"
-  when: action == 'install'
-
-- name: Delete datalake
-  cloudera.cloud.datalake:
-    name: "{{ cdl_name }}"
-    state: absent
-  when: action == 'delete'
+- name: Include task
+  import_tasks: "{{work}}.yml"

@@ -1,2 +1,2 @@
 - name: Include task
-  include_tasks: "{{work}}.yml"
+  import_tasks: "{{work}}.yml"
