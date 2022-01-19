@@ -15,8 +15,8 @@
   collections:
     - cloudera.cloud
   roles:
-    - cred
-    - env
+    # - cred
+    # - env
     - cdl
 # # - name: CDE clusters to provision
 # #   set_fact:
