@@ -42,12 +42,16 @@
     #     cde_cluster_name: "{{ item }}"
     #   with_items: "{{ cde_cluster_names }}"
 
+    # - include_role:
+    #     name: cml
+    #   vars:
+    #     cml_cluster: "{{ cml_clusters[item] }}"
+    #     cml_cluster_name: "{{ item }}"
+    #   with_items: "{{ cml_cluster_names }}"
+
     - include_role:
-        name: cml
-      vars:
-        cml_cluster: "{{ cml_clusters[item] }}"
-        cml_cluster_name: "{{ item }}"
-      with_items: "{{ cml_cluster_names }}"
+        name: cdw
+      when: cdw_ready
 
     # - include_role:
     #     name: cdw_vw
