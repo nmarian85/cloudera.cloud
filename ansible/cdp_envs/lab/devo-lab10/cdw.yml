@@ -1,31 +1,27 @@
 cdw_subnets:
-  [
-    "subnet-06118f58006e50a3d",
-    "subnet-0d158af8d06ee2fcc",
-    "subnet-0d01ccd888602a535",
-  ]
-cdw_vw_impala01:
-  {
-    "name": "impala01",
-    "min_nodes": 1,
-    "max_nodes": 5,
-    "template": "xsmall",
-    "vw_type": "impala",
-    "catalog_id": "default",
-    "config": { "enable_sso": "true" },
-    "tags":
-      { "env": "{{ ecb_env }}", "cdp_env": "{{ env_name }}", "origin": "cdp" },
-  }
+  - subnet-06118f58006e50a3d
+  - subnet-0d158af8d06ee2fcc
+  - subnet-0d01ccd888602a535
 
-cdw_vw_hive01:
-  {
-    "name": "hive01",
-    "min_nodes": 1,
-    "max_nodes": 5,
-    "template": "xsmall",
-    "vw_type": "hive",
-    "catalog_id": "default",
-    "config": { "enable_sso": "true" },
-    "tags":
-      { "env": "{{ ecb_env }}", "cdp_env": "{{ env_name }}", "origin": "cdp" },
-  }
+cdw_vws:
+  impala01:
+    min_nodes: 1
+    max_nodes: 5
+    template": xsmall
+    vw_type": impala
+    catalog_id: default
+    tags:
+      env: "{{ ecb_env }}"
+      cdp_env: "{{ env_name }}"
+      origin: cdp
+
+  hive01:
+    min_node": 1
+    max_nodes: 5
+    template: xsmall
+    vw_type: hive
+    catalog_id: default
+    tags:
+      env: "{{ ecb_env }}"
+      cdp_env: "{{ env_name }}"
+      origin: cdp

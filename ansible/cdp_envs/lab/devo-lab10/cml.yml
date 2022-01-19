@@ -1,33 +1,30 @@
 cml_clusters:
-  {
-    "devo-lab10-cml01":
-      {
-        "ml_infra":
-          {
-            "instance_type": "m5.2xlarge",
-            "instance_count": 2,
-            "min_instances": 2,
-            "max_instances": 3,
-            "root_volume": 100,
-            "instance_tier": "ON_DEMAND",
-          },
-        "ml_worker":
-          {
-            "instance_type": "c4.4xlarge",
-            "instance_count": 1,
-            "min_instances": 1,
-            "max_instances": 3,
-            "root_volume": 100,
-            "instance_tier": "ON_DEMAND",
-          },
-        "tags":
-          {
-            "env": "{{ ecb_env }}",
-            "cdp_env": "{{ env_name }}",
-            "origin": "cdp",
-          },
-        "enable_governance": "true",
-        "authorized_ip_ranges": [""],
-        "storage": true,
-      },
-  }
+  devo-lab10-cml01:
+    ml_infra:
+      instance_type: m5.2xlarge
+      instance_count: 2
+      min_instances: 2
+      max_instances: 3
+      root_volume: 100
+      instance_tier: ON_DEMAND
+    ml_worker:
+      instance_type: c4.4xlarge
+      instance_count: 1
+      min_instances: 1
+      max_instances: 3
+      root_volume: 100
+      instance_tier: ON_DEMAND
+    # TODO - name: gpu_settings
+    #   autoscaling:
+    #     maxInstances: 1
+    #     minInstances: 0
+    #   instanceCount: 0
+    #   instanceTier: "ON_DEMAND"
+    #   instanceType: "p2.8xlarge"
+    #   rootVolume:
+    #     size: 40
+    tags:
+      env: "{{ ecb_env }}"
+      cdp_env: "{{ env_name }}"
+      origin: cdp
+    enable_governance: true

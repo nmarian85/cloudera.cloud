@@ -1,0 +1,22 @@
+- name: Retrieve cluster id for CDW cluster
+  cloudera.cloud.dw_cluster_info:
+    env: "{{ env_name }}"
+  register: cdw_cluster_info
+
+- name: Get catalog id based on cluster id and catalog name
+  cloudera.cloud.dw_database_catalog_info:
+    name: "{{ cdw_vw_name['catalog_id'] }}"
+    cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
+  register: catalog_id_out
+
+- name: Install {{ cdw_vw_name }} CDW virtual warehouse
+  cloudera.cloud.dw_virtual_warehouse:
+    cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
+    name: "{{ cdw_vw_name }}"
+    type: "{{ cdw_vw['vw_type'] }}"
+    template: "{{ cdw_vw['template'] }}"
+    autoscaling_min_nodes: "{{ cdw_vw['min_nodes'] }}"
+    autoscaling_max_nodes: "{{ cdw_vw['max_nodes'] }}"
+    catalog_id: "{{ catalog_id_out['database_catalogs'][0]['id'] }}"
+    tags: "{{ cdw_vw['tags'] }}"
+    enable_sso: true
