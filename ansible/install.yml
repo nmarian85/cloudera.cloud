@@ -16,7 +16,7 @@
 
     # CDW
     # we need this variable since we enable the CDW service in reduced permission mode and that can only be done via GUI
-    cdw_ready: true
+    cdw_ready: false
     cdw_vw_names: ["impala01", "hive01"]
 
   vars_files:
@@ -48,4 +48,4 @@
         cdw_vw: "{{ cdw_vws[item] }}"
         cdw_vw_name: "{{ item }}"
       with_items: "{{ cdw_vw_names }}"
-      when: "{{ cdw_ready }}"
+      when: cdw_ready
