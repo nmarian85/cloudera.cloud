@@ -1,7 +1,7 @@
 ---
 - hosts: localhost
   vars:
-    work: "{{ lookup('env', 'WORK') | default('install') }}"
+    work: "{{ lookup('env', 'WORK') | default('install', true) }}"
     ecb_env: "{{ lookup('env', 'ECB_ENV') }}"
     env_name: "{{ lookup('env', 'CDP_ENV_NAME') }}"
   vars_files:
