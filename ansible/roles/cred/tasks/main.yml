@@ -1,14 +1,9 @@
-- name: Create credential
-  cloudera.cloud.env_cred:
-    state: present
-    cloud: aws
-    name: "{{ env_credential['credential_name'] }}"
-    description: "{{ env_credential['description'] }}"
-    role: "{{ env_credential['role_arn'] }}"
-  when: action == 'install'
+- name: Include install task
+  include_tasks: install.yml
+  when:
+    - work == 'install'
 
-- name: Delete credential
-  cloudera.cloud.env_cred:
-    state: absent
-    name: "{{ env_credential['credential_name'] }}"
-  when: action == 'delete'
+- name: Include delete task
+  include_tasks: delete.yml
+  when:
+    - work == 'delete'

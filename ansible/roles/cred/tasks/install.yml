@@ -1,0 +1,7 @@
+- name: Create credential
+  cloudera.cloud.env_cred:
+    state: present
+    cloud: aws
+    name: "{{ env_credential['credential_name'] }}"
+    description: "{{ env_credential['description'] }}"
+    role: "{{ env_credential['role_arn'] }}"

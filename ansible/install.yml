@@ -3,7 +3,7 @@
   # connection: local
   # gather_facts: no
   vars:
-    action: install
+    work: install
     ecb_env: "{{ lookup('env', 'ECB_ENV') }}"
     env_name: "{{ lookup('env', 'CDP_ENV_NAME') }}"
   vars_files:
