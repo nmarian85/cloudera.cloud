@@ -7,8 +7,8 @@ cdw_vws:
   impala01:
     min_nodes: 1
     max_nodes: 5
-    template": xsmall
-    vw_type": impala
+    template: xsmall
+    vw_type: impala
     catalog_id: default
     tags:
       env: "{{ ecb_env }}"
@@ -16,7 +16,7 @@ cdw_vws:
       origin: cdp
 
   hive01:
-    min_node": 1
+    min_node: 1
     max_nodes: 5
     template: xsmall
     vw_type: hive

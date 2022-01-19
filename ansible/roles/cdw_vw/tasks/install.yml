@@ -5,7 +5,7 @@
 
 - name: Get catalog id based on cluster id and catalog name
   cloudera.cloud.dw_database_catalog_info:
-    name: "{{ cdw_vw_name['catalog_id'] }}"
+    name: "{{ cdw_vw['catalog_id'] }}"
     cluster_id: "{{ cdw_cluster_info['clusters'][0]['id'] }}"
   register: catalog_id_out
 
