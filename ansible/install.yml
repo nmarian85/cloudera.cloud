@@ -1,5 +1,5 @@
 ---
-- hosts: localhost
+- hosts: all
   connection: local
   vars:
     work: "{{ lookup('env', 'WORK') | default('install', true) }}"
