@@ -1,5 +1,6 @@
 ---
 - hosts: localhost
+  connection: local
   vars:
     work: "{{ lookup('env', 'WORK') | default('install', true) }}"
     ecb_env: "{{ lookup('env', 'ECB_ENV') }}"
