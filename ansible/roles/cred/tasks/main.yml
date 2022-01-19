@@ -1,9 +1,2 @@
-- name: Include install task
-  import_tasks: install.yml
-  when:
-    - work == 'install'
-
-- name: Include delete task
-  import_tasks: delete.yml
-  when:
-    - work == 'delete'
+- name: Include task
+  include_tasks: "{{work}}.yml"
