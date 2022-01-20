@@ -1,6 +1,6 @@
 ---
 - hosts: localhost
-  connection: local
+  # connection: local
   vars:
     # if CDP components need to be installed or deleted (variable can be defined at role level as well)
     work: "{{ lookup('env', 'WORK') | default('delete', true) }}"
