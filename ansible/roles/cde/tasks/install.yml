@@ -23,5 +23,6 @@
   vars:
     cde_vc: "{{ item.value }}"
     cde_vc_name: "{{ item.key }}"
-    cde_cluster_id: "{{ cde_out['service']['clusterId'] }}"
+    # cde_cluster_id: "{{ cde_out['service']['clusterId'] }}"
+    cluster_name: "{{ cde_cluster_name }}"
   with_dict: "{{ cde_cluster['vcs'] }}"
