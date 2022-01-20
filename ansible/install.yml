@@ -49,9 +49,9 @@
     #     cml_cluster_name: "{{ item }}"
     #   with_items: "{{ cml_cluster_names }}"
 
-    - include_role:
-        name: cdw
-      when: cdw_ready
+    # - include_role:
+    #     name: cdw
+    #   when: cdw_ready
 
     # - include_role:
     #     name: cdw_vw
