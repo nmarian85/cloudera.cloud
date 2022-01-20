@@ -16,3 +16,11 @@
     wait: yes
     tags: "{{ cde_cluster['tags'] }}"
     debug: true
+
+- include_role:
+    name: cde_vc
+  vars:
+    cde_vc: "{{ item.value }}"
+    cde_vc_name: "{{ item.key }}"
+    cde_cluster_name: "{{ cde_cluster_name }}"
+  with_dict: "{{ cde_cluster['vcs'] }}"

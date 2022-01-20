@@ -3,51 +3,42 @@
   connection: local
   vars:
     # if CDP components need to be installed or deleted (variable can be defined at role level as well)
-    work: "{{ lookup('env', 'WORK') | default('install', true) }}"
+    work: install
     ecb_env: "{{ lookup('env', 'ECB_ENV') }}"
     env_name: "{{ lookup('env', 'CDP_ENV_NAME') }}"
-
-    # CML
-    cml_cluster_names: ["{{ env_name }}-cml01"]
-
-    # CDE
-    cde_cluster_names: ["{{ env_name }}-cde01"]
-    cde_vc_names: ["{{ env_name }}-cde01"]
 
     # CDW
     # we need this variable since we enable the CDW service in reduced permission mode and that can only be done via GUI
     cdw_ready: true
-    cdw_vw_names: ["impala01", "hive01"]
 
   vars_files:
-    - "cdp_envs/{{ ecb_env }}/{{ env_name }}/env.yml"
     - "cdp_envs/{{ ecb_env }}/{{ env_name }}/cdl.yml"
     - "cdp_envs/{{ ecb_env }}/{{ env_name }}/cde.yml"
     - "cdp_envs/{{ ecb_env }}/{{ env_name }}/cml.yml"
     - "cdp_envs/{{ ecb_env }}/{{ env_name }}/cdw.yml"
-    - "cdp_envs/{{ ecb_env }}/tenant.yml"
+    - "cdp_envs/{{ ecb_env }}/common.yml"
 
   collections:
     - cloudera.cloud
 
-  # roles:
-  #   - cred
-  #   - env
-  #   - cdl
+  roles:
+    - cred
+    - env
+    - cdl
   tasks:
-    # - include_role:
-    #     name: cde
-    #   vars:
-    #     cde_cluster: "{{ cde_clusters[item] }}"
-    #     cde_cluster_name: "{{ item }}"
-    #   with_items: "{{ cde_cluster_names }}"
+    - include_role:
+        name: cde
+      vars:
+        cde_cluster: "{{ item.value }}"
+        cde_cluster_name: "{{ item.key }}"
+      with_dict: "{{ cde_clusters }}"
 
-    # - include_role:
-    #     name: cml
-    #   vars:
-    #     cml_cluster: "{{ cml_clusters[item] }}"
-    #     cml_cluster_name: "{{ item }}"
-    #   with_items: "{{ cml_cluster_names }}"
+    - include_role:
+        name: cml
+      vars:
+        cml_cluster: "{{ item.value }}"
+        cml_cluster_name: "{{ item.key }}"
+      with_dict: "{{ cml_clusters }}"
 
     # - include_role:
     #     name: cdw

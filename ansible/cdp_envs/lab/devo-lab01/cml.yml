@@ -14,13 +14,13 @@ cml_clusters:
       max_instances: 3
       root_volume: 100
       instance_tier: ON_DEMAND
-    ml_worker_gpu:
-      min_instances: 0
-      max_instances: 1
-      instance_count: 0
-      instance_tier: ON_DEMAND
-      instance_type: p2.8xlarge
-      root_volume: 100
+    # ml_worker_gpu:
+    #   min_instances: 0
+    #   max_instances: 1
+    #   instance_count: 0
+    #   instance_tier: ON_DEMAND
+    #   instance_type: p2.8xlarge
+    #   root_volume: 100
     tags:
       env: "{{ ecb_env }}"
       cdp_env: "{{ env_name }}"
