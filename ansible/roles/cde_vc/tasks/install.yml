@@ -2,6 +2,7 @@
   cloudera.cloud.de_virtual_cluster:
     name: "{{ cde_vc_name }}"
     cluster_id: "{{ cde_cluster_id }}"
+    cluster_name: "{{ cde_cluster_name }}"
     env: "{{ env_name }}"
     chart_value_overrides: "{{ cde_vc['chart_value_overrides'] }}"
     cpu_requests: "{{ cde_vc['cpu_requests'] }}"
