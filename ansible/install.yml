@@ -21,10 +21,10 @@
   collections:
     - cloudera.cloud
 
-  roles:
-    - cred
-    - env
-    - cdl
+  # roles:
+  #   - cred
+  #   - env
+  #   - cdl
   tasks:
     - include_role:
         name: cde
