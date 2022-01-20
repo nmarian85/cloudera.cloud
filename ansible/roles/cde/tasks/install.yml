@@ -16,10 +16,12 @@
     wait: yes
     tags: "{{ cde_cluster['tags'] }}"
     debug: true
+  register: cde_out
 
 - include_role:
     name: cde_vc
   vars:
     cde_vc: "{{ item.value }}"
     cde_vc_name: "{{ item.key }}"
+    cde_cluster_id: "{{ cde_out['service']['clusterId'] }}"
   with_dict: "{{ cde_cluster['vcs'] }}"
