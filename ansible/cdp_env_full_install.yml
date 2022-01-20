@@ -2,8 +2,6 @@
 - hosts: localhost
   connection: local
   vars:
-    # if CDP components need to be installed or deleted (variable can be defined at role level as well)
-    work: install
     ecb_env: "{{ lookup('env', 'ECB_ENV') }}"
     env_name: "{{ lookup('env', 'CDP_ENV_NAME') }}"
 
@@ -22,10 +20,10 @@
   collections:
     - cloudera.cloud
 
-  # roles:
-  #   # - cred
-  #   # - env
-  #   # - cdl
+  roles:
+    - cred
+    - env
+    - cdl
   tasks:
     - include_role:
         name: cde
