@@ -1,7 +1,7 @@
 - name: Install {{ cde_vc_name }} CDE virtual cluster
   cloudera.cloud.de_virtual_cluster:
     name: "{{ cde_vc_name }}"
-    cluster_name: "{{ cluster_name }}"
+    cluster_name: "{{ cde_cluster_name }}"
     env: "{{ env_name }}"
     chart_value_overrides: "{{ cde_vc['chart_value_overrides'] }}"
     cpu_requests: "{{ cde_vc['cpu_requests'] }}"
