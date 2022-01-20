@@ -35,3 +35,4 @@
     public_loadbalancer: false
     monitoring: true
     ip_addresses: []
+    debug: true

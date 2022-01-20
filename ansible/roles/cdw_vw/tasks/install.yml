@@ -20,3 +20,4 @@
     catalog_id: "{{ catalog_id_out['database_catalogs'][0]['id'] }}"
     tags: "{{ cdw_vw['tags'] }}"
     enable_sso: true
+    debug: true
