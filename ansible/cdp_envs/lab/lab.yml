@@ -1,3 +1,5 @@
+## Common configs for all CDP envs part of the same ECB environment (e.g. lab)
+# CDP common environment configs
 env_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCbeW5dvQZdyLWnjbuFmmP+j1Q9c6tcNaaQwmuZ9gzn7Pbm+aXytEdCj2R6s6EhrO0Ip87Z2UOPM979vfe7fO9uWa/WjQ24A7KgltYWAVBRIdhIxbFCzXAIQVvnMyo0dnODLIFupNw0RpoM/Cn+aMNqv+xmhhbNUJJS8i7t1Nsv/RT30dkIW1WMpVR2suDDzySEezYOAED5TXErAl7ruericcUKAw/l8SHfphY7Rw+j4dveMeKCNLNGLdEahPNDLdxLr6rmDgX6rxF2nWNlSZse9fW6xelhcF8Lu2D1oxxqI+ZNq0G/Q5u50RVDTSqkujVVoUPeEYO1rwUWW2cEDhRT cloudbreak"
 env_credential:
   credential_name: "{{ env_name }}-crossaccount-cred"
@@ -7,12 +9,12 @@ env_credential:
 env_region: eu-central-1
 env_account_id: 303413094647
 env_vpc_id: vpc-020623901c07da0ac
-env_sg: sg-030569ebc29e9d847
 env_log_role_instance_profile: "arn:aws:iam::{{ env_account_id }}:instance-profile/{{ env_name }}-log-role-instance-profile"
 env_data_access_role: "arn:aws:iam::{{ env_account_id }}:role/{{ env_name }}-datalake-admin-role"
 env_ranger_audit_role: "arn:aws:iam::{{ env_account_id }}:role/{{ env_name }}-ranger-audit-role"
 env_idbroker_role: "arn:aws:iam::{{ env_account_id }}:role/{{ env_name }}-idbroker-role"
 
+# all subnets in VPC
 env_subnets:
   - subnet-04024eed8cf2426fc
   - subnet-06118f58006e50a3d
@@ -28,3 +30,60 @@ env_tags:
   env: "{{ ecb_env }}"
   cdp_env: "{{ env_name }}"
   origin: cdp
+
+# Data Lake common configs
+cdl_idbroker_instance_profile: "arn:aws:iam::{{ env_account_id }}:instance-profile/{{ env_name }}-idbroker-role-instance-profile"
+cdl_name: "{{ env_name }}-dl"
+cdl_storage_bucket: "s3a://{{ env_name }}-adm-data-i7ijrnh8"
+cdl_tags:
+  env: "{{ ecb_env }}"
+  cdp_env: "{{ env_name }}"
+  origin: cdp
+
+# CDW common configs
+# BE subnets, can be only 3 unfortunately
+cdw_subnets:
+  - subnet-06118f58006e50a3d
+  - subnet-0d158af8d06ee2fcc
+  - subnet-0d01ccd888602a535
+
+# CDP common tenant configs
+
+tenant_region: us-west-1
+tenant_iam_crn: "crn:altus:iam:{{ tenant_region }}:altus"
+tenant_groups:
+  - group_name: ECBT1-IGAMFS-APP-DEVO-DEV-Admin
+    resource_roles:
+      - DEAdmin
+      - DEUser
+      - DFAdmin
+      - DFFlowAdmin
+      - DFFlowUser
+      - DWAdmin
+      - DWUser
+      - DataSteward
+      - EnvironmentAdmin
+      - EnvironmentUser
+      - MLAdmin
+      - MLUser
+      - MLBusinessUser
+      - ODAdmin
+      - ODUser
+  - group_name: ECBT1-IGAMFS-APP-DEVO-DEV-Expert
+    resource_roles:
+      - DEUser
+      - DFFlowUser
+      - DWUser
+      - DataSteward
+      - EnvironmentUser
+      - MLUser
+      - ODUser
+  - group_name: ECBT1-IGAMFS-APP-DEVO-DEV-User
+    resource_roles:
+      - DEUser
+      - DFFlowUser
+      - DWUser
+      - DataSteward
+      - EnvironmentUser
+      - MLUser
+      - ODUser

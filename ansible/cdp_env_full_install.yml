@@ -12,12 +12,11 @@
     cdw_ready: true
 
   vars_files:
-    - "cdp_envs/{{ ecb_env }}/{{ env_name }}/env.yml"
     - "cdp_envs/{{ ecb_env }}/{{ env_name }}/cdl.yml"
     - "cdp_envs/{{ ecb_env }}/{{ env_name }}/cde.yml"
     - "cdp_envs/{{ ecb_env }}/{{ env_name }}/cml.yml"
     - "cdp_envs/{{ ecb_env }}/{{ env_name }}/cdw.yml"
-    - "cdp_envs/{{ ecb_env }}/tenant.yml"
+    - "cdp_envs/{{ ecb_env }}.yml"
 
   collections:
     - cloudera.cloud
@@ -34,12 +33,12 @@
         cde_cluster_name: "{{ item.key }}"
       with_dict: "{{ cde_clusters }}"
 
-    # - include_role:
-    #     name: cml
-    #   vars:
-    #     cml_cluster: "{{ cml_clusters[item] }}"
-    #     cml_cluster_name: "{{ item }}"
-    #   with_items: "{{ cml_cluster_names }}"
+    - include_role:
+        name: cml
+      vars:
+        cml_cluster: "{{ item.value }}"
+        cml_cluster_name: "{{ item.key }}"
+      with_dict: "{{ cml_clusters }}"
 
     # - include_role:
     #     name: cdw

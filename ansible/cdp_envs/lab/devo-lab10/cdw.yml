@@ -1,8 +1,3 @@
-cdw_subnets:
-  - subnet-06118f58006e50a3d
-  - subnet-0d158af8d06ee2fcc
-  - subnet-0d01ccd888602a535
-
 cdw_vws:
   impala01:
     min_nodes: 1
