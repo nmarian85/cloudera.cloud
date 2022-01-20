@@ -9,3 +9,13 @@
   failed_when:
     - eks_out.rc != 0
     - '"No changes needed for the logging config provided" not in eks_out.stderr'
+
+- include_role:
+    name: cdw_vw
+  vars:
+    cdw_vw: "{{ cdw_vw_info.value }}"
+    cdw_vw_name: "{{ cdw_vw_info.key }}"
+    cdw_cluster_info: "{{ cdw_cluster_info }}" # TODO: threw an error so var name might need to be changed
+  with_dict: "{{ cdw_vws }}"
+  loop_control:
+    loop_var: cdw_vw_info

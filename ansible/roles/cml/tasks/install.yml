@@ -21,15 +21,15 @@
           instanceTier: "{{ cml_cluster['ml_worker']['instance_tier'] }}"
           rootVolume:
             size: "{{ cml_cluster['ml_worker']['root_volume'] }}"
-        - name: gpu_settings
-          autoscaling:
-            maxInstances: "{{ cml_cluster['ml_worker_gpu']['max_instances'] }}"
-            minInstances: "{{ cml_cluster['ml_worker_gpu']['min_instances'] }}"
-          instanceType: "{{ cml_cluster['ml_worker_gpu']['instance_type'] }}"
-          instanceTier: "{{ cml_cluster['ml_worker_gpu']['instance_tier'] }}"
-          rootVolume:
-            size: "{{ cml_cluster['ml_worker_gpu']['root_volume'] }}"
-          when: "'ml_worker_gpu' in cml_cluster"
+        # - name: gpu_settings
+        #   autoscaling:
+        #     maxInstances: "{{ cml_cluster['ml_worker_gpu']['max_instances'] }}"
+        #     minInstances: "{{ cml_cluster['ml_worker_gpu']['min_instances'] }}"
+        #   instanceType: "{{ cml_cluster['ml_worker_gpu']['instance_type'] }}"
+        #   instanceTier: "{{ cml_cluster['ml_worker_gpu']['instance_tier'] }}"
+        #   rootVolume:
+        #     size: "{{ cml_cluster['ml_worker_gpu']['root_volume'] }}"
+        #   when: "'ml_worker_gpu' in cml_cluster"
       tags: "{{ cml_cluster['tags'] }}"
     governance: "{{ cml_cluster['enable_governance'] }}"
     wait: yes

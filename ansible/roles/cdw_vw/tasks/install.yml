@@ -1,7 +1,7 @@
-- name: Retrieve cluster id for CDW cluster
-  cloudera.cloud.dw_cluster_info:
-    env: "{{ env_name }}"
-  register: cdw_cluster_info
+# - name: Retrieve cluster id for CDW cluster
+#   cloudera.cloud.dw_cluster_info:
+#     env: "{{ env_name }}"
+#   register: cdw_cluster_info
 
 - name: Get catalog id based on cluster id and catalog name
   cloudera.cloud.dw_database_catalog_info:

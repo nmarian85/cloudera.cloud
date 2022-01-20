@@ -9,7 +9,7 @@
 
     # CDW
     # we need this variable since we enable the CDW service in reduced permission mode and that can only be done via GUI
-    cdw_ready: true
+    cdw_ready: false
 
   vars_files:
     - "cdp_envs/{{ ecb_env }}/{{ env_name }}/cdl.yml"
@@ -40,14 +40,6 @@
         cml_cluster_name: "{{ item.key }}"
       with_dict: "{{ cml_clusters }}"
 
-    # - include_role:
-    #     name: cdw
-    #   when: cdw_ready
-
-    # - include_role:
-    #     name: cdw_vw
-    #   vars:
-    #     cdw_vw: "{{ cdw_vws[item] }}"
-    #     cdw_vw_name: "{{ item }}"
-    #   with_items: "{{ cdw_vw_names }}"
-    #   when: cdw_ready
+    - include_role:
+        name: cdw
+      when: cdw_ready
