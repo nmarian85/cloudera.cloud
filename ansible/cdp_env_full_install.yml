@@ -16,7 +16,7 @@
     - "cdp_envs/{{ ecb_env }}/{{ env_name }}/cde.yml"
     - "cdp_envs/{{ ecb_env }}/{{ env_name }}/cml.yml"
     - "cdp_envs/{{ ecb_env }}/{{ env_name }}/cdw.yml"
-    - "cdp_envs/{{ ecb_env }}.yml"
+    - "cdp_envs/{{ ecb_env }}/common.yml"
 
   collections:
     - cloudera.cloud
