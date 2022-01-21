@@ -3,3 +3,4 @@
     name: "{{ cml_cluster_name }}"
     env: "{{ env_name }}"
     state: absent
+    wait: no

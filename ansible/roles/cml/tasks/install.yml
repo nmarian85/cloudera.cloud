@@ -32,7 +32,7 @@
         #   when: "'ml_worker_gpu' in cml_cluster"
       tags: "{{ cml_cluster['tags'] }}"
     governance: "{{ cml_cluster['enable_governance'] }}"
-    wait: yes
+    wait: no
     public_loadbalancer: false
     monitoring: true
     ip_addresses: []

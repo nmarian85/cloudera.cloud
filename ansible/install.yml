@@ -9,7 +9,7 @@
 
     # CDW
     # we need this variable since we enable the CDW service in reduced permission mode and that can only be done via GUI
-    cdw_ready: false
+    cdw_ready: "{{ lookup('env', 'CDW_READY') | default('false') }}"
 
   vars_files:
     - "cdp_envs/{{ ecb_env }}/{{ env_name }}/cdl.yml"

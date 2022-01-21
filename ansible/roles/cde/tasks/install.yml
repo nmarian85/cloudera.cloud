@@ -13,7 +13,7 @@
     maximum_instances: "{{ cde_cluster['max_instances'] }}"
     enable_workload_analytics: false
     enable_public_endpoint: false
-    wait: yes
+    wait: no
     tags: "{{ cde_cluster['tags'] }}"
     debug: true
   register: cde_out
