@@ -40,10 +40,9 @@
         name: cdw
       when: cdw_ready
 
-    # - include_role:
-    #     name: cleanup
-
-  roles:
-    - env
-    - cdl
-    - cred
+    - include_role:
+        name: "{{ item }}"
+      with_items:
+        - cdl
+        - env
+        - cred
