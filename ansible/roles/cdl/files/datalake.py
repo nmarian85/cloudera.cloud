@@ -402,6 +402,7 @@ class Datalake(CdpModule):
         self.delay = self._get_param("delay")
         self.timeout = self._get_param("timeout")
         self.force = self._get_param("force")
+        self.raz = self._get_param("raz")
 
         # Initialize the return values
         self.datalake = dict()

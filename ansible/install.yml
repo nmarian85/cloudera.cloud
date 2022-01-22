@@ -22,8 +22,8 @@
     - cloudera.cloud
 
   roles:
-    - cred
-    - env
+    # - cred
+    # - env
     - cdl
   tasks:
     # - include_role:
