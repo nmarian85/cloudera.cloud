@@ -21,28 +21,42 @@
   collections:
     - cloudera.cloud
 
-  # roles:
-  #   - cred
-  #   - env
-  #   - cdl
+  roles:
+    - cred
+    - env
+    - cdl
   tasks:
-    - include_role:
-        name: cde
-      vars:
-        cde_cluster: "{{ item.value }}"
-        cde_cluster_name: "{{ item.key }}"
-      with_dict: "{{ cde_clusters }}"
+    # - include_role:
+    #     name: cde
+    #   vars:
+    #     cde_cluster: "{{ item.value }}"
+    #     cde_cluster_name: "{{ item.key }}"
+    #   with_dict: "{{ cde_clusters }}"
 
-    - include_role:
-        name: cml
-      vars:
-        cml_cluster: "{{ item.value }}"
-        cml_cluster_name: "{{ item.key }}"
-      with_dict: "{{ cml_clusters }}"
+    # - include_role:
+    #     name: cml
+    #   vars:
+    #     cml_cluster: "{{ item.value }}"
+    #     cml_cluster_name: "{{ item.key }}"
+    #   with_dict: "{{ cml_clusters }}"
 
-    - include_role:
-        name: cdw
-      when: cdw_ready
+    # - include_role:
+    #     name: cdw
+    #   when: cdw_ready
 
     # - include_role:
     #     name: cleanup
+# implement wait_for to wait for prov to finish
+
+#  cdp environments set-id-broker-mappings \
+#     --environment-name [***ENVIRONMENT-NAME***] \
+#     --data-access-role [***DATALAKE-ADMIN-ROLE***] \
+#     --ranger-audit-role [***RANGER_AUDIT_ROLE***] \
+#     --ranger-cloud-access-authorizer-role [***RAZ_ROLE***] \
+#     --set-empty-mappings
+
+# cdp datalake create-aws-datalake \
+#     --datalake-name [***DATALAKE_NAME***] \
+#     --environment-name [***ENVIRONMENT-NAME***]\
+#     --cloud-provider-configuration instanceProfile=[***instance-profile***],storageBucketLocation=s3a://[***BUCKET***]/[***PATH***] \
+#    --enable-ranger-raz

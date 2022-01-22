@@ -23,8 +23,6 @@
   vars:
     cde_vc: "{{ cde_vc_info.value }}"
     cde_vc_name: "{{ cde_vc_info.key }}"
-    # cde_cluster_id: "{{ cde_out['service']['clusterId'] }}"
-    # cluster_name: "{{ cde_cluster_name }}"
   with_dict: "{{ cde_cluster['vcs'] }}"
   loop_control:
     loop_var: cde_vc_info
