@@ -8,3 +8,4 @@
     scale: "{{ cdl_scale }}"
     tags: "{{ cdl_tags }}"
     debug: true
+    raz: true

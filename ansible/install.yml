@@ -60,3 +60,42 @@
 #     --environment-name [***ENVIRONMENT-NAME***]\
 #     --cloud-provider-configuration instanceProfile=[***instance-profile***],storageBucketLocation=s3a://[***BUCKET***]/[***PATH***] \
 #    --enable-ranger-raz
+
+#  cd ansible-cdp-mgmt
+# (myenv) ➜  ansible-cdp-mgmt cat requirements.txt
+# botocore
+# boto>=2.5
+# boto3
+# ansible
+# ansible-lint
+
+#   (myenv) ➜  ansible-cdp-mgmt cat pip_requirements.txt
+# git+git://github.com/cloudera-labs/cdpy@main#egg=cdpy
+
+#   633  pip install -r pip_requirements.txt
+
+#   610  mamba install --file requirements.txt
+#   611  mkdir collections
+#   612  vim collections/requirements.yaml
+#   624  ansible-galaxy collection install -r collections/requirements.yml
+
+# (myenv) ➜  ansible-cdp-mgmt cat collections/requirements.yml
+# collections:
+
+#   # Cloudera collections
+#   - name: https://github.com/cloudera-labs/cloudera.cluster.git
+#     type: git
+#   - name: https://github.com/cloudera-labs/cloudera.exe.git
+#     type: git
+#   - name: https://github.com/cloudera-labs/cloudera.cloud.git
+#     type: git
+#     version: main
+
+# # Append other roles to this list.
+# roles:
+#   - src: geerlingguy.postgresql
+#     version: 2.2.0
+
+#   # geerlingguy.mysql with fix for issue #332
+#   - src: https://github.com/dbeech/ansible-role-mysql
+#     version: master
