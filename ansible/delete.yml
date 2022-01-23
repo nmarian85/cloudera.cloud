@@ -22,27 +22,27 @@
     - cloudera.cloud
 
   tasks:
-    - include_role:
-        name: cde
-      vars:
-        cde_cluster: "{{ item.value }}"
-        cde_cluster_name: "{{ item.key }}"
-      with_dict: "{{ cde_clusters }}"
+    # - include_role:
+    #     name: cde
+    #   vars:
+    #     cde_cluster: "{{ item.value }}"
+    #     cde_cluster_name: "{{ item.key }}"
+    #   with_dict: "{{ cde_clusters }}"
 
-    - include_role:
-        name: cml
-      vars:
-        cml_cluster: "{{ item.value }}"
-        cml_cluster_name: "{{ item.key }}"
-      with_dict: "{{ cml_clusters }}"
+    # - include_role:
+    #     name: cml
+    #   vars:
+    #     cml_cluster: "{{ item.value }}"
+    #     cml_cluster_name: "{{ item.key }}"
+    #   with_dict: "{{ cml_clusters }}"
 
-    - include_role:
-        name: cdw
-      when: cdw_ready
+    # - include_role:
+    #     name: cdw
+    #   when: cdw_ready
 
     - include_role:
         name: "{{ item }}"
       with_items:
         - cdl
-        - env
-        - cred
+        # - env
+        # - cred
